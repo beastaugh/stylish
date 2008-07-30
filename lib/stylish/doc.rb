@@ -33,6 +33,15 @@ module Stylish
       end
     end
     
+    def print(template_file, target_file)
+      template = File.open(template_file, "r").read
+      rhtml = ERB.new(template)
+      
+      File.open(target_file, "w") do |target|
+        target.puts(rhtml.result(binding))
+      end
+    end
+    
     def self.chew(file)
       doc = Doc.new(file)
       doc.chew
