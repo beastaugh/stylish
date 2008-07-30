@@ -1,9 +1,8 @@
-module Stylish
-  
-end
+$:.unshift File.dirname(__FILE__)
 
 require 'rubygems'
 require 'find'
 require 'erb'
-require File.dirname(__FILE__) + '/stylish/doc'
-require File.dirname(__FILE__) + '/stylish/list'
+
+require 'stylish/doc'
+require 'stylish/list'
