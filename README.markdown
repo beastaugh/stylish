@@ -10,7 +10,7 @@ Examples
     doc.chew
     doc.print('/path/to/template.html.erb', '/path/to/output.html')
 
-CSS documentation for a block of code should be formatted in the following fashion:
+<abbr title="Cascading Stylesheets">CSS</abbr> documentation for a block of code should be formatted in the following fashion:
 
     /**
      * A brief description of the purpose of this code.
