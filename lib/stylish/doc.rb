@@ -6,7 +6,7 @@ module Stylish
     
     def initialize(file)
       @file = file
-      @name = File.basename(@file, ".css")
+      @name = File.basename(@file)
       return self
     end
     
