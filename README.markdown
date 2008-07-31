@@ -28,6 +28,6 @@ Examples
 In the pipeline
 ---------------
 
-* Default <abbr title="Embedded Ruby">ERB</abbr> templates
-* Printing Lists to multiple pages, complete with navigation
-* Split up some of the larger methods into smaller, more modular ones
+* Default <abbr title="Embedded Ruby">ERB</abbr> templates.
+* Printing Lists to multiple pages, complete with navigation.
+* Split up some of the larger methods into smaller, more modular ones.
