@@ -28,6 +28,6 @@ CSS documentation for a block of code should be formatted in the following fashi
 In the pipeline
 ---------------
 
-* Default ERB templates
+* Default <abbr title="Embedded Ruby">ERB</abbr> templates
 * Printing Lists to multiple pages, complete with navigation
 * Split up some of the larger methods into smaller, more modular ones
