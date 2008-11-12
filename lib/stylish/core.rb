@@ -55,7 +55,7 @@ module Stylish
     end
     
     def join
-      self.class.superclass.instance_method(:join).bind(self).call(@format)
+      Array.instance_method(:join).bind(self).call(@format)
     end
   end
   
