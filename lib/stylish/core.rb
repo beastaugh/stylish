@@ -8,7 +8,8 @@ module Stylish
       @format = options[:format]
       
       if selectors.is_a? String
-        @selectors = selectors.strip.split(/\s*,\s*/).map {|s| Selector.new(s) }
+        @selectors = selectors.strip.split(/\s*,\s*/).
+          inject(Selectors.new) {|m, s| m << Selector.new(s) }
       else
         @selectors = selectors
       end
