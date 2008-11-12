@@ -23,7 +23,7 @@ module Stylish
     end
     
     def to_s
-      sprintf(@format, @selectors.join(", "), @declarations.join(" "))
+      sprintf(@format, @selectors.join, @declarations.join(" "))
     end
   end
   
@@ -35,6 +35,20 @@ module Stylish
     
     def to_s
       @selector
+    end
+  end
+  
+  class Selectors < Array
+    
+    def initialize(options = {})
+      options = {:format => ", "}.merge(options)
+      @format = options[:format]
+      
+      super()
+    end
+    
+    def join
+      Selectors.superclass.instance_method(:join).bind(self).call(@format)
     end
   end
   
