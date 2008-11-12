@@ -41,8 +41,14 @@ module Stylish
   class Selectors < Array
     
     def initialize(options = {})
-      options = {:format => ", "}.merge(options)
-      @format = options[:format]
+      default_format = ", "
+      options = {:format => default_format}.merge(options)
+      
+      if options[:format] =~ /^\s*,\s*$/m
+        @format = options[:format]
+      else
+        @format = default_format
+      end
       
       super()
     end
