@@ -54,7 +54,7 @@ module Stylish
     end
     
     def join
-      Selectors.superclass.instance_method(:join).bind(self).call(@format)
+      self.class.superclass.instance_method(:join).bind(self).call(@format)
     end
   end
   
