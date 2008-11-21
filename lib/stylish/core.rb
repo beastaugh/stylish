@@ -3,10 +3,9 @@ module Stylish
   class Rule
     attr_accessor :selectors, :declarations
     
-    def initialize(selectors, declarations, options = {})
-      options = {:format => "%s {%s}"}.merge(options)
-      @format = options[:format]
-      
+    FORMAT = "%s {%s}"
+    
+    def initialize(selectors, declarations)
       if selectors.is_a? String
         @selectors = selectors.strip.split(/\s*,\s*/).
           inject(Selectors.new) {|m, s| m << Selector.new(s) }
@@ -24,7 +23,7 @@ module Stylish
     end
     
     def to_s
-      sprintf(@format, @selectors.join, @declarations.join(" "))
+      sprintf(FORMAT, @selectors.join, @declarations.join(" "))
     end
   end
   
@@ -40,38 +39,24 @@ module Stylish
   end
   
   class Selectors < Array
-    
-    def initialize(options = {})
-      default_format = ", "
-      options = {:format => default_format}.merge(options)
-      
-      if options[:format] =~ /^\s*,\s*$/m
-        @format = options[:format]
-      else
-        @format = default_format
-      end
-      
-      super()
-    end
+    FORMAT = ", "
     
     def join
-      Array.instance_method(:join).bind(self).call(@format)
+      Array.instance_method(:join).bind(self).call(FORMAT)
     end
   end
   
   class Declaration
     attr_accessor :property, :value
     
-    def initialize(property, value, options = {})
-      options = {:format => "%s:%s;"}.merge(options)
-      @format = options[:format]
-      
-      @property = property
-      @value = value
+    FORMAT = "%s:%s;"
+    
+    def initialize(property, value)
+      @property, @value = property, value
     end
     
     def to_s
-      sprintf(@format, @property, @value)
+      sprintf(FORMAT, @property, @value)
     end
   end
   
