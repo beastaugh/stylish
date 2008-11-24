@@ -47,12 +47,25 @@ module Stylish
   end
   
   class Declaration
-    attr_accessor :property, :value
+    attr_accessor :value
     
     FORMAT = "%s:%s;"
+    SHORTHANDS = {
+      :bgcolor => "background-color",
+      :bdcolor => "border-color"
+    }
     
-    def initialize(property, value)
-      @property, @value = property, value
+    def initialize(prop, val)
+      @value = val
+      self.property = prop
+    end
+    
+    def property
+      @property
+    end
+    
+    def property=(prop)
+      @property = (SHORTHANDS.has_key?(prop)) ? SHORTHANDS[prop] : prop
     end
     
     def to_s
