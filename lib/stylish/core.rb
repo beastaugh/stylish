@@ -59,7 +59,7 @@ module Stylish
       :bdcolor => "border-color"
     }
     
-    def initialize(prop, val)
+    def initialize(prop, val = nil)
       @value = val
       self.property = prop
     end
