@@ -44,7 +44,7 @@ module Stylish
     def join
       Array.instance_method(:join).bind(self).call(FORMAT)
     end
-
+    
     def to_s
       self.join
     end
@@ -69,7 +69,7 @@ module Stylish
     end
     
     def property=(prop)
-      @property = (SHORTHANDS.has_key?(prop)) ? SHORTHANDS[prop] : prop
+      @property = (SHORTHANDS.has_key?(prop)) ? SHORTHANDS[prop] : prop.to_s
     end
     
     def to_s
