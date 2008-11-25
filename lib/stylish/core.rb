@@ -44,6 +44,10 @@ module Stylish
     def join
       Array.instance_method(:join).bind(self).call(FORMAT)
     end
+
+    def to_s
+      self.join
+    end
   end
   
   class Declaration
