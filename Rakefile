@@ -2,8 +2,11 @@ require 'lib/stylish'
 
 desc "Run the Stylish test suite"
 task :test do
-  load 'test/declaration_test.rb'
-  load 'test/selector_test.rb'
-  load 'test/selectors_test.rb'
-  load 'test/rule_test.rb'
+  testdir = "test"
+  Dir.foreach(testdir) do |f|
+    path = "#{testdir}/#{f}"
+    if File.ftype(path) == "file" && File.basename(f).match(/_test.rb$/)
+      load path
+    end
+  end
 end
