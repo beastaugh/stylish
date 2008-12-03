@@ -1,5 +1,24 @@
 module Stylish
   
+  class Stylesheet
+    attr_accessor :rules
+    
+    FORMAT = "\n"
+    
+    def initialize(&block)
+      @rules = []
+      self.instance_eval(&block)
+    end
+    
+    def rule(selectors = nil, declarations = nil)
+      @rules << Rule.new(selectors, declarations)
+    end
+    
+    def to_s
+      @rules.map {|r| r.to_s }.join(FORMAT)
+    end
+  end
+  
   class Rule
     attr_accessor :selectors, :declarations
     
@@ -16,6 +35,11 @@ module Stylish
       if declarations.is_a? String
         @declarations = declarations.strip.scan(/([a-z\-]+):(.+?);/).map do |p, v|
           Declaration.new(p, v)
+        end
+      elsif declarations.is_a? Hash
+        @declarations = []
+        declarations.each do |p, v|
+          @declarations << Declaration.new(p, v)
         end
       else
         @declarations = declarations
