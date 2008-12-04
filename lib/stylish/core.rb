@@ -5,9 +5,9 @@ module Stylish
     
     FORMAT = "\n"
     
-    def initialize(&block)
+    def initialize(selectors = nil, declarations = nil, &block)
       @rules = []
-      self.instance_eval(&block)
+      Description.new(self, selectors, declarations).instance_eval(&block) if block
     end
     
     def rule(selectors = nil, declarations = nil)
@@ -16,6 +16,22 @@ module Stylish
     
     def to_s
       @rules.map {|r| r.to_s }.join(FORMAT)
+    end
+    
+    class Description
+      def initialize(sheet = nil, selectors = nil, declarations = nil)
+        @sheet = sheet || Stylesheet.new
+        @selectors = selectors
+      end
+      
+      def rule(selectors = nil, declarations = nil, &block)
+        return unless selectors || declarations
+        selectors.strip.split(/\s*,\s*/).each do |s|
+          selector = (@selectors) ? "#{@selectors} #{s}" : s
+          @sheet.rule(selector, declarations)
+          self.class.new(@sheet, selector, declarations).instance_eval(&block) if block
+        end
+      end
     end
   end
   
@@ -46,7 +62,7 @@ module Stylish
     end
     
     def to_s
-      sprintf(FORMAT, @selectors.join, @declarations.join(" "))
+      sprintf(FORMAT, @selectors.join, (@declarations) ? @declarations.join(" ") : "")
     end
   end
   
