@@ -37,9 +37,8 @@ module Stylish
           Declaration.new(p, v)
         end
       elsif declarations.is_a? Hash
-        @declarations = []
-        declarations.each do |p, v|
-          @declarations << Declaration.new(p, v)
+        @declarations = declarations.to_a.map do |d|
+          Declaration.new(d[0], d[1])
         end
       else
         @declarations = declarations
