@@ -1,11 +1,13 @@
 module Stylish
   
   class Stylesheet
+    include Formattable
+    
     attr_accessor :rules
     
-    FORMAT = "\n"
-    
     def initialize(selectors = nil, declarations = nil, &block)
+      accept_format(/\s*/m, "\n")
+      
       @rules = []
       Description.new(self, selectors, declarations).instance_eval(&block) if block
     end
@@ -15,7 +17,7 @@ module Stylish
     end
     
     def to_s
-      @rules.map {|r| r.to_s }.join(FORMAT)
+      @rules.map {|r| r.to_s }.join(@format)
     end
     
     class Description
@@ -36,11 +38,13 @@ module Stylish
   end
   
   class Rule
+    include Formattable
+    
     attr_accessor :selectors, :declarations
     
-    FORMAT = "%s {%s}"
-    
     def initialize(selectors, declarations)
+      accept_format(/^\s*%s\s*\{\s*%s\s*\}\s*$/m, "%s {%s}")
+      
       if selectors.is_a? String
         @selectors = selectors.strip.split(/\s*,\s*/).
           inject(Selectors.new) {|m, s| m << Selector.new(s) }
@@ -62,7 +66,7 @@ module Stylish
     end
     
     def to_s
-      sprintf(FORMAT, @selectors.join, (@declarations) ? @declarations.join(" ") : "")
+      sprintf(@format, @selectors.join, (@declarations) ? @declarations.join(" ") : "")
     end
   end
   
@@ -78,10 +82,15 @@ module Stylish
   end
   
   class Selectors < Array
-    FORMAT = ", "
+    include Formattable
+        
+    def initialize(*args)
+      accept_format(/^\s*,\s*$/m, ", ")
+      super
+    end
     
     def join
-      super(FORMAT)
+      super(@format)
     end
     
     def to_s
@@ -90,15 +99,17 @@ module Stylish
   end
   
   class Declaration
+    include Formattable
+    
     attr_accessor :value
     
-    FORMAT = "%s:%s;"
     SHORTHANDS = {
       :bgcolor => "background-color",
       :bdcolor => "border-color"
     }
     
     def initialize(prop, val = nil)
+      accept_format(/^\s*%s\s*:\s*%s;\s*$/m, "%s:%s;")
       @value = val
       self.property = prop
     end
@@ -112,7 +123,7 @@ module Stylish
     end
     
     def to_s
-      sprintf(FORMAT, @property, @value)
+      sprintf(@format, @property, @value)
     end
   end
   

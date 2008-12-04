@@ -4,6 +4,7 @@ require 'rubygems'
 require 'find'
 require 'erb'
 
+require 'stylish/formattable'
 require 'stylish/core'
 require 'stylish/generator'
 require 'stylish/doc'
