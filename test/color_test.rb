@@ -28,4 +28,14 @@ class ColorTest < Test::Unit::TestCase
     end
   end
   
+  def test_hex_to_string
+    assert_equal('#999', Stylish::Color.new('#999').to_s)
+    assert_equal('#ccc', Stylish::Color.new('CCC').to_s)
+  end
+  
+  def test_keyword_to_string
+    assert_equal('#008000', Stylish::Color.new(:green).to_s)
+    assert_equal('#ffff00', Stylish::Color.new(:yellow).to_s)
+  end
+  
 end
