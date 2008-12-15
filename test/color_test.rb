@@ -5,7 +5,7 @@ class ColorTest < Test::Unit::TestCase
   
   def test_keywords
     red = Stylish::Color.new(:red)
-    assert_equal("#ff0000", red.to_s)
+    assert_equal("ff0000", red.value)
   end
   
   def test_valid_hex_values
