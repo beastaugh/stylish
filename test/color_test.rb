@@ -12,8 +12,8 @@ class ColorTest < Test::Unit::TestCase
     blue = Stylish::Color.new("#0000FF")
     white = Stylish::Color.new("#FFF")
     
-    assert_equal("#0000ff", blue.to_s)
-    assert_equal("#fff", white.to_s)
+    assert_equal("0000ff", blue.value)
+    assert_equal("fff", white.value)
   end
   
   def test_nonexistent_keywords
