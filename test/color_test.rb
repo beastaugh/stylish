@@ -3,17 +3,27 @@ require './lib/stylish'
 
 class ColorTest < Test::Unit::TestCase
   
-  def test_keywords
-    red = Stylish::Color.new(:red)
-    assert_equal("ff0000", red.value)
+  def setup
+    @red = Stylish::Color.new(:red)
+    @green = Stylish::Color.new(:green)
+    @blue = Stylish::Color.new("#0000FF")
+    @white = Stylish::Color.new("#FFF")
+  end
+  
+  def test_real_keywords
+    assert_equal("ff0000", @red.value)
+    assert_equal(:keyword, @red.type)
+    
+    assert_equal("008000", @green.value)
+    assert_equal(:keyword, @green.type)
   end
   
   def test_valid_hex_values
-    blue = Stylish::Color.new("#0000FF")
-    white = Stylish::Color.new("#FFF")
+    assert_equal("0000ff", @blue.value)
+    assert_equal(:hex, @blue.type)
     
-    assert_equal("0000ff", blue.value)
-    assert_equal("fff", white.value)
+    assert_equal("fff", @white.value)
+    assert_equal(:hex, @white.type)
   end
   
   def test_nonexistent_keywords
@@ -34,7 +44,7 @@ class ColorTest < Test::Unit::TestCase
   end
   
   def test_keyword_to_string
-    assert_equal('#008000', Stylish::Color.new(:green).to_s)
+    assert_equal('#008000', @green.to_s)
     assert_equal('#ffff00', Stylish::Color.new(:yellow).to_s)
   end
   

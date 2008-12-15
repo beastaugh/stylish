@@ -140,6 +140,8 @@ module Stylish
   end
   
   class Color
+    attr_reader :type
+    
     TYPES = [:keyword, :hex, :rgb]
     
     VALID_HEX_COLOR = /^#?([\da-fA-F]{3}){1,2}$/
@@ -169,7 +171,11 @@ module Stylish
     end
     
     def to_s
-      "#" + @value
+      if @type == :rgb
+        "rgb(#{@value.join(",")})"
+      else
+        "#" + @value
+      end
     end
     
     def value
@@ -179,7 +185,7 @@ module Stylish
     def value=(val)
       TYPES.each do |type|
         @value = self.send(('parse_' + type.to_s).to_sym, val)
-        return unless @value.nil?
+        @type = type and return unless @value.nil?
       end
       
       raise ArgumentError, "Value is not a valid keyword or color hex value."
@@ -196,7 +202,8 @@ module Stylish
     end
     
     def parse_rgb(val)
-      nil
+      rgb = []
+      return (rgb.length > 0) ? rgb : nil
     end
   end
   
