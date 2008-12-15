@@ -139,4 +139,60 @@ module Stylish
     end
   end
   
+  class Color
+    KEYWORDS = {
+      :aqua => "00ffff",
+      :black => "000",
+      :blue => "0000ff",
+      :fuchsia => "ff00ff",
+      :gray => "808080",
+      :green => "008000",
+      :lime => "00ff00",
+      :maroon => "800000",
+      :navy => "000080",
+      :olive => "808000",
+      :orange => "ffA500",
+      :purple => "800080",
+      :red => "ff0000",
+      :silver => "c0c0c0",
+      :teal => "008080",
+      :white => "fff",
+      :yellow => "ffff00"
+    }
+    
+    VALID_COLOR_HEX = /^#([\da-fA-F]{3}){1,2}$/
+    
+    def initialize(value)
+      self.value = value
+    end
+    
+    def to_s
+      "#" + @value
+    end
+    
+    def value
+      @value
+    end
+    
+    def value=(val)
+      if self.class.keyword? val
+        @value = KEYWORDS[val]
+      elsif self.class.hex_value? val
+        @value = val.downcase[1..-1]
+      else
+        raise ArgumentError, "Value is not a valid keyword or color hex value."
+      end
+    end
+    
+    private
+    
+    def self.keyword?(code)
+      return !KEYWORDS[code].nil?
+    end
+    
+    def self.hex_value?(value)
+      value =~ VALID_COLOR_HEX
+    end
+  end
+  
 end
