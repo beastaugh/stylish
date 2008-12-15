@@ -140,6 +140,10 @@ module Stylish
   end
   
   class Color
+    TYPES = [:keyword, :hex, :rgb]
+    
+    VALID_HEX_COLOR = /^#?([\da-fA-F]{3}){1,2}$/
+    
     KEYWORDS = {
       :aqua => "00ffff",
       :black => "000",
@@ -160,8 +164,6 @@ module Stylish
       :yellow => "ffff00"
     }
     
-    VALID_COLOR_HEX = /^#([\da-fA-F]{3}){1,2}$/
-    
     def initialize(value)
       self.value = value
     end
@@ -175,23 +177,26 @@ module Stylish
     end
     
     def value=(val)
-      if self.class.keyword? val
-        @value = KEYWORDS[val]
-      elsif self.class.hex_value? val
-        @value = val.downcase[1..-1]
-      else
-        raise ArgumentError, "Value is not a valid keyword or color hex value."
+      TYPES.each do |type|
+        @value = self.send(('parse_' + type.to_s).to_sym, val)
+        return unless @value.nil?
       end
+      
+      raise ArgumentError, "Value is not a valid keyword or color hex value."
     end
     
     private
     
-    def self.keyword?(code)
-      return !KEYWORDS[code].nil?
+    def parse_keyword(code)
+      KEYWORDS[code]
     end
     
-    def self.hex_value?(value)
-      value =~ VALID_COLOR_HEX
+    def parse_hex(val)
+      val.sub(/^#/, "").downcase if val =~ VALID_HEX_COLOR
+    end
+    
+    def parse_rgb(val)
+      nil
     end
   end
   
