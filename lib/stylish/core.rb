@@ -5,8 +5,12 @@ module Stylish
     
     attr_accessor :rules
     
-    def initialize(selectors = nil, declarations = nil, &block)
+    def initialize(selectors = nil, declarations = nil, options = {}, &block)
       accept_format(/\s*/m, "\n")
+      
+      options = {:images => ''}.merge(options)
+      
+      @images_path = Pathname.new(options[:images])
       
       @rules = []
       Description.new(self, selectors, declarations).instance_eval(&block) if block
@@ -16,10 +20,14 @@ module Stylish
       @rules << Rule.new(selectors, declarations)
     end
     
+    def image(path)
+      "url('#{(@images_path + path).to_s}')"
+    end
+    
     def to_s
       @rules.map {|r| r.to_s }.join(@format)
     end
-    
+        
     class Description
       def initialize(sheet = nil, selectors = nil, declarations = nil)
         @sheet = sheet || Stylesheet.new
@@ -33,6 +41,10 @@ module Stylish
           @sheet.rule(selector, declarations)
           self.class.new(@sheet, selector, declarations).instance_eval(&block) if block
         end
+      end
+      
+      def image(path)
+        @sheet.image(path)
       end
     end
   end

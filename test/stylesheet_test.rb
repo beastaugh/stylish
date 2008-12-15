@@ -44,5 +44,12 @@ class StylesheetTest < Test::Unit::TestCase
     assert_not_nil(flattened.index(".section p {font-weight:normal; margin-bottom:1em;}"))
     assert_not_nil(flattened.index(".section h3 {font-weight:bold;}"))
   end
-
+  
+  def test_image_paths
+    style = Stylish::Stylesheet.new(nil, nil, :images => '/public/images/') do
+      rule ".header", "background-image" => image("test.png")
+    end
+    
+    assert_equal("url('/public/images/test.png')", style.rules[0].declarations[0].value)
+  end
 end
