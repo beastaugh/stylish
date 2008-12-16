@@ -69,4 +69,9 @@ class ColorTest < Test::Unit::TestCase
     assert_equal('#ffff00', Stylish::Color.new(:yellow).to_s)
   end
   
+  def test_rgb_to_string
+    assert_equal("rgb(0, 0, 255)", @yellow.to_s)
+    assert_equal("rgb(100%, 50%, 0)", Stylish::Color.new("rgb(100%, 50%, -0)").to_s)
+  end
+  
 end

@@ -172,7 +172,7 @@ module Stylish
     
     def to_s
       if @type == :rgb
-        "rgb(#{@value.join(",")})"
+        "rgb(#{@value * ", "})"
       else
         "#" + @value
       end
