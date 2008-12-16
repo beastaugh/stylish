@@ -27,7 +27,7 @@ module Stylish
     def to_s
       @rules.map {|r| r.to_s }.join(@format)
     end
-        
+    
     class Description
       def initialize(sheet = nil, selectors = nil, declarations = nil)
         @sheet = sheet || Stylesheet.new
