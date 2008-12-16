@@ -188,7 +188,7 @@ module Stylish
         @type = type and return unless @value.nil?
       end
       
-      raise ArgumentError, "Value is not a valid keyword or color hex value."
+      raise ArgumentError, "Value is not a valid keyword, hex or RGB color value."
     end
     
     private
@@ -202,8 +202,30 @@ module Stylish
     end
     
     def parse_rgb(val)
-      rgb = []
-      return (rgb.length > 0) ? rgb : nil
+      if val.is_a? String
+        val = val.scan(/-?\d{1,3}%?/)
+        return if val.nil?
+      end
+      
+      def percentage?(item)
+        item.to_s =~ /^\d{1,3}%$/ && item.chop.to_i <= 100
+      end
+      
+      def less_than_256?(item)
+        item.to_s =~ /^-?\d{1,3}$/ && item.to_i < 256
+      end
+      
+      rgb = val[0..2].inject([]) do |memo, v|
+        if less_than_256?(v)
+          v = v.to_i
+        elsif !percentage?(v)
+          return
+        end
+        
+        memo << v
+      end
+      
+      return (rgb.to_a.length == 3) ? rgb : nil
     end
   end
   
