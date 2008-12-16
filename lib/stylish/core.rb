@@ -37,7 +37,7 @@ module Stylish
       def rule(selectors = nil, declarations = nil, &block)
         return unless selectors || declarations
         selectors.strip.split(/\s*,\s*/).each do |s|
-          selector = (@selectors) ? "#{@selectors} #{s}" : s
+          selector = @selectors ? "#{@selectors} #{s}" : s
           @sheet.rule(selector, declarations)
           self.class.new(@sheet, selector, declarations).instance_eval(&block) if block
         end
@@ -78,7 +78,7 @@ module Stylish
     end
     
     def to_s
-      sprintf(@format, @selectors.join, (@declarations) ? @declarations.join(" ") : "")
+      sprintf(@format, @selectors.join, @declarations ? @declarations.join(" ") : "")
     end
   end
   
@@ -131,7 +131,7 @@ module Stylish
     end
     
     def property=(prop)
-      @property = (SHORTHANDS.has_key?(prop)) ? SHORTHANDS[prop] : prop.to_s
+      @property = SHORTHANDS.has_key?(prop) ? SHORTHANDS[prop] : prop.to_s
     end
     
     def to_s
@@ -225,7 +225,7 @@ module Stylish
         memo << v
       end
       
-      return (rgb.to_a.length == 3) ? rgb : nil
+      return rgb.to_a.length == 3 ? rgb : nil
     end
   end
   
