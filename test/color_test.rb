@@ -9,6 +9,11 @@ class ColorTest < Test::Unit::TestCase
     @blue = Stylish::Color.new("#0000FF")
     @white = Stylish::Color.new("#FFF")
     @yellow = Stylish::Color.new([0, 0, 255])
+    @inherit = Stylish::Color.new("inherit")
+  end
+  
+  def test_inherit
+    assert_equal("inherit", @inherit.value)
   end
   
   def test_real_keywords
@@ -61,6 +66,10 @@ class ColorTest < Test::Unit::TestCase
     assert_raise ArgumentError do
       Stylish::Color.new("128, 128")
     end
+  end
+  
+  def test_inherit_to_string
+    assert_equal("inherit", @inherit.to_s)
   end
   
   def test_hex_to_string

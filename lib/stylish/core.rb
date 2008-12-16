@@ -142,7 +142,7 @@ module Stylish
   class Color
     attr_reader :type
     
-    TYPES = [:keyword, :hex, :rgb]
+    TYPES = [:inherit, :keyword, :hex, :rgb]
     
     VALID_HEX_COLOR = /^#?([\da-fA-F]{3}){1,2}$/
     
@@ -171,7 +171,9 @@ module Stylish
     end
     
     def to_s
-      if @type == :rgb
+      if @type == :inherit
+        @value
+      elsif @type == :rgb
         "rgb(#{@value * ", "})"
       else
         "#" + @value
@@ -193,6 +195,10 @@ module Stylish
     
     private
     
+    def parse_inherit(val)
+      val if val == "inherit"
+    end
+
     def parse_keyword(code)
       KEYWORDS[code]
     end
