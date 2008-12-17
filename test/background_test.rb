@@ -32,6 +32,10 @@ class BackgroundTest < Test::Unit::TestCase
     assert_equal("center", @composite.position[1])
   end
   
+  def test_valid_compression
+    assert(Stylish::Background.new(:compressed => true))
+  end
+  
   def test_valid_background_attachments
     assert_equal("scroll", @composite.attachment)
     assert_equal("fixed", Stylish::Background.new(:attachment => "fixed").attachment)
@@ -60,5 +64,11 @@ class BackgroundTest < Test::Unit::TestCase
   def test_valid_background_attachments
     assert_nil(Stylish::Background.new(:attachment => "static").attachment)
     assert_nil(Stylish::Background.new(:attachment => "unhooked").attachment)
+  end
+  
+  def test_invalid_compression
+    assert_equal(false, Stylish::Background.new(:compressed => "true").compressed)
+    assert_equal(false, Stylish::Background.new(:compressed => "false").compressed)
+    assert_nil(Stylish::Background.new(:compressed => nil).compressed)
   end
 end

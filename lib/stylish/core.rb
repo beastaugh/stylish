@@ -241,7 +241,8 @@ module Stylish
       :image => "background-image",
       :repeat => "background-repeat",
       :position => "background-position",
-      :attachment => "background-attachment"
+      :attachment => "background-attachment",
+      :compressed => false
     }
     
     REPEAT_VALUES = ["repeat", "repeat-x", "repeat-y", "no-repeat"]
@@ -282,6 +283,19 @@ module Stylish
     
     def attachment=(val)
       @attachment = val if ATTACHMENT_VALUES.include?(val)
+    end
+    
+    # Set this to true to generate a compressed declaration, e.g.
+    #
+    #     background:#ccc url('bg.png') no-repeat 0 0;
+    #
+    # As opposed to the uncompressed version:
+    #
+    #     background-color:#ccc; background-image:url('bg.png');
+    #     background-repeat:no-repeat; background-position:0 0;
+    #
+    def compressed=(val)
+      @compressed = (val == true) ? true : false
     end
   end
   
