@@ -190,7 +190,7 @@ module Stylish
         @type = type and return unless @value.nil?
       end
       
-      raise ArgumentError, "Value is not a valid keyword, hex or RGB color value."
+      raise ArgumentError, "#{val} is not a valid keyword, hex or RGB color value."
     end
     
     private
@@ -198,7 +198,7 @@ module Stylish
     def parse_inherit(val)
       val if val == "inherit"
     end
-
+    
     def parse_keyword(code)
       KEYWORDS[code]
     end
@@ -232,6 +232,56 @@ module Stylish
       end
       
       return rgb.to_a.length == 3 ? rgb : nil
+    end
+  end
+  
+  class Background
+    PROPERTIES = {
+      :color => "background-color",
+      :image => "background-image",
+      :repeat => "background-repeat",
+      :position => "background-position",
+      :attachment => "background-attachment"
+    }
+    
+    REPEAT_VALUES = ["repeat", "repeat-x", "repeat-y", "no-repeat"]
+    ATTACHMENT_VALUES = ["scroll", "fixed", "inherit"]
+    HORIZONTAL_POSITIONS = ["left", "center", "right"]
+    VERTICAL_POSITIONS = ["top", "center", "bottom"]
+    
+    def initialize(options)
+      PROPERTIES.each_key do |name|
+        self.class.send(:attr_reader, name)
+        if options[name]
+          self.send((name.to_s + '=').to_sym, options[name])
+        end
+      end
+    end
+    
+    # Input validation for colours is handled by the Color class, which will
+    # raise an ArgumentError if the argument is an invalid colour value.
+    def color=(val)
+      @color = Color.new(val)
+    end
+    
+    def image=(path)
+      @image = path if path.is_a?(String) || path.is_a?(File)
+    end
+    
+    def repeat=(val)
+      @repeat = val if REPEAT_VALUES.include?(val)
+    end
+    
+    # Only position keywords are currently handled, not percentages or lengths.
+    def position=(val)
+      xpos, ypos = val.split(/\s+/) << "center"
+      if HORIZONTAL_POSITIONS.include?(xpos) && VERTICAL_POSITIONS.include?(ypos)
+        @position = [xpos, ypos]
+      end
+    end
+    
+    def attachment=(val)
+      @attachment = val if ATTACHMENT_VALUES.include?(val)
     end
   end
   
