@@ -242,7 +242,8 @@ module Stylish
       :repeat => "background-repeat",
       :position => "background-position",
       :attachment => "background-attachment",
-      :compressed => false
+      :transparent => nil,
+      :compressed => nil
     }
     
     REPEAT_VALUES = ["repeat", "repeat-x", "repeat-y", "no-repeat"]
@@ -253,7 +254,7 @@ module Stylish
     def initialize(options)
       PROPERTIES.each_key do |name|
         self.class.send(:attr_reader, name)
-        if options[name]
+        unless options[name].nil?
           self.send((name.to_s + '=').to_sym, options[name])
         end
       end
@@ -263,6 +264,10 @@ module Stylish
     # raise an ArgumentError if the argument is an invalid colour value.
     def color=(val)
       @color = Color.new(val)
+    end
+    
+    def transparent=(val)
+      @transparent = val if val === true || val == false
     end
     
     def image=(path)

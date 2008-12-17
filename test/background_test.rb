@@ -14,6 +14,11 @@ class BackgroundTest < Test::Unit::TestCase
     assert_equal("000", Stylish::Background.new(:color => :black).color.value)
   end
   
+  def test_background_transparencies
+    assert(Stylish::Background.new(:transparent => true).transparent)
+    assert_equal(false, Stylish::Background.new(:transparent => false).transparent)
+  end
+  
   def test_valid_image_values
     assert_equal("images/test.png", @composite.image)
     assert_equal("background.jpg", Stylish::Background.new(:image => "background.jpg").image)
@@ -45,6 +50,11 @@ class BackgroundTest < Test::Unit::TestCase
     assert_raise ArgumentError do
       Stylish::Background.new(:color => 'sky-blue')
     end
+  end
+  
+  def test_invalid_background_transparencies
+    assert_nil(Stylish::Background.new(:transparent => "true").transparent)
+    assert_nil(Stylish::Background.new(:transparent => nil).transparent)
   end
   
   def test_invalid_image_values
