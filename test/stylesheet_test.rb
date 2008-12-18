@@ -52,4 +52,15 @@ class StylesheetTest < Test::Unit::TestCase
     
     assert_equal("url('/public/images/test.png')", style.rules[0].declarations[0].value)
   end
+  
+  def test_backgrounds
+    style = Stylish::Stylesheet.new do
+      rule "#wrapper", background(:color => "red", :image => "background.jpg")
+      rule "#header", background(:color => "red", :image => "background.jpg", :repeat => "no-repeat", :position => "left top", :compressed => true)
+    end
+    
+    assert(style.rules[1].declarations.compressed)
+    assert_equal("#wrapper {background-color:#ff0000; background-image:url('background.jpg');}", style.rules[0].to_s)
+    assert_equal("#header {background:#ff0000 url('background.jpg') no-repeat left top;}", style.rules[1].to_s)
+  end
 end

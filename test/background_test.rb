@@ -7,6 +7,7 @@ class BackgroundTest < Test::Unit::TestCase
     @composite = Stylish::Background.new(:color => "#CCC",
       :image => "images/test.png", :repeat => "no-repeat",
       :position => "left", :attachment => "scroll")
+    @transparent = Stylish::Background.new(:transparent => true)
   end
   
   def test_valid_background_colors
@@ -15,11 +16,11 @@ class BackgroundTest < Test::Unit::TestCase
   end
   
   def test_background_transparencies
-    assert(Stylish::Background.new(:transparent => true).transparent)
-    assert_equal(false, Stylish::Background.new(:transparent => false).transparent)
+    assert(@transparent.transparent)
+    assert_equal("transparent", @transparent.color)
   end
   
-  def test_valid_image_values
+  def test_valid_background_images
     assert_equal("images/test.png", @composite.image)
     assert_equal("background.jpg", Stylish::Background.new(:image => "background.jpg").image)
     File.open(__FILE__) do |file|
@@ -53,6 +54,7 @@ class BackgroundTest < Test::Unit::TestCase
   end
   
   def test_invalid_background_transparencies
+    assert_nil(Stylish::Background.new(:transparent => false).transparent)
     assert_nil(Stylish::Background.new(:transparent => "true").transparent)
     assert_nil(Stylish::Background.new(:transparent => nil).transparent)
   end
@@ -71,14 +73,24 @@ class BackgroundTest < Test::Unit::TestCase
     assert_nil(Stylish::Background.new(:position => "top").position)
   end
   
-  def test_valid_background_attachments
+  def test_invalid_background_attachments
     assert_nil(Stylish::Background.new(:attachment => "static").attachment)
     assert_nil(Stylish::Background.new(:attachment => "unhooked").attachment)
   end
   
   def test_invalid_compression
-    assert_equal(false, Stylish::Background.new(:compressed => "true").compressed)
-    assert_equal(false, Stylish::Background.new(:compressed => "false").compressed)
+    assert_nil(Stylish::Background.new(:compressed => "true").compressed)
+    assert_nil(Stylish::Background.new(:compressed => "false").compressed)
     assert_nil(Stylish::Background.new(:compressed => nil).compressed)
+  end
+  
+  def test_colors_with_transparency
+    @confused = Stylish::Background.new(:color => :red, :transparent => true)
+    assert(@confused.transparent)
+    assert_equal("transparent", @confused.color)
+    
+    @confused.transparent = false
+    assert(!@confused.transparent)
+    assert_instance_of(Stylish::Color, @confused.color)
   end
 end

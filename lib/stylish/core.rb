@@ -20,12 +20,13 @@ module Stylish
       @rules << Rule.new(selectors, declarations)
     end
     
-    def background(*args)
-      Background.new(*args)
+    def background(options)
+      options.merge! :image => image(options[:image])
+      Background.new(options)
     end
     
     def image(path)
-      "url('#{(@images_path + path).to_s}')"
+      "url('#{(@images_path + path).to_s}')" if path
     end
     
     def to_s
@@ -51,8 +52,8 @@ module Stylish
         @sheet.image(path)
       end
       
-      def background(*args)
-        @sheet.background(*args)
+      def background(options)
+        @sheet.background(options)
       end
     end
   end
@@ -208,6 +209,7 @@ module Stylish
     end
     
     def parse_keyword(code)
+      code = code.to_sym if code.is_a? String
       KEYWORDS[code]
     end
     
@@ -244,15 +246,23 @@ module Stylish
   end
   
   class Background
-    PROPERTIES = {
-      :color => "background-color",
-      :image => "background-image",
-      :repeat => "background-repeat",
-      :position => "background-position",
-      :attachment => "background-attachment",
-      :transparent => nil,
-      :compressed => nil
-    }
+    attr_reader :image,
+                :repeat,
+                :position,
+                :attachment,
+                :transparent,
+                :compressed
+    
+    PROPERTIES = [
+      [:color, "background-color"],
+      [:image, "background-image"],
+      [:repeat, "background-repeat"],
+      [:position, "background-position"],
+      [:attachment, "background-attachment"],
+      [:transparent],
+      [:compressed]
+    ]
+    
     
     REPEAT_VALUES = ["repeat", "repeat-x", "repeat-y", "no-repeat"]
     ATTACHMENT_VALUES = ["scroll", "fixed", "inherit"]
@@ -260,16 +270,16 @@ module Stylish
     VERTICAL_POSITIONS = ["top", "center", "bottom"]
     
     def initialize(options)
-      PROPERTIES.each_key do |name|
-        self.class.send(:attr_reader, name)
-        unless options[name].nil?
+      PROPERTIES.each do |name, property|
+        if options[name]
           self.send((name.to_s + '=').to_sym, options[name])
         end
       end
     end
     
     def color
-      @color ? @color : @transparent ? "transparent" : nil
+      return "transparent" if @transparent
+      @color
     end
     
     # Input validation for colours is handled by the Color class, which will
@@ -279,7 +289,7 @@ module Stylish
     end
     
     def transparent=(val)
-      @transparent = val if val === true || val == false
+      @transparent = val == true || nil
     end
     
     def image=(path)
@@ -312,7 +322,7 @@ module Stylish
     #     background-repeat:no-repeat; background-position:0 0;
     #
     def compressed=(val)
-      @compressed = (val == true) ? true : false
+      @compressed = val == true || nil
     end
     
     def join(str = "")
@@ -320,7 +330,7 @@ module Stylish
     end
     
     def to_s
-      declarations = PROPERTIES.to_a.reject {|name, property|
+      declarations = PROPERTIES.reject {|name, property|
         property.nil?
       }.map {|name, property|
         value = self.send(name)
@@ -330,7 +340,7 @@ module Stylish
       if @compressed
         "background:#{declarations.map {|p, v| v }.compact.join(" ")};"
       else
-        declarations.map {|p, v| "#{p}:#{v};" }.join(" ")
+        declarations.map {|p, v| "#{p}:#{v.to_s};" }.join(" ")
       end
     end
   end
