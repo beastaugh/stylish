@@ -12,7 +12,7 @@ class SelectorsTest < Test::Unit::TestCase
   end
   
   def test_join
-    assert_equal(".test_1, .test_2, .test_3", @ss.to_s)
+    assert_equal(".test_1, .test_2, .test_3", @ss.join)
   end
   
   def test_to_string

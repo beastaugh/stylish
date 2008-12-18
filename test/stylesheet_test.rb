@@ -25,7 +25,7 @@ class StylesheetTest < Test::Unit::TestCase
         
     assert_equal(9, style.rules.length)
     assert_equal(".header {display:block;}", style.rules[0].to_s)
-    assert_equal(".namespace .header {color:#0000FF;}", style.rules[4].to_s)
+    assert_equal(".namespace .header {color:#0000ff;}", style.rules[4].to_s)
     
     style.rules.each do |rule|
       assert_instance_of(Stylish::Rule, rule)
@@ -56,10 +56,11 @@ class StylesheetTest < Test::Unit::TestCase
   def test_backgrounds
     style = Stylish::Stylesheet.new do
       rule "#wrapper", background(:color => "red", :image => "background.jpg")
-      rule "#header", background(:color => "red", :image => "background.jpg", :repeat => "no-repeat", :position => "left top", :compressed => true)
+      rule "#header", background(:color => "red", :image => "background.jpg",
+        :repeat => "no-repeat", :position => "left top", :compressed => true)
     end
     
-    assert(style.rules[1].declarations.compressed)
+    assert(style.rules[1].declarations[0].compressed)
     assert_equal("#wrapper {background-color:#ff0000; background-image:url('background.jpg');}", style.rules[0].to_s)
     assert_equal("#header {background:#ff0000 url('background.jpg') no-repeat left top;}", style.rules[1].to_s)
   end
@@ -69,6 +70,6 @@ class StylesheetTest < Test::Unit::TestCase
       rule ".content", background(:image => "wallpaper.gif", :repeat => "repeat")
     end
     
-    assert_equal("url('/public/images/wallpaper.gif')", style.rules[0].declarations.image)
+    assert_equal("url('/public/images/wallpaper.gif')", style.rules[0].declarations[0].image)
   end
 end

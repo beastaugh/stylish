@@ -73,21 +73,27 @@ module Stylish
         @selectors = selectors
       end
       
+      if declarations.is_a? Declarations
+        @declarations = declarations and return
+      elsif declarations.is_a? Background
+        @declarations = Declarations.new << declarations and return
+      end
+      
       if declarations.is_a? String
-        @declarations = declarations.strip.scan(/([a-z\-]+):(.+?);/).map do |p, v|
-          Declaration.new(p, v)
+        declarations = declarations.strip.scan(/([a-z\-]+):(.+?);/)
+      elsif declarations.is_a?(Hash) || declarations.is_a?(Array)
+        declarations = declarations.to_a
+      end
+      
+      unless declarations.nil?
+        @declarations = declarations.inject(Declarations.new) do |m, d|
+          m << Declaration.new(d[0], d[1])
         end
-      elsif declarations.is_a? Hash
-        @declarations = declarations.to_a.map do |d|
-          Declaration.new(d[0], d[1])
-        end
-      else
-        @declarations = declarations
       end
     end
     
     def to_s
-      sprintf(@format, @selectors.join, @declarations ? @declarations.join(" ") : "")
+      sprintf(@format, @selectors.join, @declarations ? @declarations.join : "")
     end
   end
   
@@ -104,7 +110,7 @@ module Stylish
   
   class Selectors < Array
     include Formattable
-        
+    
     def initialize(*args)
       accept_format(/^\s*,\s*$/m, ", ")
       super
@@ -131,7 +137,7 @@ module Stylish
     
     def initialize(prop, val = nil)
       accept_format(/^\s*%s\s*:\s*%s;\s*$/m, "%s:%s;")
-      @value = val
+      self.value = val
       self.property = prop
     end
     
@@ -143,8 +149,30 @@ module Stylish
       @property = SHORTHANDS.has_key?(prop) ? SHORTHANDS[prop] : prop.to_s
     end
     
+    def value=(val)
+      @value = Color.new(val) and return if Color.like?(val)
+      @value = val
+    end
+    
     def to_s
       sprintf(@format, @property, @value)
+    end
+  end
+  
+  class Declarations < Array
+    include Formattable
+    
+    def initialize(*args)
+      accept_format(/^\s*$/m, " ")
+      super
+    end
+    
+    def join
+      super(@format)
+    end
+    
+    def to_s
+      self.join
     end
   end
   
@@ -174,7 +202,7 @@ module Stylish
       :white => "fff",
       :yellow => "ffff00"
     }
-    
+        
     def initialize(value)
       self.value = value
     end
@@ -195,43 +223,43 @@ module Stylish
     
     def value=(val)
       TYPES.each do |type|
-        @value = self.send(('parse_' + type.to_s).to_sym, val)
+        @value = self.class.send(('parse_' + type.to_s).to_sym, val)
         @type = type and return unless @value.nil?
       end
       
       raise ArgumentError, "#{val} is not a valid keyword, hex or RGB color value."
     end
     
+    def self.like?(value)
+      TYPES.each do |type|
+        return true unless self.send(('parse_' + type.to_s).to_sym, value).nil?
+      end
+      
+      false
+    end
+    
     private
     
-    def parse_inherit(val)
+    def self.parse_inherit(val)
       val if val == "inherit"
     end
     
-    def parse_keyword(code)
+    def self.parse_keyword(code)
       code = code.to_sym if code.is_a? String
       KEYWORDS[code]
     end
     
-    def parse_hex(val)
+    def self.parse_hex(val)
       val.sub(/^#/, "").downcase if val =~ VALID_HEX_COLOR
     end
     
-    def parse_rgb(val)
+    def self.parse_rgb(val)
       if val.is_a? String
         val = val.scan(/-?\d{1,3}%?/)
         return if val.nil?
       end
       
-      def percentage?(item)
-        item.to_s =~ /^\d{1,3}%$/ && item.chop.to_i <= 100
-      end
-      
-      def less_than_256?(item)
-        item.to_s =~ /^-?\d{1,3}$/ && item.to_i < 256
-      end
-      
-      rgb = val[0..2].inject([]) do |memo, v|
+      rgb = val.to_a[0..2].inject([]) do |memo, v|
         if less_than_256?(v)
           v = v.to_i
         elsif !percentage?(v)
@@ -242,6 +270,14 @@ module Stylish
       end
       
       return rgb.to_a.length == 3 ? rgb : nil
+    end
+    
+    def self.percentage?(item)
+      item.to_s =~ /^\d{1,3}%$/ && item.chop.to_i <= 100
+    end
+    
+    def self.less_than_256?(item)
+      item.to_s =~ /^-?\d{1,3}$/ && item.to_i < 256
     end
   end
   
