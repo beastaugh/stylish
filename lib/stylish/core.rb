@@ -263,7 +263,6 @@ module Stylish
       [:compressed]
     ]
     
-    
     REPEAT_VALUES = ["repeat", "repeat-x", "repeat-y", "no-repeat"]
     ATTACHMENT_VALUES = ["scroll", "fixed", "inherit"]
     HORIZONTAL_POSITIONS = ["left", "center", "right"]
@@ -330,17 +329,15 @@ module Stylish
     end
     
     def to_s
-      declarations = PROPERTIES.reject {|name, property|
-        property.nil?
-      }.map {|name, property|
-        value = self.send(name)
-        [property.to_s, value] unless value.nil?
+      decs = PROPERTIES.reject {|n, p| p.nil? }.map {|n, p|
+        value = self.send(n)
+        [p.to_s, value] unless value.nil?
       }.compact
       
       if @compressed
-        "background:#{declarations.map {|p, v| v }.compact.join(" ")};"
+        "background:#{decs.map {|p, v| v }.compact.join(" ")};"
       else
-        declarations.map {|p, v| "#{p}:#{v.to_s};" }.join(" ")
+        decs.map {|p, v| "#{p}:#{v.to_s};" }.join(" ")
       end
     end
   end
