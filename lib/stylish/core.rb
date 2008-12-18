@@ -20,6 +20,10 @@ module Stylish
       @rules << Rule.new(selectors, declarations)
     end
     
+    def background(*args)
+      Background.new(*args)
+    end
+    
     def image(path)
       "url('#{(@images_path + path).to_s}')"
     end
@@ -45,6 +49,10 @@ module Stylish
       
       def image(path)
         @sheet.image(path)
+      end
+      
+      def background(*args)
+        @sheet.background(*args)
       end
     end
   end
@@ -260,6 +268,10 @@ module Stylish
       end
     end
     
+    def color
+      @color ? @color : @transparent ? "transparent" : nil
+    end
+    
     # Input validation for colours is handled by the Color class, which will
     # raise an ArgumentError if the argument is an invalid colour value.
     def color=(val)
@@ -301,6 +313,25 @@ module Stylish
     #
     def compressed=(val)
       @compressed = (val == true) ? true : false
+    end
+    
+    def join(str = "")
+      to_s
+    end
+    
+    def to_s
+      declarations = PROPERTIES.to_a.reject {|name, property|
+        property.nil?
+      }.map {|name, property|
+        value = self.send(name)
+        [property.to_s, value] unless value.nil?
+      }.compact
+      
+      if @compressed
+        "background:#{declarations.map {|p, v| v }.compact.join(" ")};"
+      else
+        declarations.map {|p, v| "#{p}:#{v};" }.join(" ")
+      end
     end
   end
   
