@@ -58,30 +58,12 @@ module Stylish
     include Formattable
     
     attr_reader :selectors, :declarations
-    attr_writer :declarations
     
     def initialize(selectors, declarations)
       accept_format(/^\s*%s\s*\{\s*%s\s*\}\s*$/m, "%s {%s}")
       
       self.selectors = selectors
-      
-      if declarations.is_a? Declarations
-        @declarations = declarations and return
-      elsif declarations.is_a? Background
-        @declarations = Declarations.new << declarations and return
-      end
-      
-      if declarations.is_a? String
-        declarations = declarations.strip.scan(/([a-z\-]+):(.+?);/)
-      elsif declarations.is_a?(Hash) || declarations.is_a?(Array)
-        declarations = declarations.to_a
-      end
-      
-      unless declarations.nil?
-        @declarations = declarations.inject(Declarations.new) do |m, d|
-          m << Declaration.new(d[0], d[1])
-        end
-      end
+      self.declarations = declarations
     end
     
     def selectors=(input)
@@ -100,6 +82,23 @@ module Stylish
       end
     end
     
+    def declarations=(input)
+      @declarations = input and return if input.is_a? Declarations
+      @declarations = Declarations.new << input and return if input.is_a? Background
+      
+      if input.is_a? String
+        declarations = self.class.parse_declarations_string(input)
+      elsif input.is_a?(Hash) || input.is_a?(Array)
+        declarations = input.to_a
+      end
+      
+      unless declarations.nil?
+        @declarations = declarations.inject(Declarations.new) do |m, d|
+          m << Declaration.new(d[0], d[1])
+        end
+      end
+    end
+    
     def to_s
       sprintf(@format, @selectors.join, @declarations ? @declarations.join : "")
     end
@@ -109,6 +108,10 @@ module Stylish
     def self.parse_selectors_string(input)
       input.strip.split(/\s*,\s*/).
         inject(Selectors.new) {|m, s| m << Selector.new(s) }
+    end
+    
+    def self.parse_declarations_string(input)
+      input.strip.scan(/([a-z\-]+):(.+?);/)
     end
   end
   
