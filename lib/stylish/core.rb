@@ -118,6 +118,26 @@ module Stylish
     end
   end
   
+  class Comment
+    attr_reader :header, :lines, :metadata
+    
+    def initialize(*args)
+      @lines, @metadata = [], {}
+      
+      args.each do |arg|
+        if arg.is_a? String
+          if @header
+            @lines << arg
+          else
+            @header = arg
+          end
+        elsif arg.is_a? Hash
+          @metadata.merge!(arg)
+        end
+      end
+    end
+  end
+  
   class Selector
     
     def initialize(str)
