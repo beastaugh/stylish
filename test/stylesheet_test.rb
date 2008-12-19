@@ -3,6 +3,12 @@ require './lib/stylish'
 
 class StylesheetTest < Test::Unit::TestCase
   
+  def test_improper_rules
+    style = Stylish::Stylesheet.new
+    style.rules = ["really", "not", "what", "we", "want"]
+    assert_equal(0, style.rules.length)
+  end
+  
   def test_nested_rules
     style = Stylish::Stylesheet.new do
       rule ".header", "display" => "block"

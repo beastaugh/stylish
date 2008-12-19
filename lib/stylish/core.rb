@@ -3,17 +3,20 @@ module Stylish
   class Stylesheet
     include Formattable
     
-    attr_accessor :rules
+    attr_reader :rules
     
     def initialize(selectors = nil, declarations = nil, options = {}, &block)
       accept_format(/\s*/m, "\n")
-      
       options = {:images => ''}.merge(options)
       
       @images_path = Pathname.new(options[:images])
-      
       @rules = []
+      
       Description.new(self, selectors, declarations).instance_eval(&block) if block
+    end
+    
+    def rules=(input)
+      @rules = input.reject {|obj| !obj.is_a? Rule }.compact
     end
     
     def rule(selectors = nil, declarations = nil)
