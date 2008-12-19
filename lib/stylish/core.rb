@@ -20,11 +20,6 @@ module Stylish
       @rules << Rule.new(selectors, declarations)
     end
     
-    def background(options)
-      options.merge! :image => image(options[:image])
-      Background.new(options)
-    end
-    
     def image(path)
       "url('#{(@images_path + path).to_s}')" if path
     end
@@ -53,7 +48,8 @@ module Stylish
       end
       
       def background(options)
-        @sheet.background(options)
+        options.merge! :image => @sheet.image(options[:image])
+        Background.new(options)
       end
     end
   end
