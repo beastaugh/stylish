@@ -38,6 +38,13 @@ class ColorTest < Test::Unit::TestCase
     assert_equal([255, "100%", 0], Stylish::Color.new("255, 100%, -0").value)
   end
   
+  def test_case_insensitivity_of_keywords
+    assert_equal("008000", Stylish::Color.new(:Green).value)
+    assert_equal("008000", Stylish::Color.new(:GrEeN).value)
+    assert_equal("008000", Stylish::Color.new("Green").value)
+    assert_equal("008000", Stylish::Color.new("GrEeN").value)
+  end
+  
   def test_nonexistent_keywords
     assert_raise ArgumentError do
       Stylish::Color.new("burnt-umber")

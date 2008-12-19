@@ -227,7 +227,7 @@ module Stylish
         @type = type and return unless @value.nil?
       end
       
-      raise ArgumentError, "#{val} is not a valid keyword, hex or RGB color value."
+      raise ArgumentError, "#{val.inspect} is not a valid keyword, hex or RGB color value."
     end
     
     def self.like?(value)
@@ -245,8 +245,8 @@ module Stylish
     end
     
     def self.parse_keyword(code)
-      code = code.to_sym if code.is_a? String
-      KEYWORDS[code]
+      code = code.to_s.downcase
+      KEYWORDS[code.to_sym] unless code.empty?
     end
     
     def self.parse_hex(val)
