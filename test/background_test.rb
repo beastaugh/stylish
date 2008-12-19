@@ -7,7 +7,6 @@ class BackgroundTest < Test::Unit::TestCase
     @composite = Stylish::Background.new(:color => "#CCC",
       :image => "images/test.png", :repeat => "no-repeat",
       :position => "left", :attachment => "scroll")
-    @transparent = Stylish::Background.new(:transparent => true)
   end
   
   def test_valid_background_colors
@@ -16,8 +15,7 @@ class BackgroundTest < Test::Unit::TestCase
   end
   
   def test_background_transparencies
-    assert(@transparent.transparent)
-    assert_equal("transparent", @transparent.color)
+    assert_equal("transparent", Stylish::Background.new(:color => :transparent).color.value)
   end
   
   def test_valid_background_images
@@ -53,12 +51,6 @@ class BackgroundTest < Test::Unit::TestCase
     end
   end
   
-  def test_invalid_background_transparencies
-    assert_nil(Stylish::Background.new(:transparent => false).transparent)
-    assert_nil(Stylish::Background.new(:transparent => "true").transparent)
-    assert_nil(Stylish::Background.new(:transparent => nil).transparent)
-  end
-  
   def test_invalid_image_values
     assert_nil(Stylish::Background.new(:image => []).image)
     assert_nil(Stylish::Background.new(:image => {}).image)
@@ -82,15 +74,5 @@ class BackgroundTest < Test::Unit::TestCase
     assert_nil(Stylish::Background.new(:compressed => "true").compressed)
     assert_nil(Stylish::Background.new(:compressed => "false").compressed)
     assert_nil(Stylish::Background.new(:compressed => nil).compressed)
-  end
-  
-  def test_colors_with_transparency
-    @confused = Stylish::Background.new(:color => :red, :transparent => true)
-    assert(@confused.transparent)
-    assert_equal("transparent", @confused.color)
-    
-    @confused.transparent = false
-    assert(!@confused.transparent)
-    assert_instance_of(Stylish::Color, @confused.color)
   end
 end

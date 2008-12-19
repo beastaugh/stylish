@@ -250,7 +250,7 @@ module Stylish
   class Color
     attr_reader :type
     
-    TYPES = [:inherit, :keyword, :hex, :rgb]
+    TYPES = [:inherit, :transparent, :keyword, :hex, :rgb]
     
     VALID_HEX_COLOR = /^#?([\da-fA-F]{3}){1,2}$/
     
@@ -279,7 +279,7 @@ module Stylish
     end
     
     def to_s
-      if @type == :inherit
+      if @type == :inherit || @type == :transparent
         @value
       elsif @type == :rgb
         "rgb(#{@value * ", "})"
@@ -312,7 +312,11 @@ module Stylish
     private
     
     def self.parse_inherit(val)
-      val if val == "inherit"
+      "inherit" if val.to_s == "inherit"
+    end
+    
+    def self.parse_transparent(val)
+      "transparent" if val.to_s == "transparent"
     end
     
     def self.parse_keyword(code)
@@ -353,11 +357,11 @@ module Stylish
   end
   
   class Background
-    attr_reader :image,
+    attr_reader :color,
+                :image,
                 :repeat,
                 :position,
                 :attachment,
-                :transparent,
                 :compressed
     
     PROPERTIES = [
@@ -366,7 +370,6 @@ module Stylish
       [:repeat, "background-repeat"],
       [:position, "background-position"],
       [:attachment, "background-attachment"],
-      [:transparent],
       [:compressed]]
     
     REPEAT_VALUES = ["repeat", "repeat-x", "repeat-y", "no-repeat"]
@@ -382,19 +385,10 @@ module Stylish
       end
     end
     
-    def color
-      return "transparent" if @transparent
-      @color
-    end
-    
     # Input validation for colours is handled by the Color class, which will
     # raise an ArgumentError if the argument is an invalid colour value.
     def color=(val)
       @color = Color.new(val)
-    end
-    
-    def transparent=(val)
-      @transparent = val == true || nil
     end
     
     def image=(path)

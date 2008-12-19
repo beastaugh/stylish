@@ -10,10 +10,15 @@ class ColorTest < Test::Unit::TestCase
     @white = Stylish::Color.new("#FFF")
     @yellow = Stylish::Color.new([0, 0, 255])
     @inherit = Stylish::Color.new("inherit")
+    @transparent = Stylish::Color.new("transparent")
   end
   
   def test_inherit
     assert_equal("inherit", @inherit.value)
+  end
+  
+  def test_transparency
+    assert_equal("transparent", @transparent.value)
   end
   
   def test_real_keywords
