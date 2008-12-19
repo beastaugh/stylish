@@ -57,17 +57,13 @@ module Stylish
   class Rule
     include Formattable
     
-    attr_accessor :selectors, :declarations
+    attr_reader :selectors, :declarations
+    attr_writer :declarations
     
     def initialize(selectors, declarations)
       accept_format(/^\s*%s\s*\{\s*%s\s*\}\s*$/m, "%s {%s}")
       
-      if selectors.is_a? String
-        @selectors = selectors.strip.split(/\s*,\s*/).
-          inject(Selectors.new) {|m, s| m << Selector.new(s) }
-      else
-        @selectors = selectors
-      end
+      self.selectors = selectors
       
       if declarations.is_a? Declarations
         @declarations = declarations and return
@@ -88,8 +84,23 @@ module Stylish
       end
     end
     
+    def selectors=(input)
+      if input.is_a? String
+        @selectors = self.class.parse_selectors_string(input)
+      else
+        @selectors = input
+      end
+    end
+    
     def to_s
       sprintf(@format, @selectors.join, @declarations ? @declarations.join : "")
+    end
+    
+    private
+    
+    def self.parse_selectors_string(input)
+      input.strip.split(/\s*,\s*/).
+        inject(Selectors.new) {|m, s| m << Selector.new(s) }
     end
   end
   
