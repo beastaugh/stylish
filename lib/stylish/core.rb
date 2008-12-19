@@ -135,6 +135,16 @@ module Stylish
           @metadata.merge!(arg)
         end
       end
+      
+      def to_s
+        sprintf("/**\n%s\n */", [
+          sprintf(" * %s", @header),
+          @lines.map {|l| ' * ' + l }.join("\n"),
+          @metadata.to_a.map {|name, value|
+            sprintf(" * @%s %s", name.to_s, value.to_s)
+          }.join("\n")
+        ].join("\n *\n"))
+      end
     end
   end
   

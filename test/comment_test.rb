@@ -37,4 +37,21 @@ class CommentTest < Test::Unit::TestCase
     assert_equal([], comment.lines)
     assert_equal({}, comment.metadata)
   end
+  
+  def test_to_string
+    assert_equal(
+"/**
+ * Classy comments block
+ *
+ * Comments can now be added through Stylish,
+ * allowing generated stylesheets to be marked
+ * up with explanations, examples and various
+ * pieces of helpful metadata.
+ * Order does matter for adding comments, but
+ * lines of text and metadata hashes will be
+ * separated out automatically.
+ *
+ * @author Mr Example <mr@example.org>
+ */", @comment.to_s)
+  end
 end
