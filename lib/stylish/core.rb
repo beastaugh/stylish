@@ -1,5 +1,9 @@
 module Stylish
   
+  def self.generate(*args, &block)
+    Stylesheet.new(*args, &block)
+  end
+  
   class Stylesheet
     include Formattable
     
