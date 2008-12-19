@@ -223,7 +223,7 @@ module Stylish
     
     def value=(val)
       TYPES.each do |type|
-        @value = self.class.send(('parse_' + type.to_s).to_sym, val)
+        @value = self.class.send(:"parse_#{type.to_s}", val)
         @type = type and return unless @value.nil?
       end
       
@@ -232,7 +232,7 @@ module Stylish
     
     def self.like?(value)
       TYPES.each do |type|
-        return true unless self.send(('parse_' + type.to_s).to_sym, value).nil?
+        return true unless self.send(:"parse_#{type.to_s}", value).nil?
       end
       
       false
@@ -296,8 +296,7 @@ module Stylish
       [:position, "background-position"],
       [:attachment, "background-attachment"],
       [:transparent],
-      [:compressed]
-    ]
+      [:compressed]]
     
     REPEAT_VALUES = ["repeat", "repeat-x", "repeat-y", "no-repeat"]
     ATTACHMENT_VALUES = ["scroll", "fixed", "inherit"]
@@ -307,7 +306,7 @@ module Stylish
     def initialize(options)
       PROPERTIES.each do |name, property|
         if options[name]
-          self.send((name.to_s + '=').to_sym, options[name])
+          self.send(:"#{name.to_s}=", options[name])
         end
       end
     end
