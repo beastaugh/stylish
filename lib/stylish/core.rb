@@ -87,8 +87,16 @@ module Stylish
     def selectors=(input)
       if input.is_a? String
         @selectors = self.class.parse_selectors_string(input)
+      elsif input.is_a? Array
+        @selectors = input.inject(Selectors.new) do |m, s|
+          if s.is_a? Selector
+            m << s
+          elsif s.is_a? String
+            m << Selector.new(s)
+          end
+        end
       else
-        @selectors = input
+        @selectors = Selectors.new
       end
     end
     

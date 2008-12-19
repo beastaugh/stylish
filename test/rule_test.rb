@@ -11,6 +11,13 @@ class RuleTest < Test::Unit::TestCase
     assert_equal(".content, .form {font-weight:normal; color:#000;}", @rule.to_s)
   end
   
+  def test_selector_input_types
+    assert_equal(2, @rule.selectors.length)
+    assert_instance_of(Stylish::Selectors,
+      Stylish::Rule.new([".content", ".form"], Stylish::Background.new(:color => :red)).selectors)
+    assert_equal(0, Stylish::Rule.new(5, "font-weight:bold;").selectors.length)
+  end
+  
   def test_declaration_input_types
     selector = Stylish::Selector.new('.test')
     rstr = Stylish::Rule.new(selector, "text-transform:uppercase;")
