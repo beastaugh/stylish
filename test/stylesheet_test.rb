@@ -78,4 +78,14 @@ class StylesheetTest < Test::Unit::TestCase
     
     assert_equal("url('/public/images/wallpaper.gif')", style.rules[0].declarations[0].image)
   end
+  
+  def test_comments
+    style = Stylish::Stylesheet.new do
+      comment "Content areas should be spaced out."
+      rule ".content", "margin" => "1em 0"
+    end
+    
+    assert_instance_of(Stylish::Comment, style.content[0])
+    assert_equal("Content areas should be spaced out.", style.content[0].header)
+  end
 end

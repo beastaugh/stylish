@@ -18,6 +18,7 @@ class CommentTest < Test::Unit::TestCase
   def test_headers
     assert_equal("Classy comments block", @comment.header)
     assert_equal("Comments can now be added through Stylish,", @comment.lines[0])
+    assert_equal("Testing header.", Stylish::Comment.new("Testing header.").header)
   end
   
   def test_metadata

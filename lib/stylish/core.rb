@@ -3,24 +3,32 @@ module Stylish
   class Stylesheet
     include Formattable
     
-    attr_reader :rules
+    attr_reader :content
     
     def initialize(selectors = nil, declarations = nil, options = {}, &block)
       accept_format(/\s*/m, "\n")
       options = {:images => ''}.merge(options)
       
       @images_path = Pathname.new(options[:images])
-      @rules = []
+      @content = []
       
       Description.new(self, selectors, declarations).instance_eval(&block) if block
     end
     
+    def rules
+      @content.reject {|obj| !obj.is_a? Rule }
+    end
+    
     def rules=(input)
-      @rules = input.reject {|obj| !obj.is_a? Rule }.compact
+      @content = input.reject {|obj| !obj.is_a?(Rule) || !obj.is_a?(Comment) }.compact
     end
     
     def rule(selectors = nil, declarations = nil)
-      @rules << Rule.new(selectors, declarations)
+      @content << Rule.new(selectors, declarations)
+    end
+    
+    def comment(*args)
+      @content << Comment.new(*args)
     end
     
     def image(path)
@@ -44,6 +52,10 @@ module Stylish
           @sheet.rule(selector, declarations)
           self.class.new(@sheet, selector, declarations).instance_eval(&block) if block
         end
+      end
+      
+      def comment(*args)
+        @sheet.comment(*args)
       end
       
       def image(path)
@@ -126,7 +138,7 @@ module Stylish
       
       args.each do |arg|
         if arg.is_a? String
-          if @header
+          unless @header.nil?
             @lines << arg
           else
             @header = arg
