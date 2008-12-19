@@ -87,5 +87,6 @@ class StylesheetTest < Test::Unit::TestCase
     
     assert_instance_of(Stylish::Comment, style.content[0])
     assert_equal("Content areas should be spaced out.", style.content[0].header)
+    assert_equal("Content areas should be spaced out.", style.comments[0].header)
   end
 end
