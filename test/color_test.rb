@@ -39,8 +39,15 @@ class ColorTest < Test::Unit::TestCase
   
   def test_rgb_values
     assert_equal([0, 0, 255], @yellow.value)
-    assert_equal([255, "100%", -10], Stylish::Color.new("rgb(255, 100%, -10)").value)
-    assert_equal([255, "100%", 0], Stylish::Color.new("255, 100%, -0").value)
+    assert_equal([255, "100%", -10],
+      Stylish::Color.new("rgb(255, 100%, -10)").value)
+    assert_equal([255, "100%", 0],
+      Stylish::Color.new("255, 100%, -0").value)
+  end
+  
+  def test_rgba_values
+    assert_equal([255, "100%", -10, 0.8],
+      Stylish::Color.new("rgb(255, 100%, -10, 0.8)").value)
   end
   
   def test_case_insensitivity_of_keywords
@@ -96,7 +103,8 @@ class ColorTest < Test::Unit::TestCase
   
   def test_rgb_to_string
     assert_equal("rgb(0, 0, 255)", @yellow.to_s)
-    assert_equal("rgb(100%, 50%, 0)", Stylish::Color.new("rgb(100%, 50%, -0)").to_s)
+    assert_equal("rgb(100%, 50%, 0)",
+      Stylish::Color.new("rgb(100%, 50%, -0)").to_s)
   end
   
 end

@@ -250,7 +250,7 @@ module Stylish
   class Color
     attr_reader :type
     
-    TYPES = [:inherit, :transparent, :keyword, :hex, :rgb]
+    TYPES = [:inherit, :transparent, :keyword, :hex, :rgba]
     
     VALID_HEX_COLOR = /^#?([\da-fA-F]{3}){1,2}$/
     
@@ -281,7 +281,7 @@ module Stylish
     def to_s
       if @type == :inherit || @type == :transparent
         @value
-      elsif @type == :rgb
+      elsif @type == :rgba
         "rgb(#{@value * ", "})"
       else
         "#" + @value
@@ -328,23 +328,26 @@ module Stylish
       val.sub(/^#/, "").downcase if val =~ VALID_HEX_COLOR
     end
     
-    def self.parse_rgb(val)
+    def self.parse_rgba(val)
       if val.is_a? String
-        val = val.scan(/-?\d{1,3}%?/)
+        val = val.scan(/(-?0\.\d+|-?\d{1,3}%?)/).flatten
         return if val.nil?
       end
       
-      rgb = val.to_a[0..2].inject([]) do |memo, v|
-        if less_than_256?(v)
+      rgba = val.to_a[0..3].inject([]) {|memo, v|
+        if memo.length == 3
+          opacity = v.to_f
+          v = (0 <= opacity && opacity <= 1) ? opacity : nil
+        elsif less_than_256?(v)
           v = v.to_i
         elsif !percentage?(v)
           return
         end
         
         memo << v
-      end
+      }.compact
       
-      return rgb.to_a.length == 3 ? rgb : nil
+      return (3..4).include?(rgba.to_a.length) ? rgba : nil
     end
     
     def self.percentage?(item)
