@@ -29,9 +29,9 @@ class StylesheetTest < Test::Unit::TestCase
       end
     end
         
-    assert_equal(9, style.rules.length)
+    assert_equal(7, style.rules.length)
     assert_equal(".header {display:block;}", style.rules[0].to_s)
-    assert_equal(".namespace .header {color:#0000ff;}", style.rules[4].to_s)
+    assert_equal(".namespace .header {color:#0000ff;}", style.rules[3].to_s)
     
     style.rules.each do |rule|
       assert_instance_of(Stylish::Rule, rule)

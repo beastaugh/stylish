@@ -13,8 +13,8 @@ class GenerateTest < Test::Unit::TestCase
       end
     end
     
-    assert_equal(4, style.rules.length)
+    assert_equal(3, style.rules.length)
     assert_equal(".header {background-color:#008000;}", style.rules[0].to_s)
-    assert_equal(".content P {margin-bottom:10px;}", style.rules[3].to_s)
+    assert_equal(".content P {margin-bottom:10px;}", style.rules[2].to_s)
   end
 end

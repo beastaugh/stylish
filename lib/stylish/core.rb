@@ -57,7 +57,7 @@ module Stylish
         return unless selectors || declarations
         selectors.strip.split(/\s*,\s*/).each do |s|
           selector = @selectors ? "#{@selectors} #{s}" : s
-          @sheet.rule(selector, declarations)
+          @sheet.rule(selector, declarations) if declarations
           self.class.new(@sheet, selector, declarations).instance_eval(&block) if block
         end
       end
