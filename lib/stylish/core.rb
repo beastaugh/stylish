@@ -338,24 +338,16 @@ module Stylish
         if memo.length == 3
           opacity = v.to_f
           v = (0 <= opacity && opacity <= 1) ? opacity : nil
-        elsif less_than_256?(v)
+        elsif v.to_s =~ /^[+-]?\d{1,3}$/ && v.to_i < 256
           v = v.to_i
-        elsif !percentage?(v)
-          return
+        else
+          return unless v.to_s =~ /^[+-]?\d{1,3}%$/
         end
         
         memo << v
       }.compact
       
       return (3..4).include?(rgba.to_a.length) ? rgba : nil
-    end
-    
-    def self.percentage?(item)
-      item.to_s =~ /^[+-]?\d{1,3}%$/
-    end
-    
-    def self.less_than_256?(item)
-      item.to_s =~ /^[+-]?\d{1,3}$/ && item.to_i < 256
     end
   end
   
