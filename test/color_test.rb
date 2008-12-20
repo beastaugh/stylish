@@ -75,12 +75,6 @@ class ColorTest < Test::Unit::TestCase
     end
   end
   
-  def test_overly_large_rgb_percentages
-    assert_raise ArgumentError do
-      Stylish::Color.new("200%, 0, 0")
-    end
-  end
-  
   def test_wrong_number_of_rgb_values
     assert_raise ArgumentError do
       Stylish::Color.new("128, 128")

@@ -351,7 +351,7 @@ module Stylish
     end
     
     def self.percentage?(item)
-      item.to_s =~ /^[+-]?\d{1,3}%$/ && item.chop.to_i <= 100
+      item.to_s =~ /^[+-]?\d{1,3}%$/
     end
     
     def self.less_than_256?(item)
