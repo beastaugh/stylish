@@ -330,7 +330,7 @@ module Stylish
     
     def self.parse_rgba(val)
       if val.is_a? String
-        val = val.scan(/(-?0\.\d+|-?\d{1,3}%?)/).flatten
+        val = val.scan(/([+-]?0\.\d+|-?\d{1,3}%?)/).flatten
         return if val.nil?
       end
       
@@ -351,11 +351,11 @@ module Stylish
     end
     
     def self.percentage?(item)
-      item.to_s =~ /^\d{1,3}%$/ && item.chop.to_i <= 100
+      item.to_s =~ /^[+-]?\d{1,3}%$/ && item.chop.to_i <= 100
     end
     
     def self.less_than_256?(item)
-      item.to_s =~ /^-?\d{1,3}$/ && item.to_i < 256
+      item.to_s =~ /^[+-]?\d{1,3}$/ && item.to_i < 256
     end
   end
   
