@@ -330,7 +330,7 @@ module Stylish
     
     def self.parse_rgba(val)
       if val.is_a? String
-        val = val.scan(/([+-]?0\.\d+|-?\d{1,3}%?)/).flatten
+        val = val.sub(/^\s*rgb\(\s*/, "").sub(/\s*\)\s*$/, "").split(/\s*,\s*/)
         return if val.nil?
       end
       

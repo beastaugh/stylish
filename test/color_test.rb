@@ -81,6 +81,12 @@ class ColorTest < Test::Unit::TestCase
     end
   end
   
+  def test_comma_separation_of_rgb_values
+    assert_equal([0, 0, 0, 0], Stylish::Color.new("0, 0, 0, 0").value)
+    assert(Stylish::Color.like?("0, 0, 0, 0"))
+    assert(!Stylish::Color.like?("0 0 0 0"))
+  end
+  
   def test_inherit_to_string
     assert_equal("inherit", @inherit.to_s)
   end

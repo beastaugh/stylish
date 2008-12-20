@@ -14,7 +14,7 @@ class DeclarationTest < Test::Unit::TestCase
   def test_colors
     assert_instance_of(Stylish::Color, Stylish::Declaration.new("color", :green).value)
     assert_instance_of(Stylish::Color, Stylish::Declaration.new("color", "#e5e5e5").value)
-    assert_instance_of(Stylish::Color, Stylish::Declaration.new("color", "rgb(255 255 0)").value)
+    assert_instance_of(Stylish::Color, Stylish::Declaration.new("color", "rgb(255, 255, 0)").value)
   end
   
   def test_empty_value
