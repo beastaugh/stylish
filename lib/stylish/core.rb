@@ -55,10 +55,17 @@ module Stylish
       
       def rule(selectors = nil, declarations = nil, &block)
         return unless selectors || declarations
-        selectors.strip.split(/\s*,\s*/).each do |s|
-          selector = @selectors ? "#{@selectors} #{s}" : s
-          @sheet.rule(selector, declarations) if declarations
-          self.class.new(@sheet, selector, declarations).instance_eval(&block) if block
+        selectors = selectors.strip.split(/\s*,\s*/).map do |s|
+          @selectors ? "#{@selectors} #{s}" : s
+        end
+        
+        if selectors && !block
+          @sheet.rule(selectors, declarations)
+        else
+          selectors.each do |selector|
+            @sheet.rule(selector, declarations) if declarations
+            self.class.new(@sheet, selector, declarations).instance_eval(&block)
+          end
         end
       end
       

@@ -28,7 +28,7 @@ class StylesheetTest < Test::Unit::TestCase
         rule "p", :bgcolor => "#e5e5e5"
       end
     end
-        
+    
     assert_equal(7, style.rules.length)
     assert_equal(".header {display:block;}", style.rules[0].to_s)
     assert_equal(".namespace .header {color:#0000ff;}", style.rules[3].to_s)
@@ -49,6 +49,18 @@ class StylesheetTest < Test::Unit::TestCase
     assert_nil(flattened.index(".section {}"))
     assert_not_nil(flattened.index(".section p {font-weight:normal; margin-bottom:1em;}"))
     assert_not_nil(flattened.index(".section h3 {font-weight:bold;}"))
+  end
+  
+  def test_compact_rules_without_blocks
+    style = Stylish::Stylesheet.new do
+      rule ".content, .context" do
+        rule "h3", "font-weight" => "bold"
+        rule ".generic, .special", "display" => "block"
+      end
+    end
+    
+    assert_equal(4, style.rules.length)
+    assert_equal(".content .generic, .content .special {display:block;}", style.rules[1].to_s)
   end
   
   def test_image_paths
