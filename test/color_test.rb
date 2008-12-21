@@ -120,14 +120,20 @@ class ColorTest < Test::Unit::TestCase
   end
   
   def test_keywords_to_hex
-    assert_equal("#00ffff", Stylish::Color.new(:aqua).to_hex)
+    assert_equal("#808080", Stylish::Color.new(:gray).to_hex)
     assert_equal("#800000", Stylish::Color.new(:maroon).to_hex)
   end
   
   def test_rgb_to_hex
-    assert_equal("#ffffff", Stylish::Color.new([255, 255, 255]).to_hex)
     assert_equal("#5097ba", Stylish::Color.new([80, 151, 186]).to_hex)
     assert_equal("#5097ba", Stylish::Color.new([80, 151, 186]).to_hex)
     assert_equal("#010409", Stylish::Color.new([1, 4, 9]).to_hex)
+  end
+  
+  def test_to_hex_compression
+    assert_equal("#fff", Stylish::Color.new([255, 255, 255]).to_hex)
+    assert_equal("#fff", Stylish::Color.new("#ffffff").to_hex)
+    assert_equal("#fb0", Stylish::Color.new("#ffbb00").to_hex)
+    assert_equal("#0ff", Stylish::Color.new(:aqua).to_hex)
   end
 end

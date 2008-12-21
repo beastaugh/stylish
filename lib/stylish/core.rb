@@ -311,15 +311,33 @@ module Stylish
     # RGBA values have an opacity value which is not convertible to a six-
     # character hexadecimal string, so this information is stripped and a
     # conventional RGB value is then converted to hex.
+    #
+    # All values will be converted, if possible, from six-digit to three-digit
+    # notation, replacing replicated digits with simple values.
+    #
+    #     #ffffff => #fff
+    #     #ffbb00 => #fb0
+    #
     def to_hex
-      return nil if @type == :inherit || @type == :transparent
-      return "#" + @value if @type == :hex
-      return "#" + KEYWORDS[@value] if @type == :keyword
+      compress = lambda do |str|
+        return str unless str.length % 2 == 0
+        
+        compressed = str.scan(/[\da-fA-F]{2}/).inject("") do |memo, s|
+          memo += s[0,1] == s[1,2] ? s[0,1] : s
+        end
+        
+        compressed.length == str.length / 2 ? compressed : str
+      end
+      
+      return if @type == :inherit || @type == :transparent
+      return "#" + compress.call(@value) if @type == :hex
+      return "#" + compress.call(KEYWORDS[@value]) if @type == :keyword
       
       "#" + @value[0..2].inject([]) {|memo, v|
         v = v.chop.to_i * 255 / 100 if v =~ PERCENTAGE
         v = v.to_s(16)
         v = "0" + v if v.length < 2
+        v = compress.call(v) || v
         memo << v
       }.join
     end
