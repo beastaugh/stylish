@@ -15,7 +15,7 @@ Creating stylesheets
       end
     end
 
-Calling the stylesheet's `to\_s` method would produce the following <abbr title="Cascading Stylesheets">CSS</abbr> code.
+Calling the stylesheet's `to_s` method would produce the following <abbr title="Cascading Stylesheets">CSS</abbr> code.
 
     .header {background-color:#008080; background-image:url('header.png');}
     .content h2 {font-size:2em;}
