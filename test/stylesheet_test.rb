@@ -79,8 +79,8 @@ class StylesheetTest < Test::Unit::TestCase
     end
     
     assert(style.rules[1].declarations[0].compressed)
-    assert_equal("#wrapper {background-color:#ff0000; background-image:url('background.jpg');}", style.rules[0].to_s)
-    assert_equal("#header {background:#ff0000 url('background.jpg') no-repeat left top;}", style.rules[1].to_s)
+    assert_equal("#wrapper {background-color:red; background-image:url('background.jpg');}", style.rules[0].to_s)
+    assert_equal("#header {background:red url('background.jpg') no-repeat left top;}", style.rules[1].to_s)
   end
   
   def test_image_path_nesting_with_backgrounds

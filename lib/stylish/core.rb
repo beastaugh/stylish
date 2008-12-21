@@ -294,12 +294,12 @@ module Stylish
     end
     
     def to_s
-      if @type == :inherit || @type == :transparent
-        @value
-      elsif @type == :rgba
+      if @type == :rgba
         "rgb(#{@value * ", "})"
-      else
+      elsif @type == :hex
         "#" + @value
+      else
+        @value.to_s
       end
     end
     
@@ -336,7 +336,9 @@ module Stylish
     
     def self.parse_keyword(code)
       code = code.to_s.downcase
-      KEYWORDS[code.to_sym] unless code.empty?
+      return if code.nil? || code.empty?
+      code = code.to_sym
+      code if KEYWORDS.has_key?(code)
     end
     
     def self.parse_hex(val)

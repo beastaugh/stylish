@@ -10,10 +10,10 @@ class DeclarationsTest < Test::Unit::TestCase
   end
   
   def test_join
-    assert_equal("border-color:#ff0000; background-color:#0000ff; background-image:test.png;", @ds.join)
+    assert_equal("border-color:red; background-color:blue; background-image:test.png;", @ds.join)
   end
   
   def test_to_string
-    assert_equal("border-color:#ff0000; background-color:#0000ff; background-image:test.png;", @ds.to_s)
+    assert_equal("border-color:red; background-color:blue; background-image:test.png;", @ds.to_s)
   end
 end

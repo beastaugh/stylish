@@ -22,10 +22,10 @@ class ColorTest < Test::Unit::TestCase
   end
   
   def test_real_keywords
-    assert_equal("ff0000", @red.value)
+    assert_equal(:red, @red.value)
     assert_equal(:keyword, @red.type)
     
-    assert_equal("008000", @green.value)
+    assert_equal(:green, @green.value)
     assert_equal(:keyword, @green.type)
   end
   
@@ -51,10 +51,10 @@ class ColorTest < Test::Unit::TestCase
   end
   
   def test_case_insensitivity_of_keywords
-    assert_equal("008000", Stylish::Color.new(:Green).value)
-    assert_equal("008000", Stylish::Color.new(:GrEeN).value)
-    assert_equal("008000", Stylish::Color.new("Green").value)
-    assert_equal("008000", Stylish::Color.new("GrEeN").value)
+    assert_equal(:green, Stylish::Color.new(:Green).value)
+    assert_equal(:green, Stylish::Color.new(:GrEeN).value)
+    assert_equal(:green, Stylish::Color.new("Green").value)
+    assert_equal(:green, Stylish::Color.new("GrEeN").value)
   end
   
   def test_nonexistent_keywords
@@ -97,8 +97,8 @@ class ColorTest < Test::Unit::TestCase
   end
   
   def test_keyword_to_string
-    assert_equal('#008000', @green.to_s)
-    assert_equal('#ffff00', Stylish::Color.new(:yellow).to_s)
+    assert_equal("green", @green.to_s)
+    assert_equal("yellow", Stylish::Color.new(:yellow).to_s)
   end
   
   def test_rgb_to_string
