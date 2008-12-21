@@ -44,7 +44,7 @@ module Stylish
     end
     
     def to_s
-      @rules.map {|r| r.to_s }.join(@format)
+      @content.map {|r| r.to_s }.join(@format)
     end
     
     class Description
@@ -157,13 +157,17 @@ module Stylish
       end
       
       def to_s
-        sprintf("/**\n%s\n */", [
-          sprintf(" * %s", @header),
-          @lines.map {|l| ' * ' + l }.join("\n"),
-          @metadata.to_a.map {|name, value|
-            sprintf(" * @%s %s", name.to_s, value.to_s)
-          }.join("\n")
-        ].join("\n *\n"))
+        if @lines.empty? && @metadata.empty?
+          sprintf("/**\n * %s\n */", @header)
+        else
+          sprintf("/**\n%s\n */", [
+            sprintf(" * %s", @header),
+            @lines.map {|l| ' * ' + l }.join("\n"),
+            @metadata.to_a.map {|name, value|
+              sprintf(" * @%s %s", name.to_s, value.to_s)
+            }.join("\n")
+          ].join("\n *\n"))
+        end
       end
     end
   end

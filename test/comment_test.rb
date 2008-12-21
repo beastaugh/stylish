@@ -13,6 +13,7 @@ class CommentTest < Test::Unit::TestCase
       "Order does matter for adding comments, but",
       "lines of text and metadata hashes will be",
       "separated out automatically.")
+    @headed = Stylish::Comment.new("Just a header.")
   end
   
   def test_headers
@@ -39,7 +40,15 @@ class CommentTest < Test::Unit::TestCase
     assert_equal({}, comment.metadata)
   end
   
-  def test_to_string
+  def test_header_to_string
+    assert_equal(
+"/**
+ * Just a header.
+ */",
+    @headed.to_s)
+  end
+  
+  def test_block_to_string
     assert_equal(
 "/**
  * Classy comments block
