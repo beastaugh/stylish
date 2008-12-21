@@ -107,4 +107,27 @@ class ColorTest < Test::Unit::TestCase
       Stylish::Color.new("rgb(100%, 50%, -0)").to_s)
   end
   
+  def test_inherit_and_transparent_to_hex
+    assert_nil(Stylish::Color.new(:inherit).to_hex)
+    assert_nil(Stylish::Color.new(:transparent).to_hex)
+  end
+  
+  def test_hex_to_hex
+    assert_equal("#fff", Stylish::Color.new("FFF").to_hex)
+    assert_equal("#fff", Stylish::Color.new("#FFF").to_hex)
+    assert_equal("#e5e5e5", Stylish::Color.new("e5e5e5").to_hex)
+    assert_equal("#e5e5e5", Stylish::Color.new("#e5e5e5").to_hex)
+  end
+  
+  def test_keywords_to_hex
+    assert_equal("#00ffff", Stylish::Color.new(:aqua).to_hex)
+    assert_equal("#800000", Stylish::Color.new(:maroon).to_hex)
+  end
+  
+  def test_rgb_to_hex
+    assert_equal("#ffffff", Stylish::Color.new([255, 255, 255]).to_hex)
+    assert_equal("#5097ba", Stylish::Color.new([80, 151, 186]).to_hex)
+    assert_equal("#5097ba", Stylish::Color.new([80, 151, 186]).to_hex)
+    assert_equal("#010409", Stylish::Color.new([1, 4, 9]).to_hex)
+  end
 end

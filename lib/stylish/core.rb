@@ -268,6 +268,7 @@ module Stylish
     TYPES = [:inherit, :transparent, :keyword, :hex, :rgba]
     
     VALID_HEX_COLOR = /^#?([\da-fA-F]{3}){1,2}$/
+    PERCENTAGE = /^-?(0\.)?\d+%$/
     
     KEYWORDS = {
       :aqua => "00ffff",
@@ -301,6 +302,26 @@ module Stylish
       else
         @value.to_s
       end
+    end
+    
+    # Inherit and transparent have no hex equivalents, so the method simply
+    # returns nil. Hex values are simply returned (with a leading octothorpe)
+    # while keywords are converted to their hex equivalent.
+    #
+    # RGBA values have an opacity value which is not convertible to a six-
+    # character hexadecimal string, so this information is stripped and a
+    # conventional RGB value is then converted to hex.
+    def to_hex
+      return nil if @type == :inherit || @type == :transparent
+      return "#" + @value if @type == :hex
+      return "#" + KEYWORDS[@value] if @type == :keyword
+      
+      "#" + @value[0..2].inject([]) {|memo, v|
+        v = v.chop.to_i * 255 / 100 if v =~ PERCENTAGE
+        v = v.to_s(16)
+        v = "0" + v if v.length < 2
+        memo << v
+      }.join
     end
     
     def value
@@ -358,7 +379,7 @@ module Stylish
         elsif v.to_s =~ /^[+-]?\d{1,3}$/ && v.to_i < 256
           v = v.to_i
         else
-          return unless v.to_s =~ /^[+-]?\d{1,3}%$/
+          return unless v.to_s =~ PERCENTAGE
         end
         
         memo << v
