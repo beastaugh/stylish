@@ -13,7 +13,6 @@ class CommentTest < Test::Unit::TestCase
       "Order does matter for adding comments, but",
       "lines of text and metadata hashes will be",
       "separated out automatically.")
-    @headed = Stylish::Comment.new("Just a header.")
   end
   
   def test_headers
@@ -45,7 +44,34 @@ class CommentTest < Test::Unit::TestCase
 "/**
  * Just a header.
  */",
-    @headed.to_s)
+    Stylish::Comment.new("Just a header.").to_s)
+  end
+  
+  def test_lines_to_string
+    assert_equal(
+"/**
+ * First line
+ *
+ * Second line,
+ * third line.
+ */",
+    Stylish::Comment.new("First line", "Second line,", "third line.").to_s)
+  end
+  
+  def test_metadata_to_string
+    assert_equal(
+"/**
+ * @link http://example.org/
+ */",
+    Stylish::Comment.new({:link => "http://example.org/"}).to_s)
+    
+    assert_equal(
+"/**
+ * Header
+ *
+ * @link http://example.org/
+ */",
+    Stylish::Comment.new("Header", {:link => "http://example.org/"}).to_s)
   end
   
   def test_block_to_string
