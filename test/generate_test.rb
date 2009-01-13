@@ -8,8 +8,8 @@ class GenerateTest < Test::Unit::TestCase
       rule ".header", background(:color => :green)
       
       rule ".content" do
-        rule "H1", "font-size" => "2em"
-        rule "P", "margin-bottom" => "10px"
+        rule "H1", font_size("2em")
+        rule "P", margin_bottom("10px")
       end
     end
     

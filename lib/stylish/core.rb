@@ -1,89 +1,5 @@
 module Stylish
-  
-  def self.generate(*args, &block)
-    Stylesheet.new(*args, &block)
-  end
-  
-  class Stylesheet
-    include Formattable
     
-    attr_reader :content
-    
-    def initialize(selectors = nil, declarations = nil, options = {}, &block)
-      accept_format(/\s*/m, "\n")
-      options = {:images => ''}.merge(options)
-      
-      @images_path = Pathname.new(options[:images])
-      @content = []
-      
-      Description.new(self, selectors, declarations).instance_eval(&block) if block
-    end
-    
-    def rules
-      @content.reject {|obj| !obj.is_a? Rule }
-    end
-    
-    def comments
-      @content.reject {|obj| !obj.is_a? Comment }
-    end
-    
-    def rules=(input)
-      @content = input.reject {|obj| !obj.is_a?(Rule) || !obj.is_a?(Comment) }
-    end
-    
-    def rule(selectors = nil, declarations = nil)
-      @content << Rule.new(selectors, declarations)
-    end
-    
-    def comment(*args)
-      @content << Comment.new(*args)
-    end
-    
-    def image(path)
-      "url('#{(@images_path + path).to_s}')" if path
-    end
-    
-    def to_s
-      @content.map {|r| r.to_s }.join(@format)
-    end
-    
-    class Description
-      def initialize(sheet = nil, selectors = nil, declarations = nil)
-        @sheet = sheet || Stylesheet.new
-        @selectors = selectors
-      end
-      
-      def rule(selectors = nil, declarations = nil, &block)
-        return unless selectors || declarations
-        selectors = selectors.strip.split(/\s*,\s*/).map do |s|
-          @selectors ? "#{@selectors} #{s}" : s
-        end
-        
-        if selectors && !block
-          @sheet.rule(selectors, declarations)
-        else
-          selectors.each do |selector|
-            @sheet.rule(selector, declarations) if declarations
-            self.class.new(@sheet, selector, declarations).instance_eval(&block)
-          end
-        end
-      end
-      
-      def comment(*args)
-        @sheet.comment(*args)
-      end
-      
-      def image(path)
-        @sheet.image(path)
-      end
-      
-      def background(options)
-        options.merge! :image => @sheet.image(options[:image])
-        Background.new(options)
-      end
-    end
-  end
-  
   class Rule
     include Formattable
     
@@ -124,7 +40,11 @@ module Stylish
       
       unless declarations.nil?
         @declarations = declarations.inject(Declarations.new) do |m, d|
-          m << Declaration.new(d[0], d[1])
+          if d.is_a? Background
+            m << d
+          else
+            m << Declaration.new(d[0], d[1])
+          end
         end
       end
     end

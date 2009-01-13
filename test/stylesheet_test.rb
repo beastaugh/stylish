@@ -11,21 +11,17 @@ class StylesheetTest < Test::Unit::TestCase
   
   def test_nested_rules
     style = Stylish::Stylesheet.new do
-      rule ".header", "display" => "block"
-      rule ".content", :bgcolor => "#00FF00"
-      rule ".footer", "font-weight" => "bold"
+      rule ".header", display("block")
+      rule ".content", bgcolor("#00FF00")
+      rule ".footer", font_weight("bold")
       
       rule ".namespace" do
-        rule ".header", "color" => "#0000FF"
+        rule ".header", color("#0000FF")
         rule ".content" do
-          rule "p", "margin" => "0 0 1em 0"
-          rule "code", "display" => "inline"
+          rule "p", margin("0 0 1em 0")
+          rule "code", display("inline")
         end
-        rule ".footer", :bdcolor => "#999"
-      end
-      
-      rule do
-        rule "p", :bgcolor => "#e5e5e5"
+        rule ".footer", bdcolor("#999")
       end
     end
     
@@ -38,14 +34,13 @@ class StylesheetTest < Test::Unit::TestCase
     end
     
     nested = Stylish::Stylesheet.new ".section" do
-      rule "p", "font-weight" => "normal", "margin-bottom" => "1em"
-      rule "h3", "font-weight" => "bold"
+      rule "p", font_weight("normal"), margin_bottom("1em")
+      rule "h3", font_weight("bold")
     end
     
     assert_equal(2, nested.rules.length)
     
     flattened = nested.rules.map {|r| r.to_s }
-    p flattened.index(".section {}")
     assert_nil(flattened.index(".section {}"))
     assert_not_nil(flattened.index(".section p {font-weight:normal; margin-bottom:1em;}"))
     assert_not_nil(flattened.index(".section h3 {font-weight:bold;}"))
@@ -53,7 +48,7 @@ class StylesheetTest < Test::Unit::TestCase
   
   def test_rule_order
     style = Stylish::Stylesheet.new do
-      rule "p", "margin" => "0 0 1em 0", "font-weight" => "normal"
+      rule "p", margin("0 0 1em 0"), font_weight("normal")
     end
     
     assert_equal("margin:0 0 1em 0;", style.rules[0].declarations[0].to_s)
@@ -63,8 +58,8 @@ class StylesheetTest < Test::Unit::TestCase
   def test_compact_rules_without_blocks
     style = Stylish::Stylesheet.new do
       rule ".content, .context" do
-        rule "h3", "font-weight" => "bold"
-        rule ".generic, .special", "display" => "block"
+        rule "h3", font_weight("bold")
+        rule ".generic, .special", display("block")
       end
     end
     
@@ -74,7 +69,7 @@ class StylesheetTest < Test::Unit::TestCase
   
   def test_image_paths
     style = Stylish::Stylesheet.new(nil, nil, :images => '/public/images/') do
-      rule ".header", "background-image" => image("test.png")
+      rule ".header", background_image(image("test.png"))
     end
     
     assert_equal("url('/public/images/test.png')", style.rules[0].declarations[0].value)
@@ -103,7 +98,7 @@ class StylesheetTest < Test::Unit::TestCase
   def test_comments
     style = Stylish::Stylesheet.new do
       comment "Content areas should be spaced out."
-      rule ".content", "margin" => "1em 0"
+      rule ".content", margin("1em 0")
     end
     
     assert_instance_of(Stylish::Comment, style.content[0])
