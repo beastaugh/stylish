@@ -45,10 +45,19 @@ class StylesheetTest < Test::Unit::TestCase
     assert_equal(2, nested.rules.length)
     
     flattened = nested.rules.map {|r| r.to_s }
-    
+    p flattened.index(".section {}")
     assert_nil(flattened.index(".section {}"))
     assert_not_nil(flattened.index(".section p {font-weight:normal; margin-bottom:1em;}"))
     assert_not_nil(flattened.index(".section h3 {font-weight:bold;}"))
+  end
+  
+  def test_rule_order
+    style = Stylish::Stylesheet.new do
+      rule "p", "margin" => "0 0 1em 0", "font-weight" => "normal"
+    end
+    
+    assert_equal("margin:0 0 1em 0;", style.rules[0].declarations[0].to_s)
+    assert_equal("font-weight:normal;", style.rules[0].declarations[1].to_s)
   end
   
   def test_compact_rules_without_blocks
