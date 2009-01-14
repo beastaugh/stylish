@@ -4,17 +4,32 @@ module Stylish
     include Formattable
     
     attr_reader :content
-    attr_accessor :parent, :depth
+    attr_accessor :name, :parent, :depth
     
-    def initialize(selectors = nil, declarations = nil, parent = nil, depth = 0, options = {}, &block)
+    def initialize(name = nil, selectors = nil, declarations = nil, parent = nil, depth = 0, options = {}, &block)
       accept_format(/\s*/m, "\n")
       options = {:images => ''}.merge(options)
       
+      self.name = name
       @parent, @depth = parent, depth
       @images_path = Pathname.new(options[:images])
       @content = []
       
       Description.new(self, selectors, declarations).instance_eval(&block) if block
+    end
+    
+    def name
+      @name.to_s
+    end
+    
+    def name=(name)
+      if name.is_a? String
+        @name = name
+      elsif @name.is_a? String
+        @name
+      else
+        @name = self.object_id
+      end
     end
     
     def content=(input)

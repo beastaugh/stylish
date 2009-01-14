@@ -7,6 +7,21 @@ class StylesheetTest < Test::Unit::TestCase
     @style = Stylish::Stylesheet.new
   end
   
+  def test_name_assignment
+    @style.name = "rothko"
+    assert_equal("rothko", @style.name)
+    
+    @style.name = 123456
+    assert_equal("rothko", @style.name)
+    
+    some_style = Stylish::Stylesheet.new
+    assert_equal(some_style.object_id.to_s, some_style.name)
+  end
+  
+  def test_name_return_type
+    assert_instance_of(String, @style.name)
+  end
+  
   def test_content_assignment
     @style.content = [Stylish::Rule.new(".content", "color" => "red"),
                       Stylish::Comment.new("Test comment")]
@@ -96,7 +111,7 @@ class StylesheetTest < Test::Unit::TestCase
       assert_instance_of(Stylish::Rule, rule)
     end
     
-    nested = Stylish::Stylesheet.new ".section" do
+    nested = Stylish::Stylesheet.new(nil, ".section") do
       rule "p", font_weight("normal"), margin_bottom("1em")
       rule "h3", font_weight("bold")
     end
@@ -131,7 +146,7 @@ class StylesheetTest < Test::Unit::TestCase
   end
   
   def test_image_paths
-    style = Stylish::Stylesheet.new(nil, nil, nil, 0, :images => '/public/images/') do
+    style = Stylish::Stylesheet.new(nil, nil, nil, nil, 0, :images => '/public/images/') do
       rule ".header", background_image(image("test.png"))
     end
     
@@ -151,7 +166,7 @@ class StylesheetTest < Test::Unit::TestCase
   end
   
   def test_image_path_nesting_with_backgrounds
-    style = Stylish::Stylesheet.new(nil, nil, nil, 0, :images => '/public/images/') do
+    style = Stylish::Stylesheet.new(nil, nil, nil, nil, 0, :images => '/public/images/') do
       rule ".content", background(:image => "wallpaper.gif", :repeat => "repeat")
     end
     
