@@ -10,8 +10,8 @@ Creating stylesheets
     style = Stylish.generate do
       rule ".header", background(:color => :teal, :image => "header.png")
       rule ".content" do
-        rule "h2", "font-size" => "2em"
-        rule "p", "margin" => "0 0 1em 0"
+        rule "h2", font_size("2em")
+        rule "p", margin("0 0 1em 0")
       end
     end
 
