@@ -457,9 +457,7 @@ module Stylish
       end
       
       PROPERTIES.each do |name, property|
-        if options[name]
-          self.send(:"#{name.to_s}=", options[name])
-        end
+        self.send(:"#{name.to_s}=", options[name]) if options[name]
       end
     end
     
