@@ -52,6 +52,26 @@ class StylesheetTest < Test::Unit::TestCase
     assert_equal(1, @style.content.length)
   end
   
+  def test_stylesheet_assignment
+    @style.content = [Stylish::Rule.new(".content", "color" => "red"),
+                      Stylish::Comment.new("Test comment"),
+                      Stylish::Stylesheet.new]
+    assert_equal(3, @style.content.length)
+    
+    @style.subsheets = [Stylish::Stylesheet.new, Stylish::Stylesheet.new]
+    assert_equal(4, @style.content.length)
+  end
+  
+  def test_improper_stylesheet_assignment
+    @style.content = [Stylish::Rule.new(".content", "color" => "red"),
+                      Stylish::Comment.new("Test comment"),
+                      Stylish::Stylesheet.new]
+    @style.subsheets = ["strings", "aren't", "styles!"]
+    
+    assert_equal(0, @style.subsheets.length)
+    assert_equal(2, @style.content.length)
+  end
+  
   def test_nested_rules
     style = Stylish::Stylesheet.new do
       rule ".header", display("block")
@@ -111,7 +131,7 @@ class StylesheetTest < Test::Unit::TestCase
   end
   
   def test_image_paths
-    style = Stylish::Stylesheet.new(nil, nil, :images => '/public/images/') do
+    style = Stylish::Stylesheet.new(nil, nil, nil, 0, :images => '/public/images/') do
       rule ".header", background_image(image("test.png"))
     end
     
@@ -131,7 +151,7 @@ class StylesheetTest < Test::Unit::TestCase
   end
   
   def test_image_path_nesting_with_backgrounds
-    style = Stylish::Stylesheet.new(nil, nil, :images => '/public/images/') do
+    style = Stylish::Stylesheet.new(nil, nil, nil, 0, :images => '/public/images/') do
       rule ".content", background(:image => "wallpaper.gif", :repeat => "repeat")
     end
     

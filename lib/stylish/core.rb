@@ -4,11 +4,13 @@ module Stylish
     include Formattable
     
     attr_reader :content
+    attr_accessor :parent, :depth
     
-    def initialize(selectors = nil, declarations = nil, options = {}, &block)
+    def initialize(selectors = nil, declarations = nil, parent = nil, depth = 0, options = {}, &block)
       accept_format(/\s*/m, "\n")
       options = {:images => ''}.merge(options)
       
+      @parent, @depth = parent, depth
       @images_path = Pathname.new(options[:images])
       @content = []
       
@@ -16,7 +18,9 @@ module Stylish
     end
     
     def content=(input)
-      @content = input.select {|obj| obj.is_a?(Rule) || obj.is_a?(Comment) }
+      @content = input.select do |obj|
+        obj.is_a?(Rule) || obj.is_a?(Comment) || obj.is_a?(Stylesheet)
+      end
     end
     
     def rules
@@ -35,6 +39,19 @@ module Stylish
     def comments=(input)
       @content = @content.reject {|obj| obj.is_a? Comment }
       @content.concat(input.select {|obj| obj.is_a? Comment })
+    end
+
+    def subsheets
+      @content.select {|obj| obj.is_a? Stylesheet }
+    end
+
+    def subsheets=(input)
+      @content = @content.reject {|obj| obj.is_a? Stylesheet }
+      @content.concat(input.select {|obj| obj.is_a? Stylesheet }.map {|style|
+        style.depth = @depth + 1
+        style.parent = self
+        style
+      })
     end
     
     def to_s
