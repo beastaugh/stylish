@@ -18,6 +18,31 @@ module Stylish
       "url('#{(@images_path + path).to_s}')" if path
     end
     
+    # Write the stylesheet to disk.
+    #
+    # File names and directories can both be used as arguments. If a file name
+    # is used, the stylesheet will be written to that file. If a directory name
+    # is used, the stylesheet's name (plus a .css file extension) will be
+    # joined to the directory path and the file at the resultant path will be
+    # written to.
+    #
+    # Alternatively, if no argument is provided, the method will simply use the
+    # stylesheet name, followed by a .css file extension, as the path of the
+    # file to be written to.
+    def write(file_or_dir = nil)
+      if file_or_dir.nil? || file_or_dir.empty?
+        path = Pathname.new(self.name + ".css")
+      else
+        path = Pathname.new(file_or_dir)
+      end
+      
+      path += self.name + ".css" if path.directory?
+      
+      File.open(path, "w+") do |f|
+        f.write(self)
+      end
+    end
+    
     class Description
       def initialize(sheet = nil, selectors = nil, declarations = nil)
         @sheet = sheet || Stylesheet.new
