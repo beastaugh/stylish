@@ -36,6 +36,22 @@ class StylesheetTest < Test::Unit::TestCase
     assert_equal(0, @style.rules.length)
   end
   
+  def test_comments_assignment
+    @style.content = [Stylish::Rule.new(".content", "color" => "red")]
+    @style.comments = [Stylish::Comment.new("Test comment")]
+    
+    assert_equal(2, @style.content.length)
+    assert_equal(1, @style.comments.length)
+  end
+  
+  def test_improper_comments_assignment
+    @style.content = [Stylish::Rule.new(".content", "color" => "red"),
+                      Stylish::Comment.new("Test comment")]
+    @style.comments = ["these", "aren't", "comments!"]
+    assert_equal(0, @style.comments.length)
+    assert_equal(1, @style.content.length)
+  end
+  
   def test_nested_rules
     style = Stylish::Stylesheet.new do
       rule ".header", display("block")

@@ -32,6 +32,11 @@ module Stylish
       @content.select {|obj| obj.is_a? Comment }
     end
     
+    def comments=(input)
+      @content = @content.reject {|obj| obj.is_a? Comment }
+      @content.concat(input.select {|obj| obj.is_a? Comment })
+    end
+    
     def to_s
       @content.map {|r| r.to_s }.join(@format)
     end
