@@ -184,7 +184,7 @@ module Stylish
     end
     
     def property=(prop)
-      @property = SHORTHANDS.has_key?(prop) ? SHORTHANDS[prop] : prop.to_s
+      @property = SHORTHANDS.has_key?(prop.to_sym) ? SHORTHANDS[prop.to_sym] : prop.to_s
     end
     
     def value=(val)

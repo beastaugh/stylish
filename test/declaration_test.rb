@@ -11,6 +11,14 @@ class DeclarationTest < Test::Unit::TestCase
     assert_equal("border-color", dec.property)
   end
   
+  def test_string_shorthands
+    dec = Stylish::Declaration.new("bgcolor", "#fff")
+    assert_equal("background-color", dec.property)
+    
+    dec.property = "bdcolor"
+    assert_equal("border-color", dec.property)
+  end
+  
   def test_colors
     assert_instance_of(Stylish::Color, Stylish::Declaration.new("color", :green).value)
     assert_instance_of(Stylish::Color, Stylish::Declaration.new("color", "#e5e5e5").value)
