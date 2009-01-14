@@ -20,15 +20,15 @@ module Stylish
     end
     
     def rules
-      @content.reject {|obj| !obj.is_a? Rule }
+      @content.select {|obj| obj.is_a? Rule }
     end
     
     def comments
-      @content.reject {|obj| !obj.is_a? Comment }
+      @content.select {|obj| obj.is_a? Comment }
     end
     
     def rules=(input)
-      @content = input.reject {|obj| !obj.is_a?(Rule) || !obj.is_a?(Comment) }
+      @content = input.select {|obj| obj.is_a?(Rule) || obj.is_a?(Comment) }
     end
     
     def rule(selectors, declarations)
