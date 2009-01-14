@@ -28,4 +28,23 @@ class GenerateTest < Test::Unit::TestCase
     
     `rm #{@style.name}.css`
   end
+  
+  def test_subsheets
+    greek = Stylish.generate do
+      ["alpha", "beta", "gamma", "delta"].each do |name|
+        subsheet(name) {
+          comment "#{name.capitalize} is a sub-stylesheet."
+          rule "DIV", font_style("normal"), margin("0 0 1em 0")
+          rule "P", text_indent("-9999em")
+        }
+      end
+    end
+    
+    assert_equal(4, greek.subsheets.length)
+    
+    3.times do |i|
+      assert_instance_of(Stylish::Stylesheet, greek.subsheets[i])
+      assert_equal(3, greek.subsheets[i].content.length)
+    end
+  end
 end

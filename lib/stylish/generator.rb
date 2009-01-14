@@ -65,6 +65,14 @@ module Stylish
         end
       end
       
+      def subsheet(name = nil, selectors = nil, declarations = nil, options = {}, &block)
+        subsheet = Stylesheet.new(name, selectors, declarations,
+                                  @sheet, @sheet.depth + 1,
+                                  options = {}, &block)
+        @sheet.content << subsheet
+        subsheet
+      end
+      
       def comment(*args)
         @sheet.comment(*args)
       end
