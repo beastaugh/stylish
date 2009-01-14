@@ -7,6 +7,17 @@ class StylesheetTest < Test::Unit::TestCase
     @style = Stylish::Stylesheet.new
   end
   
+  def test_content_assignment
+    @style.content = [Stylish::Rule.new(".content", "color" => "red"),
+                      Stylish::Comment.new("Test comment")]
+    assert_equal(2, @style.content.length)
+  end
+  
+  def test_improper_content_assignment
+    @style.content = ["various", "objects", "that", "are", "incorrect"]
+    assert_equal(0, @style.content.length)
+  end
+  
   def test_rules_assignment
     @style.rules = [Stylish::Rule.new(".content", "color" => "red")]
     assert_equal(1, @style.rules.length)

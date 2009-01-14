@@ -15,6 +15,10 @@ module Stylish
       Description.new(self, selectors, declarations).instance_eval(&block) if block
     end
     
+    def content=(input)
+      @content = input.select {|obj| obj.is_a?(Rule) || obj.is_a?(Comment) }
+    end
+    
     def rules
       @content.select {|obj| obj.is_a? Rule }
     end
