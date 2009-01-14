@@ -23,13 +23,13 @@ module Stylish
       @content.select {|obj| obj.is_a? Rule }
     end
     
-    def comments
-      @content.select {|obj| obj.is_a? Comment }
-    end
-    
     def rules=(input)
       @content = @content.reject {|obj| obj.is_a? Rule }
-      @content = input.select {|obj| obj.is_a? Rule }
+      @content.concat(input.select {|obj| obj.is_a? Rule })
+    end
+    
+    def comments
+      @content.select {|obj| obj.is_a? Comment }
     end
     
     def to_s

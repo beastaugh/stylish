@@ -19,8 +19,10 @@ class StylesheetTest < Test::Unit::TestCase
   end
   
   def test_rules_assignment
+    @style.content = [Stylish::Comment.new("Test comment")]
     @style.rules = [Stylish::Rule.new(".content", "color" => "red")]
     assert_equal(1, @style.rules.length)
+    assert_equal(2, @style.content.length)
     
     @style.rules = []
     assert_equal(0, @style.rules.length)
