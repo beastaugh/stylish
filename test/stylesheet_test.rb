@@ -3,10 +3,24 @@ require './lib/stylish'
 
 class StylesheetTest < Test::Unit::TestCase
   
-  def test_improper_rules
-    style = Stylish::Stylesheet.new
-    style.rules = ["really", "not", "what", "we", "want"]
-    assert_equal(0, style.rules.length)
+  def setup
+    @style = Stylish::Stylesheet.new
+  end
+  
+  def test_rules_assignment
+    @style.rules = [Stylish::Rule.new(".content", "color" => "red")]
+    assert_equal(1, @style.rules.length)
+    
+    @style.rules = []
+    assert_equal(0, @style.rules.length)
+  end
+  
+  def test_improper_rules_assignment
+    @style.rules = ["really", "not", "what", "we", "want"]
+    assert_equal(0, @style.rules.length)
+    
+    @style.rules = [Stylish::Comment.new("Test comment")]
+    assert_equal(0, @style.rules.length)
   end
   
   def test_nested_rules

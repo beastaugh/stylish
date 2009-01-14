@@ -24,7 +24,8 @@ module Stylish
     end
     
     def rules=(input)
-      @content = input.select {|obj| obj.is_a?(Rule) || obj.is_a?(Comment) }
+      @content = @content.reject {|obj| obj.is_a? Rule }
+      @content = input.select {|obj| obj.is_a? Rule }
     end
     
     def to_s
