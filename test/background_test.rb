@@ -75,4 +75,39 @@ class BackgroundTest < Test::Unit::TestCase
     assert_nil(Stylish::Background.new(:compressed => "false").compressed)
     assert_nil(Stylish::Background.new(:compressed => nil).compressed)
   end
+  
+  def test_declaration_property
+    assert_equal(["background-color", "background-repeat"],
+      Stylish::Background.new(:color => "red", :repeat => "no-repeat").property)
+  end
+  
+  def test_declaration_property_assignment
+    background = Stylish::Background.new(:color => "red", :repeat => "no-repeat")
+    
+    assert_raise(NoMethodError) do
+      background.property = "display"
+    end
+  end
+  
+  def test_declaration_value
+    background = Stylish::Background.new(:color => "red", :repeat => "no-repeat")
+    
+    assert_equal("no-repeat", background.value[1])
+    assert_equal("red", background.value[0].to_s)
+  end
+  
+  def test_declaration_value_assignment
+    background = Stylish::Background.new(:color => "red", :repeat => "no-repeat")
+    background.value = {:image => "mondrian.jpg"}
+    
+    assert_equal("mondrian.jpg", background.image)
+  end
+  
+  def test_declaration_value_assignment_errors
+    background = Stylish::Background.new(:color => "red", :repeat => "no-repeat")
+    
+    assert_raise ArgumentError do
+      background.value = "mondrian.jpg"
+    end
+  end
 end

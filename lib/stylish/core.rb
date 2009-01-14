@@ -359,7 +359,7 @@ module Stylish
     end
   end
   
-  class Background
+  class Background < Declaration
     attr_reader :color,
                 :image,
                 :repeat,
@@ -381,11 +381,8 @@ module Stylish
     VERTICAL_POSITIONS = ["top", "center", "bottom"]
     
     def initialize(options)
-      PROPERTIES.each do |name, property|
-        if options[name]
-          self.send(:"#{name.to_s}=", options[name])
-        end
-      end
+      accept_format(/^\s*%s\s*:\s*%s;\s*$/m, "%s:%s;")
+      self.value = options
     end
     
     # Input validation for colours is handled by the Color class, which will
@@ -431,16 +428,50 @@ module Stylish
       to_s
     end
     
-    def to_s
-      decs = PROPERTIES.reject {|n, p| p.nil? }.map {|n, p|
+    # Override Declaration#property, since it's not compatible with the
+    # internals of this class.
+    def property
+      PROPERTIES.reject {|n, p| p.nil? }.map {|n, p|
         value = self.send(n)
-        [p.to_s, value] unless value.nil?
+        p.to_s unless value.nil?
       }.compact
+    end
+    
+    # Override Declaration#property=, since it's not compatible with the
+    # internals of this class.
+    def property=(val)
+      raise NoMethodError, "property= is not defined for Background."
+    end
+    
+    # Override Declaration#value, since it's not compatible with the internals
+    # of this class.
+    def value(name_and_value = false)
+      PROPERTIES.reject {|n, p| p.nil? }.map {|n, p|
+        value = self.send(n)
+        next if value.nil?
+        name_and_value ? [p.to_s, value] : value
+      }.compact
+    end
+    
+    # Override Declaration#value=, since it's not compatible with the internals
+    # of this class.
+    def value=(options)
+      unless options.is_a? Hash
+        raise ArgumentError, "Argument must be a hash of background properties"
+      end
       
+      PROPERTIES.each do |name, property|
+        if options[name]
+          self.send(:"#{name.to_s}=", options[name])
+        end
+      end
+    end
+    
+    def to_s
       if @compressed
-        "background:#{decs.map {|p, v| v }.compact.join(" ")};"
+        "background:#{self.value(true).map {|p, v| v }.compact.join(" ")};"
       else
-        decs.map {|p, v| "#{p}:#{v.to_s};" }.join(" ")
+        self.value(true).map {|p, v| sprintf(@format, p, v.to_s) }.join(" ")
       end
     end
   end

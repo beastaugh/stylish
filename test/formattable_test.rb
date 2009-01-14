@@ -8,12 +8,14 @@ class FormattableTest < Test::Unit::TestCase
     @rule = Stylish::Rule.new(".test, .content", "display:block;")
     @selectors = Stylish::Selectors.new
     @declaration = Stylish::Declaration.new(:bgcolor, "#000")
+    @background = Stylish::Background.new(:color => "red")
   end
   
   def test_reading_default_formats  
     assert_equal("\n", @stylesheet.format)
     assert_equal("%s {%s}", @rule.format)
     assert_equal(", ", @selectors.format)
+    assert_equal("%s:%s;", @declaration.format)
     assert_equal("%s:%s;", @declaration.format)
   end
   
