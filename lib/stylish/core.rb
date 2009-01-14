@@ -1,4 +1,36 @@
 module Stylish
+  
+  class Stylesheet
+    include Formattable
+    
+    attr_reader :content
+    
+    def initialize(selectors = nil, declarations = nil, options = {}, &block)
+      accept_format(/\s*/m, "\n")
+      options = {:images => ''}.merge(options)
+      
+      @images_path = Pathname.new(options[:images])
+      @content = []
+      
+      Description.new(self, selectors, declarations).instance_eval(&block) if block
+    end
+    
+    def rules
+      @content.select {|obj| obj.is_a? Rule }
+    end
+    
+    def comments
+      @content.select {|obj| obj.is_a? Comment }
+    end
+    
+    def rules=(input)
+      @content = input.select {|obj| obj.is_a?(Rule) || obj.is_a?(Comment) }
+    end
+    
+    def to_s
+      @content.map {|r| r.to_s }.join(@format)
+    end
+  end
     
   class Rule
     include Formattable
