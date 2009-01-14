@@ -424,10 +424,6 @@ module Stylish
       @compressed = val == true || nil
     end
     
-    def join(str = "")
-      to_s
-    end
-    
     # Override Declaration#property, since it's not compatible with the
     # internals of this class.
     def property
