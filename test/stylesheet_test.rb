@@ -183,4 +183,19 @@ class StylesheetTest < Test::Unit::TestCase
     assert_equal("Content areas should be spaced out.", style.content[0].header)
     assert_equal("Content areas should be spaced out.", style.comments[0].header)
   end
+  
+  def test_indenting
+    style = Stylish::Stylesheet.new(nil, nil, nil, nil, 1, :indent => " " * 2) do
+      comment "Testing comment indents"
+      rule "P", font_weight("normal")
+      rule "DIV", margin_bottom("0")
+    end
+    
+    assert_equal(
+"  /**
+   * Testing comment indents
+   */
+  P {font-weight:normal;}
+  DIV {margin-bottom:0;}", style.to_s)
+  end
 end

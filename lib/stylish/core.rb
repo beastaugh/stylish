@@ -3,7 +3,7 @@ module Stylish
   class Stylesheet
     include Formattable
     
-    attr_reader :content
+    attr_reader :content, :indent
     attr_accessor :name, :parent, :depth
     
     def initialize(name = nil, selectors = nil, declarations = nil, parent = nil, depth = 0, options = {}, &block)
@@ -13,6 +13,8 @@ module Stylish
       self.name = name
       @parent, @depth = parent, depth
       @images_path = Pathname.new(options[:images])
+      self.indent = options[:indent]
+      
       @content = []
       
       Description.new(self, selectors, declarations).instance_eval(&block) if block
@@ -69,11 +71,16 @@ module Stylish
       })
     end
     
-    def to_s
-      @content.map {|r| r.to_s }.join(@format)
+    def indent=(str)
+      @indent = str.is_a?(String) && str =~ /^\s+$/m ? str : " " * 2
+    end
+    
+    def to_s(indent = true)
+      output = @content.map {|r| r.to_s }.join(@format)
+      indent ? output.gsub(/(\A|\n)/, '\1' + @indent * @depth) : output
     end
   end
-    
+  
   class Rule
     include Formattable
     
