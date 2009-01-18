@@ -146,7 +146,7 @@ class StylesheetTest < Test::Unit::TestCase
   end
   
   def test_image_paths
-    style = Stylish::Stylesheet.new(nil, nil, nil, nil, 0, :images => '/public/images/') do
+    style = Stylish::Stylesheet.new(nil, nil, nil, :images => '/public/images/') do
       rule ".header", background_image(image("test.png"))
     end
     
@@ -166,7 +166,7 @@ class StylesheetTest < Test::Unit::TestCase
   end
   
   def test_image_path_nesting_with_backgrounds
-    style = Stylish::Stylesheet.new(nil, nil, nil, nil, 0, :images => '/public/images/') do
+    style = Stylish::Stylesheet.new(nil, nil, nil, :images => '/public/images/') do
       rule ".content", background(:image => "wallpaper.gif", :repeat => "repeat")
     end
     
@@ -185,7 +185,7 @@ class StylesheetTest < Test::Unit::TestCase
   end
   
   def test_indenting
-    style = Stylish::Stylesheet.new(nil, nil, nil, nil, 1, :indent => " " * 2) do
+    style = Stylish::Stylesheet.new(nil, nil, nil, :depth => 1, :indent => " " * 2) do
       comment "Testing comment indents"
       rule "P", font_weight("normal")
       rule "DIV", margin_bottom("0")

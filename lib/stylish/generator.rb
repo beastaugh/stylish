@@ -67,8 +67,9 @@ module Stylish
       
       def subsheet(name = nil, selectors = nil, declarations = nil, options = {}, &block)
         subsheet = Stylesheet.new(name, selectors, declarations,
-                                  @sheet, @sheet.depth + 1,
-                                  options = {}, &block)
+                                  options.merge({:parent => @sheet,
+                                                 :depth => @sheet.depth + 1}),
+                                  &block)
         @sheet.content << subsheet
         subsheet
       end

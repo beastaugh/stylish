@@ -6,12 +6,12 @@ module Stylish
     attr_reader :content, :indent
     attr_accessor :name, :parent, :depth
     
-    def initialize(name = nil, selectors = nil, declarations = nil, parent = nil, depth = 0, options = {}, &block)
+    def initialize(name = nil, selectors = nil, declarations = nil, options = {}, &block)
       accept_format(/\s*/m, "\n")
-      options = {:images => ''}.merge(options)
+      options = {:images => '', :depth => 0}.merge(options)
       
       self.name = name
-      @parent, @depth = parent, depth
+      @parent, @depth = options[:parent], options[:depth]
       @images_path = Pathname.new(options[:images])
       self.indent = options[:indent]
       
