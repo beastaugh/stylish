@@ -77,7 +77,8 @@ module Stylish
     
     def to_s(indent = true)
       output = @content.map {|r| r.to_s }.join(@format)
-      indent ? output.gsub(/(\A|\n)/, '\1' + @indent * @depth) : output
+      output.gsub!(/(\A|\n)/, '\1' + @indent * @depth) if indent
+      output + "\n"
     end
   end
   

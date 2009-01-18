@@ -196,6 +196,7 @@ class StylesheetTest < Test::Unit::TestCase
    * Testing comment indents
    */
   P {font-weight:normal;}
-  DIV {margin-bottom:0;}", style.to_s)
+  DIV {margin-bottom:0;}
+", style.to_s)
   end
 end
