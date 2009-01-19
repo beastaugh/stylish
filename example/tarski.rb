@@ -50,10 +50,11 @@ Stylish.generate("tarski", nil, nil, :indent => "") do
       comment "#{name.capitalize} style for Tarski",
               "Designed by Benedict Eastaugh, http://extralogical.net/"
       
-      subsheet("navigation", "#wrapper") do
-        comment "Navigation"
-        rule ".nav-current:link, .nav-current:visited, .nav-current:active", color("bf6030")
-        rule ".nav-current:hover", color("e59900")
+      comment "Navigation" do
+        rule "#wrapper" do
+          rule ".nav-current:link, .nav-current:visited, .nav-current:active", color("bf6030")
+          rule ".nav-current:hover", color("e59900")
+        end
       end
       
       comment "Content" do
@@ -69,17 +70,18 @@ Stylish.generate("tarski", nil, nil, :indent => "") do
     		rule ".articlenav", background(:color => "fcfeff")
       end
       
-      subsheet("inserts", ".insert",
-        [background(:color => "fcfeff"), margin("0 0 1em 0"),
-        border("1px solid #cfdde5"), padding("9px")]) do
-    		comment "Inserts"
-        rule "h3", border_bottom("1px solid #cfdde5")
+      comment "Inserts" do
+        rule ".insert", background(:color => "fcfeff"),
+          margin("0 0 1em 0"), border("1px solid #cfdde5"), padding("9px") do
+          rule "h3", border_bottom("1px solid #cfdde5")
+        end
       end
       
-      subsheet("downloads", ".content") do
-    		comment "Downloads"
-  		  rule "a.download:link, a.download:visited, a.download:active",
-  		    background(:color => "#fcfeff"), border("1px solid #cfdde5")
+      comment "Downloads" do
+        rule ".content" do
+    		  rule "a.download:link, a.download:visited, a.download:active",
+    		    background(:color => "#fcfeff"), border("1px solid #cfdde5")
+		    end
       end
       
   		comment "Images" do
@@ -96,10 +98,11 @@ Stylish.generate("tarski", nil, nil, :indent => "") do
         end
       end
       
-      subsheet("widgets", ".widget_calendar tbody td") do
-        comment "Calendar widget"
-        rule "a", color("#fff"), background(:color => "#8bb6cc")
-        rule "a:hover", color("#fff"), background(:color => "#cca352")
+      comment "Calendar widget" do
+        rule ".widget_calendar tbody td" do
+          rule "a", color("#fff"), background(:color => "#8bb6cc")
+          rule "a:hover", color("#fff"), background(:color => "#cca352")
+        end
       end
     }.write(File.dirname(__FILE__))
   end
