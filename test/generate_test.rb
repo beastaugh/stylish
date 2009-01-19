@@ -52,6 +52,7 @@ class GenerateTest < Test::Unit::TestCase
     tree = Stylish.generate do
       subsheet do
         rule "P", text_indent("-9999em")
+        p text_indent("-9999em")
         
         subsheet do
           rule "EM", font_style("italic")
@@ -79,5 +80,17 @@ class GenerateTest < Test::Unit::TestCase
     assert_instance_of(Stylish::Stylesheet, commented.content[0])
     assert_equal("This is a section header", commented.content[0].content[0].header)
     assert_equal("ABBR {text-decoration:underline;}", commented.content[0].content[1].to_s)
+  end
+  
+  def test_shorthand_selectors
+    style = Stylish.generate do
+      body background(:color => "white")
+      label border("1px inset #ccc")
+    end
+    
+    assert_instance_of(Stylish::Rule, style.content[0])
+    assert_instance_of(Stylish::Rule, style.content[1])
+    assert_equal("body {background-color:white;}", style.content[0].to_s)
+    assert_equal("label {border:1px inset #ccc;}", style.content[1].to_s)
   end
 end
