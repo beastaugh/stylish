@@ -48,6 +48,6 @@ Stylish.generate do
   ].each do |name, mapping|
     subsheet(name) {
       # ...
-    }.write
+    }.write(File.dirname(__FILE__))
   end
 end
