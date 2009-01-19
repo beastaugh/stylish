@@ -47,4 +47,25 @@ class GenerateTest < Test::Unit::TestCase
       assert_equal(3, greek.subsheets[i].content.length)
     end
   end
+  
+  def test_subsheet_indents
+    tree = Stylish.generate do
+      subsheet do
+        rule "P", text_indent("-9999em")
+        
+        subsheet do
+          rule "EM", font_style("italic")
+        end
+      end
+    end
+    
+    lines = tree.to_s.split("\n")
+    
+    assert_equal("  P {text-indent:-9999em;}", lines[0])
+    assert_equal("    EM {font-style:italic;}", lines[1])
+    
+    tree.indent = ""
+    
+    assert_equal("P {text-indent:-9999em;}", tree.to_s.split("\n")[0])
+  end
 end

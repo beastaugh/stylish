@@ -9,13 +9,12 @@ module Stylish
     def initialize(name = nil, selectors = nil, declarations = nil, options = {}, &block)
       accept_format(/\s*/m, "\n")
       options = {:images => '', :depth => 0}.merge(options)
+      @content = []
       
       self.name = name
       @parent, @depth = options[:parent], options[:depth]
       @images_path = Pathname.new(options[:images])
       self.indent = options[:indent]
-      
-      @content = []
       
       Description.new(self, selectors, declarations).instance_eval(&block) if block
     end
@@ -72,12 +71,16 @@ module Stylish
     end
     
     def indent=(str)
-      @indent = str.is_a?(String) && str =~ /^\s+$/m ? str : " " * 2
+      @indent = str.is_a?(String) && str =~ /^\s*$/m ? str : " " * 2
+      
+      self.subsheets.each do |subsheet|
+        subsheet.indent = @indent
+      end
     end
     
     def to_s(indent = true)
       output = @content.map {|r| r.to_s }.join(@format)
-      output.gsub!(/(\A|\n)/, '\1' + @indent * @depth) if indent
+      output.gsub!(/(\A|\n)/, '\1' + self.indent) if indent && self.depth > 0
       output + "\n"
     end
   end
