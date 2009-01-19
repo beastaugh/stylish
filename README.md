@@ -31,6 +31,14 @@ Future considerations
 * Add a parser so CSS can be read as well as written.
 
 
+Design notes
+------------
+
+CSS is a remarkably succinct and powerful language, with several marked deficiencies. It lacks both variables and iteration, and its long-winded property names are often irritating. Stylish attempts to address these issues by reducing duplication, providing a cleaner namespacing syntax and reducing transcription errors. It is not intended as a replacement for hand-authored CSS, but as a supplement to it.
+
+Stylish treats CSS as object code--but it treats it nicely.
+
+
 Licence
 -------
 
