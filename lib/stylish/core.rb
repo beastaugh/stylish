@@ -250,6 +250,7 @@ module Stylish
     end
   end
   
+  
   # Declarations subclasses Array so that whenever #join is called, the
   # instance's format attribute will be used as the join string, rather than
   # the empty string.
@@ -279,6 +280,9 @@ module Stylish
     end
   end
   
+  
+  # The Color class is intended to eventually implement the entirety of the
+  # {CSS Color Module Level 3}[link:http://www.w3.org/TR/css3-color/].
   class Color
     attr_reader :type
     
