@@ -68,4 +68,16 @@ class GenerateTest < Test::Unit::TestCase
     
     assert_equal("P {text-indent:-9999em;}", tree.to_s.split("\n")[0])
   end
+  
+  def test_comment_blocks
+    commented = Stylish.generate do
+      comment "This is a section header" do
+        rule "ABBR", text_decoration("underline")
+      end
+    end
+    
+    assert_instance_of(Stylish::Stylesheet, commented.content[0])
+    assert_equal("This is a section header", commented.content[0].content[0].header)
+    assert_equal("ABBR {text-decoration:underline;}", commented.content[0].content[1].to_s)
+  end
 end

@@ -75,8 +75,18 @@ module Stylish
         subsheet
       end
       
-      def comment(*args)
-        @sheet.comment(*args)
+      def comment(*args, &block)
+        if args && block
+          subsheet = Stylesheet.new(nil, nil, nil, {:parent => @sheet,
+                                                    :depth => @sheet.depth + 1,
+                                                    :indent => @sheet.indent})
+          subsheet.comment(*args)
+          self.class.new(subsheet).instance_eval(&block)
+          @sheet.content << subsheet
+          subsheet
+        else
+          @sheet.comment(*args)
+        end
       end
       
       def image(path)
