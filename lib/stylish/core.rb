@@ -407,7 +407,7 @@ module Stylish
         return if val.nil?
       end
       
-      rgba = val.to_a[0..3].inject([]) {|memo, v|
+      rgba = Array(val)[0..3].inject([]) {|memo, v|
         if memo.length == 3
           opacity = v.to_f
           v = (0 <= opacity && opacity <= 1) ? opacity : nil
