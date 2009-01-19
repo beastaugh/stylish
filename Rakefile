@@ -10,3 +10,7 @@ task :test do
     end
   end
 end
+
+task :example do
+  require 'examples/tarski'
+end
