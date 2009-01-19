@@ -11,6 +11,7 @@ task :test do
   end
 end
 
+desc "Run a Stylish example"
 task :example do
   require 'examples/tarski'
 end
