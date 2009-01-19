@@ -25,5 +25,5 @@ Calling the stylesheet's `to_s` method would produce the following <abbr title="
 Future considerations
 ---------------------
 
-* Groupings of rules and comments could be better handled.
 * Fundamental objects like percentages and URIs need their own classes rather than being dealt with in an ad-hoc manner by higher-level objects.
+* Add a parser so CSS can be read as well as written.
