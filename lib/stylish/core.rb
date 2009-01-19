@@ -247,18 +247,30 @@ module Stylish
     end
   end
   
+  # Declarations subclasses Array so that whenever #join is called, the
+  # instance's format attribute will be used as the join string, rather than
+  # the empty string.
   class Declarations < Array
     include Formattable
     
+    # The allowed format is any string consisting only of whitespace
+    # characters, including newline. The default format string is a single
+    # space, which is probably the most common choice in hand-written CSS.
     def initialize(*args)
       accept_format(/^\s*$/m, " ")
       super
     end
     
+    # The format attribute is always used as the separator when joining the
+    # elements of a Declarations object.
     def join
       super(@format)
     end
     
+    # Returns a string by converting each element to a string, separated by the
+    # format attribute. Assuming that its contents are indeed Declaration
+    # objects, this will invoke their own #to_s method and generating correct
+    # CSS code.
     def to_s
       self.join
     end
