@@ -25,6 +25,8 @@ Calling the stylesheet's `to_s` method would produce the following <abbr title="
 Future considerations
 ---------------------
 
+* The core classes and code generation DSL are only partially documented; this situation could be improved.
+* Even cleaner syntax in the code generation DSL might be possible. [jcoglan](http://github.com/jcoglan/) suggested `div margin("0 0 1em 0"), font_size("12px")` for rules with a single HTML element type as the selector.
 * Fundamental objects like percentages and URIs need their own classes rather than being dealt with in an ad-hoc manner by higher-level objects.
 * Add a parser so CSS can be read as well as written.
 
