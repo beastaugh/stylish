@@ -96,11 +96,11 @@ Stylish.generate("tarski", nil, nil, :indent => "") do
         end
       end
       
-      subsheet("widgets", ".widget_calendar tbody td") {
+      subsheet("widgets", ".widget_calendar tbody td") do
         comment "Calendar widget"
         rule "a", color("#fff"), background(:color => "#8bb6cc")
         rule "a:hover", color("#fff"), background(:color => "#cca352")
-      }
+      end
     }.write(File.dirname(__FILE__))
   end
 end
