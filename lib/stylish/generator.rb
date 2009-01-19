@@ -102,6 +102,8 @@ module Stylish
         ["display", value]
       end
       
+      private
+      
       def method_missing(name, *args)
         if self.respond_to?(name)
           self.send(name, *args)
