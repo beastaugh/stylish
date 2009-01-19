@@ -13,5 +13,5 @@ end
 
 desc "Run a Stylish example"
 task :example do
-  require 'examples/tarski'
+  require 'example/tarski'
 end
