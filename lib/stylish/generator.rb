@@ -1,19 +1,5 @@
 module Stylish
-  
-  HTML_ELEMENTS = [:html, :head, :title, :base, :link, :meta, :style, :script,
-                   :noscript, :eventsource, :body, :section, :nav, :article,
-                   :aside, :header, :footer, :address, :p, :hr, :br, :pre,
-                   :dialog, :blockquote, :ol, :ul, :li, :dl, :dt, :dd, :a, :q,
-                   :cite, :em, :strong, :small, :mark, :dfn, :abbr, :time,
-                   :progress, :meter, :code, :var, :samp, :kbd, :sub, :sup,
-                   :span, :i, :b, :bdo, :ruby, :rt, :rp, :ins, :del, :figure,
-                   :img, :iframe, :embed, :object, :param, :video, :audio,
-                   :source, :canvas, :map, :area, :table, :caption, :colgroup,
-                   :col, :tbody, :thead, :tfoot, :tr, :td, :th, :form,
-                   :fieldset, :label, :input, :button, :select, :datalist,
-                   :optgroup, :option, :textarea, :output, :details, :datagrid,
-                   :command, :bb, :menu, :legend, :div]
-  
+    
   def self.generate(*args, &block)
     Stylesheet.new(*args, &block)
   end
@@ -61,8 +47,8 @@ module Stylish
       
       HTML_ELEMENTS.each do |el|
         next if self.respond_to?(el)
-        self.send(:define_method, el) do |*declarations, &block|
-          rule(el.to_s, *declarations, &block)
+        self.send(:define_method, el) do |args|
+          rule(el.to_s, args)
         end
       end
       

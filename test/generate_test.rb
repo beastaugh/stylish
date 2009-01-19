@@ -52,7 +52,6 @@ class GenerateTest < Test::Unit::TestCase
     tree = Stylish.generate do
       subsheet do
         rule "P", text_indent("-9999em")
-        p text_indent("-9999em")
         
         subsheet do
           rule "EM", font_style("italic")
