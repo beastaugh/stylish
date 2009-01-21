@@ -1,10 +1,7 @@
 module Stylish
   
   module Formattable
-    
-    def format
-      @format
-    end
+    attr_reader :format
     
     def format=(format)
       if format_validates?(format)
