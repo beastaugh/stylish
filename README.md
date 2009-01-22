@@ -27,6 +27,7 @@ Future considerations
 
 * The core classes and code generation DSL are only partially documented; this situation could be improved.
 * Add 'unofficial' colour keywords that browsers interpret but aren't in the CSS spec.
+* Add support for HSL and HSLA colour values to the Color class.
 * Add a native mapping construct to allow symbol lookup for alternate stylesheets.
 * Fundamental objects like percentages and URIs need their own classes rather than being dealt with in an ad-hoc manner by higher-level objects.
 * Add a parser so CSS can be read as well as written.
