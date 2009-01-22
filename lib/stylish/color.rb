@@ -1,11 +1,20 @@
-module Stylish
-  
-  # Regular expressions matching a percentage, and matching only a percentage.
-  PCT        = /-?(0\.)?\d+%/
-  PERCENTAGE = /^#{PCT}$/
+module Stylish #:nodoc:
   
   # The Color class is intended to eventually implement the entirety of the
   # {CSS Color Module Level 3}[link:http://www.w3.org/TR/css3-color/].
+  #
+  # Color values are stored internally in an RGBA format, consisting of three
+  # integer values between 0 and 255 for red, green and blue, and an opacity
+  # value of between 0 and 1. This internal representation is then converted
+  # to the desired output format on demand. Serialising the color to a string
+  # will, by default, use the output format that matches the input format.
+  #
+  # E.g., if the input format is a hexadecimal string, the #to_s method will
+  # call the #to_hex method.
+  #
+  #   color = Color.new("#fff")
+  #   color.to_s # => "#fff"
+  #
   class Color
     attr_reader :type, :opacity
     
@@ -19,29 +28,30 @@ module Stylish
     VALID_RGB_COLOR  = /\s*rgb\(((#{RINT}|#{PCT}),\s*){2}(#{RINT}|#{PCT})\s*\)\s*/
     VALID_RGBA_COLOR = /\s*rgba\(((#{RINT}|#{PCT}),\s*){3}([0-1]|0\.\d+)\s*\)\s*/
     
+    # Colors can be of several types: keywords, hexadecimal strings, RGB and
+    # RGBA formats. The type of the color is set on initialisation, so that
+    # the output format matches the input format.
     TYPES = [:inherit, :keyword, :hex, :rgb, :rgba]
-    RGB  = [:red, :green, :blue]
-    RGBA = RGB << :opacity
-    RGB_RANGE = (0..255)
+    
     KEYWORDS = {
-      :aqua => [0, 255, 255, nil],      # => #00ffff
-      :black => [0, 0, 0, nil],         # => #000
-      :blue => [0, 0, 255, nil],        # => #0000ff
-      :fuchsia => [255, 0, 255, nil],   # => #ff00ff
-      :gray => [128, 128, 128, nil],    # => #808080
-      :green => [0, 128, 0, nil],       # => #008000
-      :lime => [0, 255, 0, nil],        # => #00ff00
-      :maroon => [128, 0, 0, nil],      # => #800000
-      :navy => [0, 0, 128, nil],        # => #000080
-      :olive => [128, 128, 0, nil],     # => #808000
-      :orange => [255, 165, 0, nil],    # => #ffA500
-      :purple => [128, 0, 128, nil],    # => #800080
-      :red => [255, 0, 0, nil],         # => #ff0000
-      :silver => [192, 192, 192, nil],  # => #c0c0c0
-      :teal => [0, 128, 128, nil],      # => #008080
-      :white => [255, 255, 255, nil],   # => #fff
-      :yellow => [255, 255, 0, nil],    # => #ffff00
-      :transparent => [0, 0, 0, 0]}     # => transparent
+      :aqua        => [0,   255, 255, nil], # => #00ffff
+      :black       => [0,   0,   0,   nil], # => #000
+      :blue        => [0,   0,   255, nil], # => #0000ff
+      :fuchsia     => [255, 0,   255, nil], # => #ff00ff
+      :gray        => [128, 128, 128, nil], # => #808080
+      :green       => [0,   128, 0,   nil], # => #008000
+      :lime        => [0,   255, 0,   nil], # => #00ff00
+      :maroon      => [128, 0,   0,   nil], # => #800000
+      :navy        => [0,   0,   128, nil], # => #000080
+      :olive       => [128, 128, 0,   nil], # => #808000
+      :orange      => [255, 165, 0,   nil], # => #ffA500
+      :purple      => [128, 0,   128, nil], # => #800080
+      :red         => [255, 0,   0,   nil], # => #ff0000
+      :silver      => [192, 192, 192, nil], # => #c0c0c0
+      :teal        => [0,   128, 128, nil], # => #008080
+      :white       => [255, 255, 255, nil], # => #fff
+      :yellow      => [255, 255, 0,   nil], # => #ffff00
+      :transparent => [0,   0,   0,   0  ]} # => transparent
     
     # Generate attribute accessors for each RGB color value. They can then be
     # used for reading and writing specific components of the color.
@@ -52,7 +62,7 @@ module Stylish
     #   color.red = 512
     #   color.red # => 64
     #
-    RGB.each do |color|
+    [:red, :green, :blue].each do |color|
       reader = color
       writer = :"#{color}="
       color = :"@#{color.to_s}"
@@ -65,7 +75,7 @@ module Stylish
       
       unless self.respond_to?(writer)
         self.send(:define_method, writer) do |value|
-          if RGB_RANGE.include?(value)
+          if (0..255).include?(value)
             instance_variable_set(color, value)
           end
         end
@@ -115,7 +125,8 @@ module Stylish
         end
       end
       
-      raise ArgumentError, "#{value.inspect} is not a valid keyword, hex or RGB color value."
+      raise ArgumentError,
+        "#{value.inspect} is not a valid keyword, hex or RGB color value."
     end
     
     # Set the opacity of the color to a value from 0 to 1.
