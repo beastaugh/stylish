@@ -24,9 +24,9 @@ module Stylish #:nodoc:
     # color.
     RINT             = /(\d{1,2}|[1-2][0-5]{2})/
     RGB_INTEGER      = /^#{RINT}$/
-    VALID_HEX_COLOR  = /^#?([\da-fA-F]{3}){1,2}$/
-    VALID_RGB_COLOR  = /\s*rgb\(((#{RINT}|#{PCT}),\s*){2}(#{RINT}|#{PCT})\s*\)\s*/
-    VALID_RGBA_COLOR = /\s*rgba\(((#{RINT}|#{PCT}),\s*){3}([0-1]|0\.\d+)\s*\)\s*/
+    HEX_COLOR  = /^#?([\da-fA-F]{3}){1,2}$/
+    RGB_COLOR  = /\s*rgb\(((#{RINT}|#{PCT}),\s*){2}(#{RINT}|#{PCT})\s*\)\s*/
+    RGBA_COLOR = /\s*rgba\(((#{RINT}|#{PCT}),\s*){3}([0-1]|0\.\d+)\s*\)\s*/
     
     # Colors can be of several types: keywords, hexadecimal strings, RGB and
     # RGBA formats. The type of the color is set on initialisation, so that
@@ -403,15 +403,15 @@ module Stylish #:nodoc:
         
         return [:keyword].concat(KEYWORDS[key]) if KEYWORDS.has_key?(key)
         
-        if value =~ VALID_HEX_COLOR
+        if value =~ HEX_COLOR
           return [:hex].concat(self.class.convert_hex(value))
         end
         
-        if value =~ VALID_RGB_COLOR
+        if value =~ RGB_COLOR
           return [:rgb].concat(self.class.convert_rgb(value))
         end
         
-        if value =~ VALID_RGBA_COLOR
+        if value =~ RGBA_COLOR
           return [:rgba].concat(self.class.convert_rgba(value))
         end
         
