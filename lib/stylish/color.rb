@@ -164,6 +164,10 @@ module Stylish #:nodoc:
     #   color = Color.new("#000")
     #   color.to_rgb # => "rgb(0, 0, 0)"
     #
+    # Neither #to_rgb nor #to_rgba outputs percentages, only numeric values.
+    # Keeping track of which values were percentages and which were numeric
+    # internally would be excessively complex, and outputs as they stand
+    # are both consistent and more accurate than percentages would be.
     def to_rgb
       "rgb(#{self.value[0..2] * ", "})"
     end
