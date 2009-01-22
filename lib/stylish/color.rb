@@ -1,149 +1,309 @@
 module Stylish
   
+  # Regular expressions matching a percentage, and matching only a percentage.
+  PCT        = /-?(0\.)?\d+%/
+  PERCENTAGE = /^#{PCT}$/
+  
   # The Color class is intended to eventually implement the entirety of the
   # {CSS Color Module Level 3}[link:http://www.w3.org/TR/css3-color/].
   class Color
-    attr_reader :type
+    attr_reader :type, :opacity
     
-    TYPES = [:inherit, :transparent, :keyword, :hex, :rgba]
+    # Regular expressions matching an integer in the RGB color range; only an
+    # RGB integer; a hexadecimal representation of an RGB color; a rgb()
+    # representation of an RGB color; and an rgba() representation of an RGBA
+    # color.
+    RINT             = /(\d{1,2}|[1-2][0-5]{2})/
+    RGB_INTEGER      = /^#{RINT}$/
+    VALID_HEX_COLOR  = /^#?([\da-fA-F]{3}){1,2}$/
+    VALID_RGB_COLOR  = /\s*rgb\(((#{RINT}|#{PCT}),\s*){2}(#{RINT}|#{PCT})\s*\)\s*/
+    VALID_RGBA_COLOR = /\s*rgba\(((#{RINT}|#{PCT}),\s*){3}([0-1]|0\.\d+)\s*\)\s*/
     
-    VALID_HEX_COLOR = /^#?([\da-fA-F]{3}){1,2}$/
-    PERCENTAGE = /^-?(0\.)?\d+%$/
-    
+    TYPES = [:inherit, :keyword, :hex, :rgb, :rgba]
+    RGB  = [:red, :green, :blue]
+    RGBA = RGB << :opacity
+    RGB_RANGE = (0..255)
     KEYWORDS = {
-      :aqua => "00ffff",
-      :black => "000",
-      :blue => "0000ff",
-      :fuchsia => "ff00ff",
-      :gray => "808080",
-      :green => "008000",
-      :lime => "00ff00",
-      :maroon => "800000",
-      :navy => "000080",
-      :olive => "808000",
-      :orange => "ffA500",
-      :purple => "800080",
-      :red => "ff0000",
-      :silver => "c0c0c0",
-      :teal => "008080",
-      :white => "fff",
-      :yellow => "ffff00"
-    }
+      :aqua => [0, 255, 255, nil],      # => #00ffff
+      :black => [0, 0, 0, nil],         # => #000
+      :blue => [0, 0, 255, nil],        # => #0000ff
+      :fuchsia => [255, 0, 255, nil],   # => #ff00ff
+      :gray => [128, 128, 128, nil],    # => #808080
+      :green => [0, 128, 0, nil],       # => #008000
+      :lime => [0, 255, 0, nil],        # => #00ff00
+      :maroon => [128, 0, 0, nil],      # => #800000
+      :navy => [0, 0, 128, nil],        # => #000080
+      :olive => [128, 128, 0, nil],     # => #808000
+      :orange => [255, 165, 0, nil],    # => #ffA500
+      :purple => [128, 0, 128, nil],    # => #800080
+      :red => [255, 0, 0, nil],         # => #ff0000
+      :silver => [192, 192, 192, nil],  # => #c0c0c0
+      :teal => [0, 128, 128, nil],      # => #008080
+      :white => [255, 255, 255, nil],   # => #fff
+      :yellow => [255, 255, 0, nil],    # => #ffff00
+      :transparent => [0, 0, 0, 0]}     # => transparent
     
+    # Generate attribute accessors for each RGB color value. They can then be
+    # used for reading and writing specific components of the color.
+    #
+    #   color = Color.new
+    #   color.red = 64
+    #   color.red # => 64
+    #   color.red = 512
+    #   color.red # => 64
+    #
+    RGB.each do |color|
+      reader = color
+      writer = :"#{color}="
+      color = :"@#{color.to_s}"
+      
+      unless self.respond_to?(reader)
+        self.send(:define_method, reader) do
+          instance_variable_get(color)
+        end
+      end
+      
+      unless self.respond_to?(writer)
+        self.send(:define_method, writer) do |value|
+          if RGB_RANGE.include?(value)
+            instance_variable_set(color, value)
+          end
+        end
+      end
+    end
+    
+    # Set the initial value of the color to the provided parameter.
     def initialize(value)
       self.value = value
     end
     
-    def to_s
-      if @type == :rgba
-        "rgb(#{@value * ", "})"
-      elsif @type == :hex
-        "#" + @value
-      else
-        @value.to_s
-      end
+    # Attribute reader for the color's value.
+    def value
+      return "inherit" if @type == :inherit
+      
+      [@red, @green, @blue, @opacity]
     end
     
-    # Inherit and transparent have no hex equivalents, so the method simply
-    # returns nil. Hex values are simply returned (with a leading octothorpe)
-    # while keywords are converted to their hex equivalent.
+    # Attribute writer for the color's value. Uses the ColorStringParser inner
+    # class to parse string values, and contains other logic to handle arrays.
+    def value=(value)
+      if value.is_a?(String) || value.is_a?(Symbol)
+        parser = ColorStringParser.new
+        @type, @red, @green, @blue, @opacity = parser.parse(value)
+        return unless @type.nil?
+      elsif value.is_a?(Array) && (3..4).include?(value.length)
+        rgb = value[0..2].inject([]) do |rgb, v|
+          if v.is_a?(Integer) || v.is_a?(Float)
+            rgb << v
+          elsif v =~ RGB_INTEGER
+            rgb << v.to_i
+          elsif v =~ PERCENTAGE
+            rgb << (v.chop.to_f * 256 / 100).round
+          end
+          
+          rgb
+        end
+        
+        if rgb.length == 3
+          if value.length == 3
+            @red, @green, @blue, @opacity = rgb << nil
+            @type = :rgb and return
+          elsif value.length == 4 and value[3] =~ /^([0-1]|0\.\d+)$/
+            @red, @green, @blue, @opacity = rgb << value[3].to_f
+            @type = :rgba and return
+          end
+        end
+      end
+      
+      raise ArgumentError, "#{value.inspect} is not a valid keyword, hex or RGB color value."
+    end
+    
+    # Set the opacity of the color to a value from 0 to 1.
+    #
+    #   color = Color.new([255, 0, 255, 0])
+    #   color.opacity = 1
+    #   color.opacity # => 1
+    #   color.opacity = 1.5
+    #   color.opacity # => 1
+    #   color.opacity = 0.5
+    #   color.opacity # => 0.5
+    #
+    def opacity=(value)
+      return unless value.is_a?(Integer) || value.is_a?(Float)
+      return if value < 0 || value > 1
+      
+      @opacity = value
+    end
+    
+    # Returns a color keyword string if the RGB value of the color is equal to
+    # one of the color keywords defined in the CSS specification.
+    #
+    #   color = Color.new("#fff")
+    #   color.to_keyword # => "white"
+    #
+    #   clear = Color.new([0, 0, 0, 0])
+    #   color.to_keyword # => "transparent"
+    #
+    def to_keyword
+      KEYWORDS.index(self.value).to_s
+    end
+    
+    # Returns a string representation of the color's RGB color value.
+    #
+    #   color = Color.new("#000")
+    #   color.to_rgb # => "rgb(0, 0, 0)"
+    #
+    def to_rgb
+      "rgb(#{self.value[0..2] * ", "})"
+    end
+    
+    # Returns a string representation of the color's RGBA color value.
+    #
+    #   color = Color.new(["100%", 255, 0, 0.5])
+    #   color.to_rgba # => "rgba(255, 255, 0, 0.5)"
+    #
+    def to_rgba
+      value = self.value
+      value[3] = 1 if self.opacity.nil?
+      "rgba(#{value * ", "})"
+    end
+    
+    # Returns a hexadecimal string representation of a color's RGB color value.
+    #
+    #   color = Color.new([255, 255, 0])
+    #   color.to_hex # => "#ff0"
+    #   color.value = [184, 78, 20]
+    #   color.to_hex # => "#b84e14"
     #
     # RGBA values have an opacity value which is not convertible to a six-
     # character hexadecimal string, so this information is stripped and a
     # conventional RGB value is then converted to hex.
     #
     # All values will be converted, if possible, from six-digit to three-digit
-    # notation, replacing replicated digits with simple values.
+    # notation, replacing replicated digits with single values.
     #
     #     #ffffff => #fff
     #     #ffbb00 => #fb0
     #
+    # Inherit and transparent have no hex equivalents, so the method simply
+    # returns nil.
     def to_hex
-      compress = lambda do |str|
-        return str unless str.length % 2 == 0
-        
-        compressed = str.scan(/[\da-fA-F]{2}/).inject("") do |memo, s|
-          memo += s[0,1] == s[1,2] ? s[0,1] : s
-        end
-        
-        compressed.length == str.length / 2 ? compressed : str
+      return if self.type == :inherit || self.value == [0, 0, 0, 0]
+      
+      hexcolor = self.value[0..2].inject("") do |hex, num|
+        str = num.to_s(16)
+        str = "0" + str if str.length < 2
+        hex << str
       end
       
-      return if @type == :inherit || @type == :transparent
-      return "#" + compress.call(@value) if @type == :hex
-      return "#" + compress.call(KEYWORDS[@value]) if @type == :keyword
-      
-      "#" + @value[0..2].inject([]) {|memo, v|
-        v = v.chop.to_i * 255 / 100 if v =~ PERCENTAGE
-        v = v.to_s(16)
-        v = "0" + v if v.length < 2
-        v = compress.call(v) || v
-        memo << v
-      }.join
+      "#" + self.class.compress_hex(hexcolor)
     end
     
-    def value
-      @value
-    end
-    
-    def value=(val)
-      TYPES.each do |type|
-        @value = self.class.send(:"parse_#{type.to_s}", val)
-        @type = type and return unless @value.nil?
+    # Returns a string representation of the color's value. The output format
+    # depends on the type of the color object: if it's set to hex, the output
+    # format will be a hexadecimal representation of the color value, etc.
+    #
+    #   color = Color.new("#000")
+    #   color.to_s # => "#000"
+    #   color.type = :rgb
+    #   color.to_s # => "rgb(0, 0, 0)"
+    #
+    def to_s
+      if self.type == :inherit
+        self.type.to_s
+      else
+        self.send(:"to_#{self.type.to_s}")
       end
-      
-      raise ArgumentError, "#{val.inspect} is not a valid keyword, hex or RGB color value."
-    end
-    
-    def self.like?(value)
-      TYPES.each do |type|
-        return true unless self.send(:"parse_#{type.to_s}", value).nil?
-      end
-      
-      false
     end
     
     private
     
-    def self.parse_inherit(val)
-      "inherit" if val.to_s == "inherit"
-    end
-    
-    def self.parse_transparent(val)
-      "transparent" if val.to_s == "transparent"
-    end
-    
-    def self.parse_keyword(code)
-      code = code.to_s.downcase
-      return if code.nil? || code.empty?
-      code = code.to_sym
-      code if KEYWORDS.has_key?(code)
-    end
-    
-    def self.parse_hex(val)
-      val.sub(/^#/, "").downcase if val =~ VALID_HEX_COLOR
-    end
-    
-    def self.parse_rgba(val)
-      if val.is_a? String
-        val = val.sub(/^\s*rgb\(\s*/, "").sub(/\s*\)\s*$/, "").split(/\s*,\s*/)
-        return if val.nil?
+    # Compress six-character hexadecimal color values to abbreviated, three-
+    # character ones.
+    #
+    #   Color.compress_hex("ff00ff") # => "f0f"
+    #
+    def self.compress_hex(hexvalue)
+      return hexvalue unless hexvalue.length % 2 == 0
+      
+      compressed = hexvalue.scan(/[\da-fA-F]{2}/).inject("") do |hex, str|
+        hex += str[0,1] == str[1,2] ? str[0,1] : str
       end
       
-      rgba = Array(val)[0..3].inject([]) {|memo, v|
-        if memo.length == 3
-          opacity = v.to_f
-          v = (0 <= opacity && opacity <= 1) ? opacity : nil
-        elsif v.to_s =~ /^[+-]?\d{1,3}$/ && v.to_i < 256
-          v = v.to_i
-        else
-          return unless v.to_s =~ PERCENTAGE
+      compressed.length == hexvalue.length / 2 ? compressed : hexvalue
+    end
+    
+    # A small parser for string color values.
+    class ColorStringParser
+      attr_reader :type
+      
+      # Parse a string input, returning an array of numbers corresponding to
+      # red, green, blue, and the opacity value.
+      def parse(value)
+        value = value.to_s.downcase
+        key = value.to_sym
+        
+        return [:inherit, nil, nil, nil, nil] if value == "inherit"
+        
+        return [:keyword].concat(KEYWORDS[key]) if KEYWORDS.has_key?(key)
+        
+        if value =~ VALID_HEX_COLOR
+          return [:hex].concat(self.class.convert_hex(value))
         end
         
-        memo << v
-      }.compact
+        if value =~ VALID_RGB_COLOR
+          return [:rgb].concat(self.class.convert_rgb(value))
+        end
+        
+        if value =~ VALID_RGBA_COLOR
+          return [:rgba].concat(self.class.convert_rgba(value))
+        end
+        
+        nil
+      end
       
-      return (3..4).include?(rgba.to_a.length) ? rgba : nil
+      private
+      
+      # Convert a hexadecimal representation of an RGB color to an array of
+      # base 10 integers.
+      def self.convert_hex(hexcolor)
+        hexcolor.gsub!(/[^a-f\d]/, "")
+        hexcolor.gsub!(/(.)/, '\1' * 2) if hexcolor.length == 3
+        hexcolor.scan(/.{2}/).map {|num| num.hex } << nil
+      end
+      
+      # Convert an rgb()-formatted representation of an RGB color to an array
+      # of base 10 integers.
+      def self.convert_rgb(rgbcolor)
+        rgbcolor.sub(/^\s*rgb\(\s*/, "").
+        sub(/\s*\)\s*$/, "").
+        split(/\s*,\s*/).
+        map {|value|
+          if value =~ RGB_INTEGER
+            value.to_i
+          else
+            (value.chop.to_f * 255 / 100).round
+          end
+        } << nil
+      end
+      
+      # Convert an rgba()-formatted representation of an RGB color to an array
+      # of three base 10 integers corresponding to red, green and blue, and a
+      # float representing the opacity.
+      def self.convert_rgba(rgbacolor)
+        rgbacolor.sub(/^\s*rgba\(\s*/, "").
+        sub(/\s*\)\s*$/, "").
+        split(/\s*,\s*/).
+        map do |value|
+          if value =~ RGB_INTEGER
+            value.to_i
+          elsif value =~ PERCENTAGE
+            (value.chop.to_f * 255 / 100).round
+          else
+            value.to_f
+          end
+        end
+      end
     end
   end
   

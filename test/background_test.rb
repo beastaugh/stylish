@@ -10,12 +10,12 @@ class BackgroundTest < Test::Unit::TestCase
   end
   
   def test_valid_background_colors
-    assert_equal("ccc", @composite.color.value)
-    assert_equal(:black, Stylish::Background.new(:color => :black).color.value)
+    assert_equal("#ccc", @composite.color.to_hex)
+    assert_equal("black", Stylish::Background.new(:color => :black).color.to_s)
   end
   
   def test_background_transparencies
-    assert_equal("transparent", Stylish::Background.new(:color => :transparent).color.value)
+    assert_equal([0, 0, 0, 0], Stylish::Background.new(:color => :transparent).color.value)
   end
   
   def test_valid_background_images

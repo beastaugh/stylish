@@ -101,6 +101,10 @@ module Stylish
         @sheet.image(path)
       end
       
+      def color(value)
+        ["color", Color.new(value)]
+      end
+      
       def background(options)
         options.merge! :image => @sheet.image(options[:image])
         Background.new(options)

@@ -5,7 +5,7 @@ class DeclarationsTest < Test::Unit::TestCase
   
   def setup
     @ds = Stylish::Declarations.new
-    @ds << Stylish::Declaration.new(:bdcolor, :red)
+    @ds << Stylish::Declaration.new("border-color", "red")
     @ds << Stylish::Background.new(:color => :blue, :image => "test.png")
   end
   

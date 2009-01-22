@@ -8,7 +8,7 @@ class ColorTest < Test::Unit::TestCase
     @green = Stylish::Color.new(:green)
     @blue = Stylish::Color.new("#0000FF")
     @white = Stylish::Color.new("#FFF")
-    @yellow = Stylish::Color.new([0, 0, 255])
+    @yellow = Stylish::Color.new([255, 255, 0])
     @inherit = Stylish::Color.new("inherit")
     @transparent = Stylish::Color.new("transparent")
   end
@@ -18,43 +18,42 @@ class ColorTest < Test::Unit::TestCase
   end
   
   def test_transparency
-    assert_equal("transparent", @transparent.value)
+    assert_equal([0, 0, 0, 0], @transparent.value)
+    assert_equal("transparent", @transparent.to_s)
   end
   
   def test_real_keywords
-    assert_equal(:red, @red.value)
+    assert_equal("red", @red.to_keyword)
     assert_equal(:keyword, @red.type)
     
-    assert_equal(:green, @green.value)
+    assert_equal("green", @green.to_keyword)
     assert_equal(:keyword, @green.type)
   end
   
   def test_valid_hex_values
-    assert_equal("0000ff", @blue.value)
+    assert_equal("#00f", @blue.to_hex)
     assert_equal(:hex, @blue.type)
     
-    assert_equal("fff", @white.value)
+    assert_equal("#fff", @white.to_hex)
     assert_equal(:hex, @white.type)
   end
   
   def test_rgb_values
-    assert_equal([0, 0, 255], @yellow.value)
-    assert_equal([255, "100%", -10],
-      Stylish::Color.new("rgb(255, 100%, -10)").value)
-    assert_equal([255, "100%", 0],
-      Stylish::Color.new("255, 100%, -0").value)
+    assert_equal([255, 255, 0, nil], @yellow.value)
+    assert_equal([255, 255, 10, nil],
+      Stylish::Color.new("rgb(255, 100%, 10)").value)
   end
   
   def test_rgba_values
-    assert_equal([255, "100%", -10, 0.8],
-      Stylish::Color.new("rgb(255, 100%, -10, 0.8)").value)
+    assert_equal([255, 255, 10, 0.8],
+      Stylish::Color.new("rgba(255, 100%, 10, 0.8)").value)
   end
   
   def test_case_insensitivity_of_keywords
-    assert_equal(:green, Stylish::Color.new(:Green).value)
-    assert_equal(:green, Stylish::Color.new(:GrEeN).value)
-    assert_equal(:green, Stylish::Color.new("Green").value)
-    assert_equal(:green, Stylish::Color.new("GrEeN").value)
+    assert_equal([0, 128, 0, nil], Stylish::Color.new(:Green).value)
+    assert_equal([0, 128, 0, nil], Stylish::Color.new(:GrEeN).value)
+    assert_equal([0, 128, 0, nil], Stylish::Color.new("Green").value)
+    assert_equal([0, 128, 0, nil], Stylish::Color.new("GrEeN").value)
   end
   
   def test_nonexistent_keywords
@@ -82,9 +81,11 @@ class ColorTest < Test::Unit::TestCase
   end
   
   def test_comma_separation_of_rgb_values
-    assert_equal([0, 0, 0, 0], Stylish::Color.new("0, 0, 0, 0").value)
-    assert(Stylish::Color.like?("0, 0, 0, 0"))
-    assert(!Stylish::Color.like?("0 0 0 0"))
+    assert_equal([0, 0, 0, nil], Stylish::Color.new("rgb(0, 0, 0)").value)
+    
+    assert_raise ArgumentError do
+      Stylish::Color.new("rgb(0 0 0)")
+    end
   end
   
   def test_inherit_to_string
@@ -102,9 +103,14 @@ class ColorTest < Test::Unit::TestCase
   end
   
   def test_rgb_to_string
-    assert_equal("rgb(0, 0, 255)", @yellow.to_s)
-    assert_equal("rgb(100%, 50%, 0)",
-      Stylish::Color.new("rgb(100%, 50%, -0)").to_s)
+    assert_equal("rgb(255, 255, 0)", @yellow.to_s)
+    assert_equal("rgb(255, 128, 0)",
+      Stylish::Color.new("rgb(100%, 50%, 0)").to_s)
+  end
+  
+  def test_rgba_to_string
+    assert_equal("rgba(255, 128, 0, 0.5)",
+      Stylish::Color.new("rgba(100%, 50%, 0%, 0.5)").to_s)
   end
   
   def test_inherit_and_transparent_to_hex

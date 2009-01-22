@@ -7,8 +7,8 @@ class FormattableTest < Test::Unit::TestCase
     @stylesheet = Stylish::Stylesheet.new
     @rule = Stylish::Rule.new(".test, .content", "display:block;")
     @selectors = Stylish::Selectors.new
-    @declaration = Stylish::Declaration.new(:bgcolor, "#000")
-    @background = Stylish::Background.new(:color => "red")
+    @declaration = Stylish::Declaration.new("background-color", "#000")
+    @background = Stylish::Background.new("color" => "red")
   end
   
   def test_reading_default_formats  

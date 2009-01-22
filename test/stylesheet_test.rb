@@ -90,7 +90,7 @@ class StylesheetTest < Test::Unit::TestCase
   def test_nested_rules
     style = Stylish::Stylesheet.new do
       rule ".header", display("block")
-      rule ".content", bgcolor("#00FF00")
+      rule ".content", background(:color => "#00FF00")
       rule ".footer", font_weight("bold")
       
       rule ".namespace" do
@@ -105,7 +105,7 @@ class StylesheetTest < Test::Unit::TestCase
     
     assert_equal(7, style.rules.length)
     assert_equal(".header {display:block;}", style.rules[0].to_s)
-    assert_equal(".namespace .header {color:#0000ff;}", style.rules[3].to_s)
+    assert_equal(".namespace .header {color:#00f;}", style.rules[3].to_s)
     
     style.rules.each do |rule|
       assert_instance_of(Stylish::Rule, rule)

@@ -234,12 +234,7 @@ module Stylish
     include Formattable
     
     attr_accessor :value
-    
-    SHORTHANDS = {
-      :bgcolor => "background-color",
-      :bdcolor => "border-color"
-    }
-    
+        
     def initialize(prop, val = nil)
       accept_format(/^\s*%s\s*:\s*%s;\s*$/m, "%s:%s;")
       self.value = val
@@ -251,11 +246,10 @@ module Stylish
     end
     
     def property=(prop)
-      @property = SHORTHANDS.has_key?(prop.to_sym) ? SHORTHANDS[prop.to_sym] : prop.to_s
+      @property = prop.to_s
     end
     
     def value=(val)
-      @value = Color.new(val) and return if Color.like?(val)
       @value = val
     end
     
