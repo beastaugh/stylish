@@ -27,10 +27,14 @@ Calling the stylesheet's `to_s` method would produce the following
 Future considerations
 ---------------------
 
-*   The core classes and code generation DSL are only partially documented; this
-    situation could be improved.
+*   The core classes and code generation DSL are only partially documented;
+    this situation could be improved.
 *   Add support for HSL and HSLA colour values to the Color class.
-*   Add a native mapping construct to allow symbol lookup for alternate stylesheets.
+*   Add a native mapping construct to allow symbol lookup for alternate
+    stylesheets.
+*   Change stylesheet generation to a two-step process where the tree structure
+    is generated in the first step and symbols (for example, those employed by
+    a mapping construct) are evaluated the second.
 *   Fundamental objects like percentages and URIs need their own classes rather
     than being dealt with in an ad-hoc manner by higher-level objects.
 *   Add a parser so CSS can be read as well as written.
@@ -64,8 +68,8 @@ modification, are permitted provided that the following conditions are met:
 *   Redistributions in binary form must reproduce the above copyright notice,
     this list of conditions and the following disclaimer in the documentation
     and/or other materials provided with the distribution.
-*   The name of the author may not be used to endorse or promote products derived
-    from this software without specific prior written permission.
+*   The name of the author may not be used to endorse or promote products
+    derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
