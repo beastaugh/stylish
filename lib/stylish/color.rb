@@ -22,16 +22,19 @@ module Stylish #:nodoc:
     # RGB integer; a hexadecimal representation of an RGB color; a rgb()
     # representation of an RGB color; and an rgba() representation of an RGBA
     # color.
-    RINT             = /(\d{1,2}|[1-2][0-5]{2})/
-    RGB_INTEGER      = /^#{RINT}$/
+    OPACITY    = /([0-1]|0\.\d+)/
+    RGB_INT    = /(\d{1,2}|[1-2][0-5]{2})/
+    HSL_INT    = /(\d{1,2}|[1-2]\d{2}|3([0-5]\d|60))/
     HEX_COLOR  = /^#?([\da-fA-F]{3}){1,2}$/
-    RGB_COLOR  = /\s*rgb\(((#{RINT}|#{PCT}),\s*){2}(#{RINT}|#{PCT})\s*\)\s*/
-    RGBA_COLOR = /\s*rgba\(((#{RINT}|#{PCT}),\s*){3}([0-1]|0\.\d+)\s*\)\s*/
+    RGB_COLOR  = /rgb\(\s*((#{RGB_INT}|#{PCT}),\s*){2}(#{RGB_INT}|#{PCT})\s*\)/
+    RGBA_COLOR = /rgba\(\s*((#{RGB_INT}|#{PCT}),\s*){3}#{OPACITY}\s*\)/
+    HSL_COLOR  = /hsl\(\s*((#{HSL_INT}|#{PCT}),\s*){2}(#{HSL_INT}|#{PCT})\s*\)/
+    HSLA_COLOR = /hsla\(\s*((#{HSL_INT}|#{PCT}),\s*){3}(#{OPACITY})\s*\)/
     
     # Colors can be of several types: keywords, hexadecimal strings, RGB and
     # RGBA formats. The type of the color is set on initialisation, so that
     # the output format matches the input format.
-    TYPES = [:inherit, :keyword, :hex, :rgb, :rgba]
+    TYPES = [:inherit, :keyword, :hex, :rgb, :rgba, :hsl, :rgba]
     
     KEYWORDS = {
       # HTML4 color keywords.
@@ -248,7 +251,7 @@ module Stylish #:nodoc:
         rgb = value[0..2].inject([]) do |rgb, v|
           if v.is_a?(Integer) || v.is_a?(Float)
             rgb << v
-          elsif v =~ RGB_INTEGER
+          elsif v =~ /^#{RGB_INT}$/
             rgb << v.to_i
           elsif v =~ PERCENTAGE
             rgb << (v.chop.to_f * 256 / 100).round
@@ -357,6 +360,12 @@ module Stylish #:nodoc:
       "#" + self.class.compress_hex(hexcolor)
     end
     
+    def to_hsl
+    end
+    
+    def to_hsla
+    end
+    
     # Returns a string representation of the color's value. The output format
     # depends on the type of the color object: if it's set to hex, the output
     # format will be a hexadecimal representation of the color value, etc.
@@ -415,6 +424,14 @@ module Stylish #:nodoc:
           return [:rgba].concat(self.class.convert_rgba(value))
         end
         
+        if value =~ HSL_COLOR
+          return [:hsl].concat(self.class.convert_hsl(value))
+        end
+        
+        if value =~ HSLA_COLOR
+          return [:hsla].concat(self.class.convert_hsla(value))
+        end
+        
         nil
       end
       
@@ -435,7 +452,7 @@ module Stylish #:nodoc:
         sub(/\s*\)\s*$/, "").
         split(/\s*,\s*/).
         map {|value|
-          if value =~ RGB_INTEGER
+          if value =~ /^#{RGB_INT}$/
             value.to_i
           else
             (value.chop.to_f * 255 / 100).round
@@ -447,11 +464,11 @@ module Stylish #:nodoc:
       # of three base 10 integers corresponding to red, green and blue, and a
       # float representing the opacity.
       def self.convert_rgba(rgbacolor)
-        rgbacolor.sub(/^\s*rgba\(\s*/, "").
-        sub(/\s*\)\s*$/, "").
+        rgbacolor.sub(/rgba\(\s*/, "").
+        sub(/\s*\)$/, "").
         split(/\s*,\s*/).
         map do |value|
-          if value =~ RGB_INTEGER
+          if value =~ /^#{RGB_INT}$/
             value.to_i
           elsif value =~ PERCENTAGE
             (value.chop.to_f * 255 / 100).round
@@ -459,6 +476,45 @@ module Stylish #:nodoc:
             value.to_f
           end
         end
+      end
+      
+      def self.convert_hsl(hslcolor)
+        self.hsla_to_rgba(hslcolor.
+        sub(/hsl\(\s*/, "").
+        sub(/\s*\)$/, "").
+        split(/\s*,\s*/).
+        map {|value|
+          if value =~ /^#{HSL_INT}/
+            value.to_i
+          else
+            (value.chop.to_f * 360 / 100).round
+          end
+        } << nil)
+      end
+      
+      def self.convert_hsla(hslacolor)
+        self.hsla_to_rgba(hslacolor.
+        sub(/hsla\(\s*/, "").
+        sub(/\s*\)$/).
+        split(/\s*,\s*/).
+        map {|value|
+          if value =~ /^#{HSL_INT}$/
+            value.to_i
+          elsif value =~ PERCENTAGE
+            (value.chop.to_f * 360 / 100).round
+          else
+            value.to_f
+          end
+        })
+      end
+      
+      def self.hsla_to_rgba(hslacolor)
+        opacity = hslacolor.pop
+        rgbacolor = Array.new(3)
+        
+        return rgbacolor.fill(hslacolor[2]) << opacity if hslacolor.first == 0
+        
+        rgbacolor << opacity
       end
     end
   end
