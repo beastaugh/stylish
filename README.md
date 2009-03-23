@@ -24,6 +24,13 @@ Calling the stylesheet's `to_s` method would produce the following
     .content p {margin:0 0 1em 0;}
 
 
+Compatibility
+-------------
+
+Stylish is compatible with Ruby 1.9. To expand on this slightly, the Stylish
+test suite passes under Ruby 1.9; the usual caveats about this apply.
+
+
 Future considerations
 ---------------------
 

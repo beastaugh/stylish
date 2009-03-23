@@ -299,7 +299,7 @@ module Stylish #:nodoc:
     #   color.to_keyword # => "transparent"
     #
     def to_keyword
-      KEYWORDS.index(self.value).to_s
+      KEYWORDS.key(self.value).to_s
     end
     
     # Returns a string representation of the color's RGB color value.
