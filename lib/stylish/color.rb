@@ -299,7 +299,7 @@ module Stylish #:nodoc:
     #   color.to_keyword # => "transparent"
     #
     def to_keyword
-      @key_method ||= Hash.respond_to?(:key) ? :key : :index
+      @key_method ||= KEYWORDS.respond_to?(:key) ? :key : :index
       KEYWORDS.send(@key_method, self.value).to_s
     end
     
