@@ -299,7 +299,8 @@ module Stylish #:nodoc:
     #   color.to_keyword # => "transparent"
     #
     def to_keyword
-      KEYWORDS.key(self.value).to_s
+      @key_method ||= Hash.respond_to?(:key) ? :key : :index
+      KEYWORDS.send(@key_method, self.value).to_s
     end
     
     # Returns a string representation of the color's RGB color value.
