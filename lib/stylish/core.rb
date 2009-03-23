@@ -303,18 +303,19 @@ module Stylish
                 :compressed
     
     PROPERTIES = [
-      [:color, "background-color"],
-      [:image, "background-image"],
-      [:repeat, "background-repeat"],
-      [:position, "background-position"],
+      [:color,      "background-color"],
+      [:image,      "background-image"],
+      [:repeat,     "background-repeat"],
+      [:position,   "background-position"],
       [:attachment, "background-attachment"],
       [:compressed]]
     
-    REPEAT_VALUES = ["repeat", "repeat-x", "repeat-y", "no-repeat"]
-    ATTACHMENT_VALUES = ["scroll", "fixed", "inherit"]
+    REPEAT_VALUES        = ["repeat", "repeat-x", "repeat-y", "no-repeat"]
+    ATTACHMENT_VALUES    = ["scroll", "fixed", "inherit"]
     HORIZONTAL_POSITIONS = ["left", "center", "right"]
-    VERTICAL_POSITIONS = ["top", "center", "bottom"]
+    VERTICAL_POSITIONS   = ["top", "center", "bottom"]
     
+    # Create a new Background object
     def initialize(options)
       accept_format(/^\s*%s\s*:\s*%s;\s*$/m, "%s:%s;")
       self.value = options
@@ -326,10 +327,12 @@ module Stylish
       @color = Color.new(val)
     end
     
+    # Set the background image.
     def image=(path)
       @image = path if path.is_a?(String) || path.is_a?(File)
     end
     
+    # Set the background repeat.
     def repeat=(val)
       @repeat = val if REPEAT_VALUES.include?(val)
     end
@@ -342,6 +345,8 @@ module Stylish
       end
     end
     
+    # The background-attachment property takes a limited range of values, so
+    # only a value within that range will be accepted.
     def attachment=(val)
       @attachment = val if ATTACHMENT_VALUES.include?(val)
     end
@@ -396,6 +401,16 @@ module Stylish
       end
     end
     
+    # Generate a string representation of a Background instance.
+    #
+    # There are two kinds of representation, each of which have slightly
+    # different CSS semantics. If compressed is set to true, this method will
+    # produce a shorthand CSS declaration such as the following:
+    #
+    #     background: #fff url('bg.png') no-repeat 50% 0;
+    #
+    # Otherwise it will produce an unordered list of individual background
+    # declarations.
     def to_s
       if @compressed
         "background:#{self.value(true).map {|p, v| v }.compact.join(" ")};"
