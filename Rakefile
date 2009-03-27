@@ -1,5 +1,7 @@
 require 'lib/stylish'
 
+task :default => :test
+
 desc "Run the Stylish test suite"
 task :test do
   testdir = "test"
