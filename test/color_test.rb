@@ -49,6 +49,17 @@ class ColorTest < Test::Unit::TestCase
       Stylish::Color.new("rgba(255, 100%, 10, 0.8)").value)
   end
   
+  def test_hsl_values
+    assert_equal([255, 64, 64, nil],
+      Stylish::Color.new("hsl(0, 100%, 63%)").value)
+    assert_equal([96, 64, 32, nil],
+      Stylish::Color.new("hsl(30, 50%, 25%)").value)
+    assert_equal([0, 0, 0, nil],
+      Stylish::Color.new("hsl(90, 0%, 0%)").value)
+    assert_equal([255, 255, 255, nil],
+      Stylish::Color.new("hsl(120, 0%, 100%)").value)
+  end
+  
   def test_case_insensitivity_of_keywords
     assert_equal([0, 128, 0, nil], Stylish::Color.new(:Green).value)
     assert_equal([0, 128, 0, nil], Stylish::Color.new(:GrEeN).value)
@@ -112,6 +123,17 @@ class ColorTest < Test::Unit::TestCase
     assert_equal("rgba(255, 128, 0, 0.5)",
       Stylish::Color.new("rgba(100%, 50%, 0%, 0.5)").to_s)
   end
+  
+  # def test_hsl_to_string
+  #   assert_equal("hsl(0, 100%, 63%)",
+  #     Stylish::Color.new("hsl(0, 100%, 63%)").to_s)
+  #   assert_equal("hsl(30, 50%, 25%)",
+  #     Stylish::Color.new("hsl(30, 50%, 25%)").to_s)
+  #   assert_equal("hsl(90, 0%, 0%)",
+  #     Stylish::Color.new("hsl(90, 0%, 0%)").to_s)
+  #   assert_equal("hsl(120, 0%, 100%)",
+  #     Stylish::Color.new("hsl(120, 0%, 100%)").to_s)
+  # end
   
   def test_inherit_and_transparent_to_hex
     assert_nil(Stylish::Color.new(:inherit).to_hex)

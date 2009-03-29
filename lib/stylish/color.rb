@@ -1,3 +1,6 @@
+require 'mathn'
+require 'rational'
+
 module Stylish #:nodoc:
   
   # The Color class is intended to eventually implement the entirety of the
@@ -361,9 +364,11 @@ module Stylish #:nodoc:
     end
     
     def to_hsl
+      "hsl(#{hsl * ", "})"
     end
     
     def to_hsla
+      "hsla(#{hsla * ", "})"
     end
     
     # Returns a string representation of the color's value. The output format
@@ -382,6 +387,39 @@ module Stylish #:nodoc:
     end
     
     private
+    
+    def hsl
+      red, green, blue = rgb = [@red, @green, @blue].map {|i| Rational(i, 255) }
+      max, min               = rgb.max, rgb.min
+      
+      huer = Proc.new {|num, a| 60 * (num / (max - min)) + a }
+      
+      lightness = (max + min) / 2
+      
+      if max == min
+        saturation = 0
+      elsif lightness <= 1 / 2
+        saturation = (max - min) / (lightness * 2)
+      else
+        saturation = (max - min) / (2 - (lightness * 2))
+      end
+      
+      hue = if max == min
+        0
+      elsif max == red
+        huer.call(green - blue, 360).divmod(360).last
+      elsif max == green
+        huer.call(blue - red, 160)
+      else
+        huer.call(red - green, 240)
+      end
+      
+      [hue].concat([saturation, lightness].map {|r| (r * 100.0).to_f.round.to_s + "%" })
+    end
+    
+    def hsla
+      self.hsl << self.opacity
+    end
     
     # Compress six-character hexadecimal color values to abbreviated, three-
     # character ones.
@@ -478,43 +516,59 @@ module Stylish #:nodoc:
         end
       end
       
-      def self.convert_hsl(hslcolor)
-        self.hsla_to_rgba(hslcolor.
-        sub(/hsl\(\s*/, "").
-        sub(/\s*\)$/, "").
-        split(/\s*,\s*/).
-        map {|value|
-          if value =~ /^#{HSL_INT}/
-            value.to_i
-          else
-            (value.chop.to_f * 360 / 100).round
-          end
-        } << nil)
+      def self.convert_hsl(hsl)
+        h, s, l = hsl.strip.sub(/^hsl\((.+?)\)$/, '\1').split(/\s*,\s*/)
+        
+        h    = Rational(h.to_i, 360)
+        s, l = [s, l].map {|v| Rational(v.chop.to_i, 100) }
+        
+        self.hsla_to_rgba([h, s, l, nil])
       end
       
-      def self.convert_hsla(hslacolor)
-        self.hsla_to_rgba(hslacolor.
-        sub(/hsla\(\s*/, "").
-        sub(/\s*\)$/).
-        split(/\s*,\s*/).
-        map {|value|
-          if value =~ /^#{HSL_INT}$/
-            value.to_i
-          elsif value =~ PERCENTAGE
-            (value.chop.to_f * 360 / 100).round
-          else
-            value.to_f
-          end
-        })
+      def self.convert_hsla(hsla)
+        h, s, l, a = hsla.strip.sub(/^hsla\((.+?)\)$/, '\1').split(/\s*,\s*/)
+        
+        h    = Rational(h.to_i, 360)
+        s, l = [s, l].map {|v| Rational(v.chop, 100) }
+        a    = a.to_f
+        
+        self.hsla_to_rgba([h, s, l, a])
       end
       
-      def self.hsla_to_rgba(hslacolor)
-        opacity = hslacolor.pop
-        rgbacolor = Array.new(3)
+      def self.hsla_to_rgba(hsla)
+        hue, saturation, lightness, opacity = hsla
         
-        return rgbacolor.fill(hslacolor[2]) << opacity if hslacolor.first == 0
+        if lightness < Rational(1, 2)
+          m2 = lightness * (1 + saturation)
+        else
+          m2 = lightness + saturation - lightness * saturation
+        end
         
-        rgbacolor << opacity
+        m1 = lightness * 2 - m2
+        
+        rgb = [hue + Rational(1, 3), hue, hue - Rational(1, 3)].map do |c|
+          self.hue_to_rgb(m1, m2, c) * 255
+        end
+        
+        rgb << opacity
+      end
+      
+      def self.hue_to_rgb(m1, m2, hue)
+        if hue < 0
+          hue = hue + 1
+        elsif hue > 1
+          hue = hue - 1
+        end
+                
+        if hue < Rational(1, 6)
+          m1 + (m2 - m1) * hue * 6
+        elsif hue < Rational(1, 2)
+          m2
+        elsif hue < Rational(2, 3)
+          m1 + (m2 - m1) * (Rational(2, 3) - hue) * 6
+        else
+          m1
+        end
       end
     end
   end
