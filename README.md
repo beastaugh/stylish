@@ -34,6 +34,7 @@ test suite passes under Ruby 1.9; the usual caveats about this apply.
 Future considerations
 ---------------------
 
+*   Make the library into a Gem.
 *   The core classes and code generation DSL are only partially documented;
     this situation could be improved.
 *   Add support for HSL and HSLA colour values to the Color class.
