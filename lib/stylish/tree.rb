@@ -49,11 +49,17 @@ module Stylish
         @nodes.map {|node| node.to_s(scope) }.join("\n")
       end
       
-      # Return all the rules in a selector tree.
+      # Recursively return all the rules in a selector tree.
       def rules
+        leaves(Rule)
+      end
+      
+      # Recursively return all the leaves of any, or a given type in a selector
+      # tree.
+      def leaves(type = nil)
         @nodes.inject([]) do |rules, node|
-          if node.is_a?(Rule)
-            rules << node
+          if node.leaf?
+            rules << node if type.nil? || node.is_a?(type)
           elsif node.is_a?(Selector)
             rules.concat(node.rules)
           end

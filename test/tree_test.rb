@@ -36,6 +36,7 @@ class TreeTest < Test::Unit::TestCase
     @tree << node
     
     assert_equal(4, @tree.rules.length)
+    assert_equal(4, @tree.leaves.length)
   end
   
   def test_selector_serialisation
