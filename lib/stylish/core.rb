@@ -293,7 +293,7 @@ module Stylish
       self.join
     end
   end
-    
+  
   class Background < Declaration
     attr_reader :color,
                 :image,

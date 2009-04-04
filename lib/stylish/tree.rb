@@ -94,8 +94,20 @@ module Stylish
     class Rule
       include Leaf
       
+      def initialize(selectors, *declarations)
+        @selectors = selectors.inject(Selectors.new) do |ss, s|
+          ss << s
+        end
+        
+        @declarations = declarations.inject(Declarations.new) do |ds, d|
+          ds << d
+        end
+      end
+      
       def to_s(scope = "")
-        scope + " {}"
+        @selectors.map {|selector|
+          scope + " " + selector.to_s
+        }.join(", ")  + " {#{@declarations.to_s}}"
       end
     end
     
