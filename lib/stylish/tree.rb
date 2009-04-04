@@ -42,11 +42,24 @@ module Stylish
         @nodes.delete(node)
       end
       
-      # Recursively serialises the tree of selectors.
+      # Recursively serialises a selector tree.
       def to_s(scope = "")
         return "" if @nodes.empty?
         scope = scope.empty? ? @scope : scope + " " + @scope
         @nodes.map {|node| node.to_s(scope) }.join("\n")
+      end
+      
+      # Return all the rules in a selector tree.
+      def rules
+        @nodes.inject([]) do |rules, node|
+          if node.is_a?(Rule)
+            rules << node
+          elsif node.is_a?(Selector)
+            rules.concat(node.rules)
+          end
+          
+          rules
+        end
       end
     end
     
