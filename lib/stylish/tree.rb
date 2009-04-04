@@ -3,8 +3,11 @@ module Stylish
     
     # Rules are namespaced by their place in a selctor tree.
     class Selector
+      include Formattable
       
       def initialize(selector)
+        accept_format(/\s*/m, "\n")
+        
         @scope = selector
         @nodes = []
       end
@@ -46,7 +49,7 @@ module Stylish
       def to_s(scope = "")
         return "" if @nodes.empty?
         scope = scope.empty? ? @scope : scope + " " + @scope
-        @nodes.map {|node| node.to_s(scope) }.join("\n")
+        @nodes.map {|node| node.to_s(scope) }.join(@format)
       end
       
       # Recursively return all the rules in a selector tree.
