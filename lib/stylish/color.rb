@@ -389,7 +389,7 @@ module Stylish #:nodoc:
     private
     
     def hsl
-      red, green, blue = rgb = [@red, @green, @blue].map {|i| Rational(i, 255) }
+      red, green, blue = rgb = [@red, @green, @blue].map {|i| i / 255 }
       max, min               = rgb.max, rgb.min
       
       huer = Proc.new {|num, a| 60 * (num / (max - min)) + a }
@@ -414,7 +414,7 @@ module Stylish #:nodoc:
         huer.call(red - green, 240)
       end
       
-      [hue].concat([saturation, lightness].map {|r| (r * 100.0).to_f.round.to_s + "%" })
+      [hue].concat([saturation, lightness].map {|r| (r * 100).to_f.round.to_s + "%" })
     end
     
     def hsla
@@ -547,7 +547,7 @@ module Stylish #:nodoc:
         m1 = lightness * 2 - m2
         
         rgb = [hue + Rational(1, 3), hue, hue - Rational(1, 3)].map do |c|
-          self.hue_to_rgb(m1, m2, c) * 255
+          (self.hue_to_rgb(m1, m2, c) * 255).round
         end
         
         rgb << opacity

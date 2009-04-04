@@ -50,7 +50,7 @@ class ColorTest < Test::Unit::TestCase
   end
   
   def test_hsl_values
-    assert_equal([255, 64, 64, nil],
+    assert_equal([255, 66, 66, nil],
       Stylish::Color.new("hsl(0, 100%, 63%)").value)
     assert_equal([96, 64, 32, nil],
       Stylish::Color.new("hsl(30, 50%, 25%)").value)
@@ -129,9 +129,9 @@ class ColorTest < Test::Unit::TestCase
       Stylish::Color.new("hsl(0, 100%, 63%)").to_s)
     assert_equal("hsl(30, 50%, 25%)",
       Stylish::Color.new("hsl(30, 50%, 25%)").to_s)
-    assert_equal("hsl(90, 0%, 0%)",
-      Stylish::Color.new("hsl(90, 0%, 0%)").to_s)
-    assert_equal("hsl(120, 0%, 100%)",
+    assert_equal("hsl(0, 0%, 0%)",
+      Stylish::Color.new("hsl(0, 0%, 0%)").to_s)
+    assert_equal("hsl(0, 0%, 100%)",
       Stylish::Color.new("hsl(120, 0%, 100%)").to_s)
   end
   
@@ -172,7 +172,7 @@ class ColorTest < Test::Unit::TestCase
       Stylish::Color.new([96, 64, 32]).to_hsl)
     assert_equal("hsl(0, 0%, 0%)",
       Stylish::Color.new([0, 0, 0]).to_hsl)
-    assert_equal("hsl(120, 0%, 100%)",
+    assert_equal("hsl(0, 0%, 100%)",
       Stylish::Color.new([255, 255, 255]).to_hsl)
   end
 end
