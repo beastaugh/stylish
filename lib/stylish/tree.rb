@@ -5,6 +5,8 @@ module Stylish
     class Selector
       include Formattable
       
+      attr_reader :nodes
+      
       def initialize(selector)
         accept_format(/\s*/m, "\n")
         
@@ -50,6 +52,11 @@ module Stylish
         return "" if @nodes.empty?
         scope = scope.empty? ? @scope : scope + " " + @scope
         @nodes.map {|node| node.to_s(scope) }.join(@format)
+      end
+      
+      # Return a node's child nodes.
+      def to_a
+        nodes
       end
       
       # Recursively return all the rules in a selector tree.

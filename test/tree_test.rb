@@ -39,6 +39,14 @@ class TreeTest < Test::Unit::TestCase
     assert_equal(4, @tree.leaves.length)
   end
   
+  def test_node_reader
+    @tree << Stylish::Tree::Selector.new(".test")
+    @tree << Stylish::Tree::Rule.new
+    
+    assert_equal(2, @tree.nodes.length)
+    assert_equal(2, @tree.to_a.length)
+  end
+  
   def test_selector_serialisation
     rule = Stylish::Tree::Rule.new
     node = Stylish::Tree::Selector.new(".test")
