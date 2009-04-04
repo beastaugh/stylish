@@ -267,7 +267,7 @@ module Stylish #:nodoc:
           if value.length == 3
             @red, @green, @blue, @opacity = rgb << nil
             @type = :rgb and return
-          elsif value.length == 4 and value[3] =~ /^([0-1]|0\.\d+)$/
+          elsif value.length == 4 and value[3].kind_of?(Numeric)
             @red, @green, @blue, @opacity = rgb << value[3].to_f
             @type = :rgba and return
           end
@@ -418,7 +418,7 @@ module Stylish #:nodoc:
     end
     
     def hsla
-      self.hsl << self.opacity
+      hsl << self.opacity
     end
     
     # Compress six-character hexadecimal color values to abbreviated, three-
@@ -529,7 +529,7 @@ module Stylish #:nodoc:
         h, s, l, a = hsla.strip.sub(/^hsla\((.+?)\)$/, '\1').split(/\s*,\s*/)
         
         h    = Rational(h.to_i, 360)
-        s, l = [s, l].map {|v| Rational(v.chop, 100) }
+        s, l = [s, l].map {|v| Rational(v.chop.to_i, 100) }
         a    = a.to_f
         
         self.hsla_to_rgba([h, s, l, a])
