@@ -1,15 +1,23 @@
 module Stylish
+  
+  # The objects defined in the Tree module allow for the creation of nested
+  # trees of selector scopes. These intermediate data structures can be used to
+  # help factor out some of the repetitiveness of CSS code, and can be easily
+  # serialised to stylesheets.
   module Tree
     
-    # Stylish trees are formed from nodes.
+    # Stylish trees are formed from nodes. The Node module provides a common
+    # interface for node objects, whether they be selectors, rules etc.
     module Node
       
-      # Normal nodes can't be the roots of trees.
+      # Normal nodes can't be the roots of trees. Root nodes act differently
+      # when serialising a tree, and hence cannot be added as child nodes.
       def root?
         false
       end
       
-      # Normal nodes aren't leaves
+      # Normal nodes aren't leaves. Leaves must override this method in order
+      # to be treated appropriately by other objects in the tree.
       def leaf?
         false
       end
@@ -28,7 +36,7 @@ module Stylish
       end
     end
     
-    # Rules are namespaced by their place in a selctor tree.
+    # Rules are namespaced by their place in a selector tree.
     class Selector
       include Formattable, Node
       
@@ -75,19 +83,19 @@ module Stylish
         @nodes.delete(node)
       end
       
-      # Recursively serialises a selector tree.
+      # Recursively serialise the selector tree.
       def to_s(scope = "")
         return "" if @nodes.empty?
         scope = scope.empty? ? @scope : scope + " " + @scope
         @nodes.map {|node| node.to_s(scope) }.join(@format)
       end
       
-      # Return a node's child nodes.
+      # Return the node's child nodes.
       def to_a
         nodes
       end
       
-      # Recursively return all the rules in a selector tree.
+      # Recursively return all the rules in the selector tree.
       def rules
         leaves(Rule)
       end
@@ -110,15 +118,20 @@ module Stylish
     # Eventual replacement for the core Stylesheet class.
     class Stylesheet < Tree::Selector
       
+      # Stylesheets are pure aggregate objects; they can contain child nodes,
+      # but have no data of their own. Their initializer therefore accepts no
+      # arguments.
       def initialize
         accept_format(/\s*/m, "\n")
         @nodes = []
       end
-
+      
+      # Stylesheets are the roots of selector trees.
       def root?
         true
       end
-
+      
+      # Recursively serialise the tree to a stylesheet.
       def to_s
         return "" if @nodes.empty?
         @nodes.map {|node| node.to_s }.join(@format)
@@ -143,6 +156,7 @@ module Stylish
         end
       end
       
+      # Serialise the rule to valid CSS code.
       def to_s(scope = "")
         selectors = @selectors.map {|s| scope + " " + s.to_s }
         sprintf(@format, selectors.join, @declarations.join)
