@@ -1,3 +1,6 @@
+require 'mathn'
+require 'rational'
+
 module Stylish #:nodoc:
   
   # The Color class is intended to eventually implement the entirety of the
@@ -22,16 +25,19 @@ module Stylish #:nodoc:
     # RGB integer; a hexadecimal representation of an RGB color; a rgb()
     # representation of an RGB color; and an rgba() representation of an RGBA
     # color.
-    RINT             = /(\d{1,2}|[1-2][0-5]{2})/
-    RGB_INTEGER      = /^#{RINT}$/
+    OPACITY    = /([0-1]|0\.\d+)/
+    RGB_INT    = /(\d{1,2}|[1-2][0-5]{2})/
+    HSL_INT    = /(\d{1,2}|[1-2]\d{2}|3([0-5]\d|60))/
     HEX_COLOR  = /^#?([\da-fA-F]{3}){1,2}$/
-    RGB_COLOR  = /\s*rgb\(((#{RINT}|#{PCT}),\s*){2}(#{RINT}|#{PCT})\s*\)\s*/
-    RGBA_COLOR = /\s*rgba\(((#{RINT}|#{PCT}),\s*){3}([0-1]|0\.\d+)\s*\)\s*/
+    RGB_COLOR  = /rgb\(\s*((#{RGB_INT}|#{PCT}),\s*){2}(#{RGB_INT}|#{PCT})\s*\)/
+    RGBA_COLOR = /rgba\(\s*((#{RGB_INT}|#{PCT}),\s*){3}#{OPACITY}\s*\)/
+    HSL_COLOR  = /hsl\(\s*((#{HSL_INT}|#{PCT}),\s*){2}(#{HSL_INT}|#{PCT})\s*\)/
+    HSLA_COLOR = /hsla\(\s*((#{HSL_INT}|#{PCT}),\s*){3}(#{OPACITY})\s*\)/
     
     # Colors can be of several types: keywords, hexadecimal strings, RGB and
     # RGBA formats. The type of the color is set on initialisation, so that
     # the output format matches the input format.
-    TYPES = [:inherit, :keyword, :hex, :rgb, :rgba]
+    TYPES = [:inherit, :keyword, :hex, :rgb, :rgba, :hsl, :rgba]
     
     KEYWORDS = {
       # HTML4 color keywords.
@@ -248,7 +254,7 @@ module Stylish #:nodoc:
         rgb = value[0..2].inject([]) do |rgb, v|
           if v.is_a?(Integer) || v.is_a?(Float)
             rgb << v
-          elsif v =~ RGB_INTEGER
+          elsif v =~ /^#{RGB_INT}$/
             rgb << v.to_i
           elsif v =~ PERCENTAGE
             rgb << (v.chop.to_f * 256 / 100).round
@@ -261,7 +267,7 @@ module Stylish #:nodoc:
           if value.length == 3
             @red, @green, @blue, @opacity = rgb << nil
             @type = :rgb and return
-          elsif value.length == 4 and value[3] =~ /^([0-1]|0\.\d+)$/
+          elsif value.length == 4 and value[3].kind_of?(Numeric)
             @red, @green, @blue, @opacity = rgb << value[3].to_f
             @type = :rgba and return
           end
@@ -358,6 +364,14 @@ module Stylish #:nodoc:
       "#" + self.class.compress_hex(hexcolor)
     end
     
+    def to_hsl
+      "hsl(#{hsl * ", "})"
+    end
+    
+    def to_hsla
+      "hsla(#{hsla * ", "})"
+    end
+    
     # Returns a string representation of the color's value. The output format
     # depends on the type of the color object: if it's set to hex, the output
     # format will be a hexadecimal representation of the color value, etc.
@@ -374,6 +388,39 @@ module Stylish #:nodoc:
     end
     
     private
+    
+    def hsl
+      red, green, blue = rgb = [@red, @green, @blue].map {|i| i / 255 }
+      max, min               = rgb.max, rgb.min
+      
+      huer = Proc.new {|num, a| 60 * (num / (max - min)) + a }
+      
+      lightness = (max + min) / 2
+      
+      if max == min
+        saturation = 0
+      elsif lightness <= 1 / 2
+        saturation = (max - min) / (lightness * 2)
+      else
+        saturation = (max - min) / (2 - (lightness * 2))
+      end
+      
+      hue = if max == min
+        0
+      elsif max == red
+        huer.call(green - blue, 360).divmod(360).last
+      elsif max == green
+        huer.call(blue - red, 160)
+      else
+        huer.call(red - green, 240)
+      end
+      
+      [hue].concat([saturation, lightness].map {|r| (r * 100).to_f.round.to_s + "%" })
+    end
+    
+    def hsla
+      hsl << self.opacity
+    end
     
     # Compress six-character hexadecimal color values to abbreviated, three-
     # character ones.
@@ -416,6 +463,14 @@ module Stylish #:nodoc:
           return [:rgba].concat(self.class.convert_rgba(value))
         end
         
+        if value =~ HSL_COLOR
+          return [:hsl].concat(self.class.convert_hsl(value))
+        end
+        
+        if value =~ HSLA_COLOR
+          return [:hsla].concat(self.class.convert_hsla(value))
+        end
+        
         nil
       end
       
@@ -436,7 +491,7 @@ module Stylish #:nodoc:
         sub(/\s*\)\s*$/, "").
         split(/\s*,\s*/).
         map {|value|
-          if value =~ RGB_INTEGER
+          if value =~ /^#{RGB_INT}$/
             value.to_i
           else
             (value.chop.to_f * 255 / 100).round
@@ -448,17 +503,72 @@ module Stylish #:nodoc:
       # of three base 10 integers corresponding to red, green and blue, and a
       # float representing the opacity.
       def self.convert_rgba(rgbacolor)
-        rgbacolor.sub(/^\s*rgba\(\s*/, "").
-        sub(/\s*\)\s*$/, "").
+        rgbacolor.sub(/rgba\(\s*/, "").
+        sub(/\s*\)$/, "").
         split(/\s*,\s*/).
         map do |value|
-          if value =~ RGB_INTEGER
+          if value =~ /^#{RGB_INT}$/
             value.to_i
           elsif value =~ PERCENTAGE
             (value.chop.to_f * 255 / 100).round
           else
             value.to_f
           end
+        end
+      end
+      
+      def self.convert_hsl(hsl)
+        h, s, l = hsl.strip.sub(/^hsl\((.+?)\)$/, '\1').split(/\s*,\s*/)
+        
+        h    = Rational(h.to_i, 360)
+        s, l = [s, l].map {|v| Rational(v.chop.to_i, 100) }
+        
+        self.hsla_to_rgba([h, s, l, nil])
+      end
+      
+      def self.convert_hsla(hsla)
+        h, s, l, a = hsla.strip.sub(/^hsla\((.+?)\)$/, '\1').split(/\s*,\s*/)
+        
+        h    = Rational(h.to_i, 360)
+        s, l = [s, l].map {|v| Rational(v.chop.to_i, 100) }
+        a    = a.to_f
+        
+        self.hsla_to_rgba([h, s, l, a])
+      end
+      
+      def self.hsla_to_rgba(hsla)
+        hue, saturation, lightness, opacity = hsla
+        
+        if lightness < Rational(1, 2)
+          m2 = lightness * (1 + saturation)
+        else
+          m2 = lightness + saturation - lightness * saturation
+        end
+        
+        m1 = lightness * 2 - m2
+        
+        rgb = [hue + Rational(1, 3), hue, hue - Rational(1, 3)].map do |c|
+          (self.hue_to_rgb(m1, m2, c) * 255).round
+        end
+        
+        rgb << opacity
+      end
+      
+      def self.hue_to_rgb(m1, m2, hue)
+        if hue < 0
+          hue = hue + 1
+        elsif hue > 1
+          hue = hue - 1
+        end
+                
+        if hue < Rational(1, 6)
+          m1 + (m2 - m1) * hue * 6
+        elsif hue < Rational(1, 2)
+          m2
+        elsif hue < Rational(2, 3)
+          m1 + (m2 - m1) * (Rational(2, 3) - hue) * 6
+        else
+          m1
         end
       end
     end
