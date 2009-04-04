@@ -92,9 +92,13 @@ module Stylish
     end
     
     class Rule
-      include Leaf
+      include Formattable, Leaf
+      
+      attr_accessor :selectors, :declarations
       
       def initialize(selectors, *declarations)
+        accept_format(/^\s*%s\s*\{\s*%s\s*\}\s*$/m, "%s {%s}")
+        
         @selectors = selectors.inject(Selectors.new) do |ss, s|
           ss << s
         end
@@ -105,9 +109,8 @@ module Stylish
       end
       
       def to_s(scope = "")
-        @selectors.map {|selector|
-          scope + " " + selector.to_s
-        }.join(", ")  + " {#{@declarations.to_s}}"
+        selectors = @selectors.map {|s| scope + " " + s.to_s }
+        sprintf(@format, selectors.join, @declarations.join)
       end
     end
     

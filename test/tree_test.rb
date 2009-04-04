@@ -50,7 +50,7 @@ class TreeTest < Test::Unit::TestCase
     @tree << @node
     @tree << onde
     
-    assert_equal("body .test p {font-weight:bold;}
-body .parent > .child p {font-weight:bold;}", @tree.to_s)
+    assert_equal("body .test p {font-weight:bold;}" + "\n" +
+      "body .parent > .child p {font-weight:bold;}", @tree.to_s)
   end
 end
