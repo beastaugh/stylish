@@ -1,9 +1,36 @@
 module Stylish
   module Tree
     
+    # Stylish trees are formed from nodes.
+    module Node
+      
+      # Normal nodes can't be the roots of trees.
+      def root?
+        false
+      end
+      
+      # Normal nodes aren't leaves
+      def leaf?
+        false
+      end
+    end
+    
+    # Leaves cannot have further nodes attached to them, and cannot root
+    # selector trees. When a tree is serialised, it is the leaf nodes which
+    # are the ultimate objects of serialisation, where the recursive process
+    # ends.
+    module Leaf
+      include Node
+      
+      # Leaves are leaves.
+      def leaf?
+        true
+      end
+    end
+    
     # Rules are namespaced by their place in a selctor tree.
     class Selector
-      include Formattable
+      include Formattable, Node
       
       attr_reader :nodes
       
@@ -13,12 +40,7 @@ module Stylish
         @scope = selector
         @nodes = []
       end
-      
-      # Selectors are not leaves.
-      def leaf?
-        false
-      end
-      
+            
       # Return the child node at the given index.
       def [](index)
         @nodes[index]
@@ -26,19 +48,25 @@ module Stylish
       
       # Replace an existing child node.
       def []=(index, node)
-        if node.is_a?(Tree::Selector) || node.leaf?
+        raise ArgumentError,
+          "#{node.inspect} is not a node." unless node.is_a?(Tree::Node)
+        
+        unless node.root?
           @nodes[index] = node
         else
-          raise ArgumentError, "#{node.inspect} is not a node."
+          raise ArgumentError, "Root nodes cannot be added to trees."
         end
       end
       
       # Append a child node.
       def <<(node)
-        if node.is_a?(Tree::Selector) || node.leaf?
+        raise ArgumentError,
+          "#{node.inspect} is not a node." unless node.is_a?(Tree::Node)
+        
+        unless node.root?
           @nodes << node
         else
-          raise ArgumentError, "#{node.inspect} is not a node."
+          raise ArgumentError, "Root nodes cannot be added to trees."
         end
       end
       
@@ -79,22 +107,29 @@ module Stylish
       end
     end
     
-    # Leaves cannot have further nodes attached to them, and cannot root
-    # selector trees. When a tree is serialised, it is the leaf nodes which
-    # are the ultimate objects of serialisation, where the recursive process
-    # ends.
-    module Leaf
+    # Eventual replacement for the core Stylesheet class.
+    class Stylesheet < Tree::Selector
       
-      # Leaves are leaves.
-      def leaf?
+      def initialize
+        accept_format(/\s*/m, "\n")
+        @nodes = []
+      end
+
+      def root?
         true
+      end
+
+      def to_s
+        return "" if @nodes.empty?
+        @nodes.map {|node| node.to_s }.join(@format)
       end
     end
     
+    # Eventual replacement for the core Rule class.
     class Rule
       include Formattable, Leaf
       
-      attr_accessor :selectors, :declarations
+      attr_reader :selectors, :declarations
       
       def initialize(selectors, *declarations)
         accept_format(/^\s*%s\s*\{\s*%s\s*\}\s*$/m, "%s {%s}")

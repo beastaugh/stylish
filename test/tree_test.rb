@@ -4,7 +4,7 @@ require './lib/stylish'
 class TreeTest < Test::Unit::TestCase
   
   def setup
-    @tree = Stylish::Tree::Selector.new("body")
+    @tree = Stylish::Tree::Stylesheet.new
     @node = Stylish::Tree::Selector.new(".test")
     @rule = Stylish::Tree::Rule.new([Stylish::Selector.new("p")],
       Stylish::Declaration.new("font-weight", "bold"))
@@ -50,7 +50,7 @@ class TreeTest < Test::Unit::TestCase
     @tree << @node
     @tree << onde
     
-    assert_equal("body .test p {font-weight:bold;}" + "\n" +
-      "body .parent > .child p {font-weight:bold;}", @tree.to_s)
+    assert_equal(".test p {font-weight:bold;}" + "\n" +
+      ".parent > .child p {font-weight:bold;}", @tree.to_s)
   end
 end
