@@ -158,7 +158,10 @@ module Stylish
       
       # Serialise the rule to valid CSS code.
       def to_s(scope = "")
-        selectors = @selectors.map {|s| scope + " " + s.to_s }
+        selectors = @selectors.map do |selector|
+          (scope.empty? ? "" : scope + " ") + selector.to_s
+        end
+        
         sprintf(@format, selectors.join, @declarations.join)
       end
     end
