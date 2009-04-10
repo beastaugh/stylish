@@ -43,7 +43,7 @@ module Stylish
     end
     
     # Rules are namespaced by their place in a selector tree.
-    class Selector
+    class SelectorScope
       include Formattable, Node
       
       attr_reader :nodes
@@ -112,7 +112,7 @@ module Stylish
         @nodes.inject([]) do |rules, node|
           if node.leaf?
             rules << node if type.nil? || node.is_a?(type)
-          elsif node.is_a?(Selector)
+          elsif node.is_a?(SelectorScope)
             rules.concat(node.rules)
           end
           
@@ -122,7 +122,7 @@ module Stylish
     end
     
     # Eventual replacement for the core Stylesheet class.
-    class Stylesheet < Tree::Selector
+    class Stylesheet < Tree::SelectorScope
       
       # Stylesheets are pure aggregate objects; they can contain child nodes,
       # but have no data of their own. Their initializer therefore accepts no

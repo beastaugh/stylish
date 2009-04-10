@@ -33,7 +33,7 @@ module Stylish
               @node << Rule.new(selector, declarations)
             end
             
-            new_node = Tree::Selector.new(selector.to_s)
+            new_node = Tree::SelectorScope.new(selector.to_s)
             @node << new_node
             
             self.class.new(new_node).instance_eval(&block)

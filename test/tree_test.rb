@@ -5,7 +5,7 @@ class TreeTest < Test::Unit::TestCase
   
   def setup
     @tree = Stylish::Tree::Stylesheet.new
-    @node = Stylish::Tree::Selector.new(".test")
+    @node = Stylish::Tree::SelectorScope.new(".test")
     @rule = Stylish::Rule.new([Stylish::Selector.new("p")],
       Stylish::Declaration.new("font-weight", "bold"))
   end
@@ -44,7 +44,7 @@ class TreeTest < Test::Unit::TestCase
   end
   
   def test_selector_serialisation
-    onde = Stylish::Tree::Selector.new(".parent > .child")
+    onde = Stylish::Tree::SelectorScope.new(".parent > .child")
     @node << @rule
     onde  << @rule
     @tree << @node

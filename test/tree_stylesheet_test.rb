@@ -5,8 +5,8 @@ class TreeStylesheetTest < Test::Unit::TestCase
   
   def setup
     @style = Stylish::Tree::Stylesheet.new
-    @node  = Stylish::Tree::Selector.new("div")
-    @onde  = Stylish::Tree::Selector.new("span")
+    @node  = Stylish::Tree::SelectorScope.new("div")
+    @onde  = Stylish::Tree::SelectorScope.new("span")
     @rule  = Stylish::Rule.new([Stylish::Selector.new("em")],
                Stylish::Declaration.new("font-weight", "bold"))
   end
@@ -17,7 +17,7 @@ class TreeStylesheetTest < Test::Unit::TestCase
     assert_equal(5, @style.nodes.length)
     
     @style.nodes.each do |node|
-      assert_instance_of(Stylish::Tree::Selector, node)
+      assert_instance_of(Stylish::Tree::SelectorScope, node)
     end
   end
   
