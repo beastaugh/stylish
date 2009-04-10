@@ -20,153 +20,30 @@ module Stylish
                    :optgroup, :option, :textarea, :output, :details, :datagrid,
                    :command, :bb, :menu, :legend, :div]
   
-  class Stylesheet
-    include Formattable
-    
-    attr_reader :content, :indent
-    attr_accessor :name, :parent, :depth
-    
-    def initialize(name = nil, selectors = nil, declarations = nil, options = {}, &block)
-      accept_format(/\s*/m, "\n")
-      options = {:images => '', :depth => 0}.merge(options)
-      @content = []
-      
-      self.name = name
-      @parent, @depth = options[:parent], options[:depth]
-      @images_path = Pathname.new(options[:images])
-      self.indent = options[:indent]
-      
-      Description.new(self, selectors, declarations).instance_eval(&block) if block
-    end
-    
-    def name
-      @name.to_s
-    end
-    
-    def name=(name)
-      if name.is_a? String
-        @name = name
-      elsif @name.is_a? String
-        @name
-      else
-        @name = self.object_id
-      end
-    end
-    
-    def content=(input)
-      @content = input.select do |obj|
-        obj.is_a?(Rule) || obj.is_a?(Comment) || obj.is_a?(Stylesheet)
-      end
-    end
-    
-    def rules
-      @content.select {|obj| obj.is_a? Rule }
-    end
-    
-    def rules=(input)
-      @content = @content.reject {|obj| obj.is_a? Rule }
-      @content.concat(input.select {|obj| obj.is_a? Rule })
-    end
-    
-    def comments
-      @content.select {|obj| obj.is_a? Comment }
-    end
-    
-    def comments=(input)
-      @content = @content.reject {|obj| obj.is_a? Comment }
-      @content.concat(input.select {|obj| obj.is_a? Comment })
-    end
-
-    def subsheets
-      @content.select {|obj| obj.is_a? Stylesheet }
-    end
-
-    def subsheets=(input)
-      @content = @content.reject {|obj| obj.is_a? Stylesheet }
-      @content.concat(input.select {|obj| obj.is_a? Stylesheet }.map {|style|
-        style.depth = @depth + 1
-        style.parent = self
-        style
-      })
-    end
-    
-    def indent=(str)
-      @indent = str.is_a?(String) && str =~ /^\s*$/m ? str : " " * 2
-      
-      self.subsheets.each do |subsheet|
-        subsheet.indent = @indent
-      end
-    end
-    
-    def to_s(indent = true)
-      output = @content.map {|r| r.to_s }.join(@format)
-      output.gsub!(/(\A|\n)/, '\1' + self.indent) if indent && self.depth > 0
-      output + "\n"
-    end
-  end
-  
   class Rule
-    include Formattable
+    include Formattable, Tree::Leaf
     
     attr_reader :selectors, :declarations
     
-    def initialize(selectors, declarations)
+    def initialize(selectors, *declarations)
       accept_format(/^\s*%s\s*\{\s*%s\s*\}\s*$/m, "%s {%s}")
       
-      self.selectors = selectors
-      self.declarations = declarations
-    end
-    
-    def selectors=(input)
-      if input.is_a? String
-        @selectors = self.class.parse_selectors_string(input)
-      elsif input.is_a? Array
-        @selectors = input.inject(Selectors.new) do |m, s|
-          if s.is_a? Selector
-            m << s
-          elsif s.is_a? String
-            m << Selector.new(s)
-          end
-        end
-      else
-        @selectors = Selectors.new
-      end
-    end
-    
-    def declarations=(input)
-      @declarations = input and return if input.is_a? Declarations
-      @declarations = Declarations.new << input and return if input.is_a? Background
-      
-      if input.is_a? String
-        declarations = self.class.parse_declarations_string(input)
-      elsif input.is_a?(Hash) || input.is_a?(Array)
-        declarations = input.to_a
+      @selectors = selectors.inject(Selectors.new) do |ss, s|
+        ss << s
       end
       
-      unless declarations.nil?
-        @declarations = declarations.inject(Declarations.new) do |m, d|
-          if d.is_a? Background
-            m << d
-          else
-            m << Declaration.new(d[0], d[1])
-          end
-        end
+      @declarations = declarations.inject(Declarations.new) do |ds, d|
+        ds << d
       end
     end
     
-    def to_s
-      sprintf(@format, @selectors.join, @declarations ? @declarations.join : "")
-    end
-    
-    private
-    
-    def self.parse_selectors_string(input)
-      input.strip.split(/\s*,\s*/).
-        inject(Selectors.new) {|m, s| m << Selector.new(s) }
-    end
-    
-    def self.parse_declarations_string(input)
-      input.strip.scan(/([a-z\-]+):(.+?);/)
+    # Serialise the rule to valid CSS code.
+    def to_s(scope = "")
+      selectors = @selectors.map do |selector|
+        (scope.empty? ? "" : scope + " ") + selector.to_s
+      end
+      
+      sprintf(@format, selectors.join, @declarations.join)
     end
   end
   
@@ -293,7 +170,7 @@ module Stylish
       self.join
     end
   end
-    
+  
   class Background < Declaration
     attr_reader :color,
                 :image,

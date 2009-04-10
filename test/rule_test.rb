@@ -4,41 +4,26 @@ require './lib/stylish'
 class RuleTest < Test::Unit::TestCase
   
   def setup
-    @rule = Stylish::Rule.new(".content, .form", "font-weight:normal; color:#000;")
+    @rule = Stylish::Rule.new([
+      Stylish::Selector.new("div .alert, body .error")],
+      Stylish::Declaration.new("font-style", "italic"),
+      Stylish::Declaration.new("font-weight", "bold"))
   end
   
-  def test_format
-    assert_equal(".content, .form {font-weight:normal; color:#000;}", @rule.to_s)
+  def test_rule_serialisation
+    assert_equal("div .alert, body .error " + 
+      "{font-style:italic; font-weight:bold;}", @rule.to_s)
   end
   
-  def test_selector_input_types
-    assert_equal(2, @rule.selectors.length)
-    assert_instance_of(Stylish::Selectors,
-      Stylish::Rule.new([".content", ".form"], Stylish::Background.new(:color => :red)).selectors)
-    assert_equal(0, Stylish::Rule.new(5, "font-weight:bold;").selectors.length)
-  end
-  
-  def test_declaration_input_types
-    selector = Stylish::Selector.new('.test')
-    rstr = Stylish::Rule.new(selector, "text-transform:uppercase;")
-    rhsh = Stylish::Rule.new(selector, {"text-transform" => "lowercase"})
-    
-    assert_equal("text-transform", rstr.declarations[0].property)
-    assert_equal("uppercase", rstr.declarations[0].value)
-    
-    assert_equal("text-transform", rhsh.declarations[0].property)
-    assert_equal("lowercase", rhsh.declarations[0].value)
-  end
-  
-  def test_declaration_types
-    @rule.declarations.each do |d|
-      assert_instance_of(Stylish::Declaration, d)
+  def test_selector_listing
+    @rule.selectors.each do |selector|
+      assert_instance_of(Stylish::Selector, selector)
     end
   end
   
-  def test_selector_types
-    @rule.selectors.each do |d|
-      assert_instance_of(Stylish::Selector, d)
+  def test_declaration_listing
+    @rule.declarations.each do |declaration|
+      assert_instance_of(Stylish::Declaration, declaration)
     end
   end
 end

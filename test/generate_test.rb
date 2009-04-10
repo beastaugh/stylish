@@ -3,93 +3,52 @@ require './lib/stylish'
 
 class GenerateTest < Test::Unit::TestCase
   
-  def setup
-    @style = Stylish.generate do
-      rule ".header", background(:color => :green)
-      
-      rule ".content" do
-        rule "H1", font_size("2em")
-        rule "P", margin_bottom("10px")
-      end
-    end
-  end
-  
-  def test_generate_shortcut
-    assert_equal(3, @style.rules.length)
-    assert_equal(".header {background-color:green;}", @style.rules[0].to_s)
-    assert_equal(".content P {margin-bottom:10px;}", @style.rules[2].to_s)
-  end
-  
-  def test_write_style
-    @style.write
-    css_string = File.read(@style.name + '.css')
-    
-    assert_equal(@style.to_s, css_string)
-    
-    `rm #{@style.name}.css`
-  end
-  
-  def test_subsheets
-    greek = Stylish.generate do
-      ["alpha", "beta", "gamma", "delta"].each do |name|
-        subsheet(name) {
-          comment "#{name.capitalize} is a sub-stylesheet."
-          rule "DIV", font_style("normal"), margin("0 0 1em 0")
-          rule "P", text_indent("-9999em")
-        }
-      end
+  def test_simple_rules
+    style = Stylish.generate do
+      rule ".checked", :font_weight => "bold"
+      rule ".unchecked", :font_style => "italic"
     end
     
-    assert_equal(4, greek.subsheets.length)
-    
-    3.times do |i|
-      assert_instance_of(Stylish::Stylesheet, greek.subsheets[i])
-      assert_equal(3, greek.subsheets[i].content.length)
-    end
+    assert_equal(".checked {font-weight:bold;}\n" +
+      ".unchecked {font-style:italic;}", style.to_s)
   end
   
-  def test_subsheet_indents
-    tree = Stylish.generate do
-      subsheet do
-        rule "P", text_indent("-9999em")
+  def test_nested_rules
+    style = Stylish.generate do
+      rule "body" do
+        rule ".gilded" do
+          rule ".lily", :color => "gold"
+        end
         
-        subsheet do
-          rule "EM", font_style("italic")
+        rule "form", :line_height => "1"
+        rule "fieldset", :text_indent => "1em"
+      end
+    end
+    
+    assert_equal("body .gilded .lily {color:gold;}\n" +
+      "body form {line-height:1;}\n" +
+      "body fieldset {text-indent:1em;}", style.to_s)
+  end
+  
+  def test_element_rules
+    style = Stylish.generate do
+      body :z_index => 1000
+      p :line_height => "1.5"
+    end
+    
+    assert_equal("body {z-index:1000;}\n" +
+      "p {line-height:1.5;}", style.to_s)
+  end
+  
+  def test_nested_element_rules
+    style = Stylish.generate do
+      body do
+        div do
+          p :line_height => "1.5"
         end
       end
     end
     
-    lines = tree.to_s.split("\n")
-    
-    assert_equal("  P {text-indent:-9999em;}", lines[0])
-    assert_equal("    EM {font-style:italic;}", lines[1])
-    
-    tree.indent = ""
-    
-    assert_equal("P {text-indent:-9999em;}", tree.to_s.split("\n")[0])
-  end
-  
-  def test_comment_blocks
-    commented = Stylish.generate do
-      comment "This is a section header" do
-        rule "ABBR", text_decoration("underline")
-      end
-    end
-    
-    assert_instance_of(Stylish::Stylesheet, commented.content[0])
-    assert_equal("This is a section header", commented.content[0].content[0].header)
-    assert_equal("ABBR {text-decoration:underline;}", commented.content[0].content[1].to_s)
-  end
-  
-  def test_shorthand_selectors
-    style = Stylish.generate do
-      body background(:color => "white")
-      label border("1px inset #ccc")
-    end
-    
-    assert_instance_of(Stylish::Rule, style.content[0])
-    assert_instance_of(Stylish::Rule, style.content[1])
-    assert_equal("body {background-color:white;}", style.content[0].to_s)
-    assert_equal("label {border:1px inset #ccc;}", style.content[1].to_s)
+    assert_equal("body div p {line-height:1.5;}", style.to_s)
   end
 end
