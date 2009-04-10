@@ -11,41 +11,7 @@ module Stylish
   # help factor out some of the repetitiveness of CSS code, and can be easily
   # serialised to stylesheets.
   module Tree
-    
-    class Description
-      attr_accessor :node
-      
-      def initialize(context = nil)
-        @node = context || Tree::Stylesheet.new
-      end
-      
-      def rule(selectors, declarations = {}, &block)
-        return unless declarations || block
         
-        selectors = [selectors] unless selectors.is_a?(Array)
-        selectors.map! {|s| Stylish::Selector.new(s) }
-        
-        declarations = declarations.to_a.map do |p, v|
-          Declaration.new(p.to_s.sub("_", "-"), v)
-        end
-        
-        unless block
-          @node << Rule.new(selectors, declarations)
-        else
-          selectors.each do |selector|
-            unless declarations.empty?
-              @node << Rule.new(selector, declarations)
-            end
-            
-            new_node = Tree::Selector.new(selector.to_s)
-            @node << new_node
-            
-            self.class.new(new_node).instance_eval(&block)
-          end
-        end
-      end
-    end
-    
     # Stylish trees are formed from nodes. The Node module provides a common
     # interface for node objects, whether they be selectors, rules etc.
     module Node
