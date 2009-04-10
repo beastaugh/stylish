@@ -1,6 +1,6 @@
 module Stylish
   
-  def self.generate_tree(options = {}, &block)
+  def self.generate(options = {}, &block)
     dsl = Tree::Description.new
     dsl.instance_eval(&block)
     dsl.node

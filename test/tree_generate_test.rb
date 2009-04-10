@@ -4,7 +4,7 @@ require './lib/stylish'
 class TreeGenerateTest < Test::Unit::TestCase
   
   def test_simple_rules
-    style = Stylish.generate_tree do
+    style = Stylish.generate do
       rule ".checked", :font_weight => "bold"
       rule ".unchecked", :font_style => "italic"
     end
@@ -14,7 +14,7 @@ class TreeGenerateTest < Test::Unit::TestCase
   end
   
   def test_nested_rules
-    style = Stylish.generate_tree do |tree|
+    style = Stylish.generate do |tree|
       rule "body" do
         rule ".gilded" do
           rule ".lily", :color => "gold"
