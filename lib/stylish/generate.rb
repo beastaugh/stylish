@@ -8,18 +8,32 @@ module Stylish
   
   module Generate
     
+    module ElementMethods
+      HTML_ELEMENTS.each do |element|
+        next if self.respond_to?(element)
+        
+        module_eval <<-DEF
+          def #{element.to_s}(declarations = nil, &block)
+            self.rule("#{element.to_s}", declarations, &block)
+          end
+        DEF
+      end
+    end
+    
     class Description
+      include ElementMethods
+      
       attr_accessor :node
       
       def initialize(context = nil)
         @node = context || Tree::Stylesheet.new
       end
       
-      def rule(selectors, declarations = {}, &block)
+      def rule(selectors, declarations = nil, &block)
         return unless declarations || block
         
         selectors = [selectors] unless selectors.is_a?(Array)
-        selectors.map! {|s| Stylish::Selector.new(s) }
+        selectors.map! {|s| Selector.new(s) }
         
         declarations = declarations.to_a.map do |p, v|
           Declaration.new(p.to_s.sub("_", "-"), v)

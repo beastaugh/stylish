@@ -1,7 +1,7 @@
 require 'test/unit'
 require './lib/stylish'
 
-class TreeRuleTest < Test::Unit::TestCase
+class RuleTest < Test::Unit::TestCase
   
   def setup
     @rule = Stylish::Rule.new([

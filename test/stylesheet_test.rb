@@ -1,7 +1,7 @@
 require 'test/unit'
 require './lib/stylish'
 
-class TreeStylesheetTest < Test::Unit::TestCase
+class StylesheetTest < Test::Unit::TestCase
   
   def setup
     @style = Stylish::Tree::Stylesheet.new
