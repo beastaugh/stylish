@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{stylish}
-  s.version = "0.0.0"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Benedict Eastaugh"]
-  s.date = %q{2009-04-05}
+  s.date = %q{2009-04-11}
   s.description = %q{A Ruby library for generating cascading stylesheets.}
   s.email = %q{benedict@eastaugh.net}
   s.extra_rdoc_files = [
@@ -20,7 +20,9 @@ Gem::Specification.new do |s|
     "lib/stylish/color.rb",
     "lib/stylish/core.rb",
     "lib/stylish/formattable.rb",
-    "lib/stylish/generator.rb",
+    "lib/stylish/generate.rb",
+    "lib/stylish/stylesheet.rb",
+    "lib/stylish/tree.rb",
     "test/background_test.rb",
     "test/color_test.rb",
     "test/comment_test.rb",
@@ -31,7 +33,8 @@ Gem::Specification.new do |s|
     "test/rule_test.rb",
     "test/selector_test.rb",
     "test/selectors_test.rb",
-    "test/stylesheet_test.rb"
+    "test/stylesheet_test.rb",
+    "test/tree_test.rb"
   ]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/ionfish/stylish}
@@ -50,7 +53,8 @@ Gem::Specification.new do |s|
     "test/rule_test.rb",
     "test/selector_test.rb",
     "test/selectors_test.rb",
-    "test/stylesheet_test.rb"
+    "test/stylesheet_test.rb",
+    "test/tree_test.rb"
   ]
 
   if s.respond_to? :specification_version then
