@@ -4,7 +4,7 @@ require './lib/stylish'
 class StylesheetTest < Test::Unit::TestCase
   
   def setup
-    @style = Stylish::Tree::Stylesheet.new
+    @style = Stylish::Stylesheet.new
     @node  = Stylish::Tree::SelectorScope.new("div")
     @onde  = Stylish::Tree::SelectorScope.new("span")
     @rule  = Stylish::Rule.new([Stylish::Selector.new("em")],

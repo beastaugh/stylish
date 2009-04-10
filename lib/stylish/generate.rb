@@ -26,7 +26,7 @@ module Stylish
       attr_accessor :node
       
       def initialize(context = nil)
-        @node = context || Tree::Stylesheet.new
+        @node = context || Stylesheet.new
       end
       
       def rule(selectors, declarations = nil, &block)
