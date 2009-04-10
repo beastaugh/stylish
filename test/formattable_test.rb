@@ -4,7 +4,6 @@ require './lib/stylish'
 class FormattableTest < Test::Unit::TestCase
   
   def setup
-    @stylesheet = Stylish::Stylesheet.new
     @rule = Stylish::Rule.new(".test, .content", "display:block;")
     @selectors = Stylish::Selectors.new
     @declaration = Stylish::Declaration.new("background-color", "#000")
@@ -12,7 +11,6 @@ class FormattableTest < Test::Unit::TestCase
   end
   
   def test_reading_default_formats  
-    assert_equal("\n", @stylesheet.format)
     assert_equal("%s {%s}", @rule.format)
     assert_equal(", ", @selectors.format)
     assert_equal("%s:%s;", @declaration.format)
