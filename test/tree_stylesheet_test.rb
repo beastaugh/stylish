@@ -7,7 +7,7 @@ class TreeStylesheetTest < Test::Unit::TestCase
     @style = Stylish::Tree::Stylesheet.new
     @node  = Stylish::Tree::Selector.new("div")
     @onde  = Stylish::Tree::Selector.new("span")
-    @rule  = Stylish::Tree::Rule.new([Stylish::Selector.new("em")],
+    @rule  = Stylish::Rule.new([Stylish::Selector.new("em")],
                Stylish::Declaration.new("font-weight", "bold"))
   end
   

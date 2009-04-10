@@ -30,11 +30,11 @@ module Stylish
         end
         
         unless block
-          @node << Tree::Rule.new(selectors, declarations)
+          @node << Rule.new(selectors, declarations)
         else
           selectors.each do |selector|
             unless declarations.empty?
-              @node << Tree::Rule.new(selector, declarations)
+              @node << Rule.new(selector, declarations)
             end
             
             new_node = Tree::Selector.new(selector.to_s)
@@ -177,34 +177,6 @@ module Stylish
         @nodes.map {|node| node.to_s }.join(@format)
       end
     end
-    
-    # Eventual replacement for the core Rule class.
-    class Rule
-      include Formattable, Leaf
-      
-      attr_reader :selectors, :declarations
-      
-      def initialize(selectors, *declarations)
-        accept_format(/^\s*%s\s*\{\s*%s\s*\}\s*$/m, "%s {%s}")
         
-        @selectors = selectors.inject(Selectors.new) do |ss, s|
-          ss << s
-        end
-        
-        @declarations = declarations.inject(Declarations.new) do |ds, d|
-          ds << d
-        end
-      end
-      
-      # Serialise the rule to valid CSS code.
-      def to_s(scope = "")
-        selectors = @selectors.map do |selector|
-          (scope.empty? ? "" : scope + " ") + selector.to_s
-        end
-        
-        sprintf(@format, selectors.join, @declarations.join)
-      end
-    end
-    
   end
 end

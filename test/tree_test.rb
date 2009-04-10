@@ -6,7 +6,7 @@ class TreeTest < Test::Unit::TestCase
   def setup
     @tree = Stylish::Tree::Stylesheet.new
     @node = Stylish::Tree::Selector.new(".test")
-    @rule = Stylish::Tree::Rule.new([Stylish::Selector.new("p")],
+    @rule = Stylish::Rule.new([Stylish::Selector.new("p")],
       Stylish::Declaration.new("font-weight", "bold"))
   end
   

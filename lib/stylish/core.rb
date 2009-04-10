@@ -20,6 +20,33 @@ module Stylish
                    :optgroup, :option, :textarea, :output, :details, :datagrid,
                    :command, :bb, :menu, :legend, :div]
   
+  class Rule
+    include Formattable, Tree::Leaf
+    
+    attr_reader :selectors, :declarations
+    
+    def initialize(selectors, *declarations)
+      accept_format(/^\s*%s\s*\{\s*%s\s*\}\s*$/m, "%s {%s}")
+      
+      @selectors = selectors.inject(Selectors.new) do |ss, s|
+        ss << s
+      end
+      
+      @declarations = declarations.inject(Declarations.new) do |ds, d|
+        ds << d
+      end
+    end
+    
+    # Serialise the rule to valid CSS code.
+    def to_s(scope = "")
+      selectors = @selectors.map do |selector|
+        (scope.empty? ? "" : scope + " ") + selector.to_s
+      end
+      
+      sprintf(@format, selectors.join, @declarations.join)
+    end
+  end
+  
   class Comment
     attr_reader :header, :lines, :metadata
     
