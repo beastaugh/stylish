@@ -21,11 +21,45 @@ module Stylish
                    :command, :bb, :menu, :legend, :div, :h1, :h2, :h3, :h4,
                    :h5, :h6]
   
+  # Rule objects represent CSS rules, and serialise to them. They possess one
+  # or more selectors, and zero or more declarations. In addition to their
+  # importance as the major building-blocks of stylesheets, they act as the
+  # leaves of Stylish's stylesheet trees.
+  #
+  # Their serialisation is controllable to some extent by altering their
+  # format attribute; this should never make them lose information when they
+  # are serialised.
+  #
+  # E.g., by changing its format to "%s {\n  %s\n}" a rule that would
+  # normally be serialised thus:
+  #
+  #     body {font-size:81%;}
+  #
+  # Would instead be serialised like this:
+  #
+  #     body {
+  #       font-size:81%;
+  #     }
+  #
   class Rule
     include Formattable, Tree::Leaf
     
     attr_reader :selectors, :declarations
     
+    # Every Rule must have at least one selector, but may have any number of
+    # declarations. Empty rules are often used in stylesheets to indicate
+    # particular combinations of selectors which may be used to produce
+    # particular effects.
+    #
+    # In Stylish, of course, a Rule's declarations may be amended after its
+    # creation:
+    #
+    #     rule = Stylish::Rule.new([Stylish::Selector.new("body")])
+    #     rule.declarations << Stylish::Declaration.new("font-weight", "bold")
+    #     rule.to_s # => "body {font-weight:bold;}"
+    #
+    # This makes Rule objects a very flexible foundation for the higher-level
+    # data structures and APIs in Stylish.
     def initialize(selectors, *declarations)
       accept_format(/^\s*%s\s*\{\s*%s\s*\}\s*$/m, "%s {%s}")
       
