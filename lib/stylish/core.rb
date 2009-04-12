@@ -281,6 +281,24 @@ module Stylish
     end
   end
   
+  # The Background class is a specialised kind of Declaration, geared towards
+  # dealing with the oddities of the background family of declarations, which
+  # can exist in both long- and shorthand forms.
+  #
+  # For example, these longhand background declarations
+  #
+  #     background-color:  #999;
+  #     background-image:  url('bg.png');
+  #     background-repeat: repeat-x;
+  #
+  # could be compressed into a single shorthand declaration
+  #
+  #     background: #999 url('bg.png') repeat-x;
+  #
+  # The Background class allows for easy conversion between these forms. It
+  # defaults to the longhand versions, allowing rules with stronger selector
+  # weighting to only override specific parts of other rules' background
+  # declarations.
   class Background < Declaration
     attr_reader :color,
                 :image,
@@ -302,7 +320,7 @@ module Stylish
     HORIZONTAL_POSITIONS = ["left", "center", "right"]
     VERTICAL_POSITIONS   = ["top", "center", "bottom"]
     
-    # Create a new Background object
+    # Create a new Background object with the specified properties.
     def initialize(options)
       accept_format(/^\s*%s\s*:\s*%s;\s*$/m, "%s:%s;")
       self.value = options
@@ -338,11 +356,11 @@ module Stylish
       @attachment = val if ATTACHMENT_VALUES.include?(val)
     end
     
-    # Set this to true to generate a compressed declaration, e.g.
+    # Set this to true to generate a shorthand declaration, e.g.
     #
     #     background:#ccc url('bg.png') no-repeat 0 0;
     #
-    # As opposed to the uncompressed version:
+    # As opposed to the longhand version:
     #
     #     background-color:#ccc; background-image:url('bg.png');
     #     background-repeat:no-repeat; background-position:0 0;
