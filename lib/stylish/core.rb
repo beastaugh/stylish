@@ -78,11 +78,58 @@ module Stylish
     end
   end
   
+  # Comment objects form the other concrete leaves of selector trees, and allow
+  # stylesheets to be annotated at any point (outside Rules). Their
+  # serialisation format follows the well-known JavaDoc and PHPDoc style, with
+  # a header, several lines of notes, and key-value information.
+  #
+  # This format is not amendable; those desirous of their own formatting would
+  # be better served by creating their own Comment class, such as the following
+  # more basic one:
+  #
+  #     module Stylish
+  #       module Extensions
+  #         
+  #         class Comment
+  #           include Tree::Leaf
+  #           
+  #           attr_accessor :content
+  #           
+  #           def initialize(content)
+  #             @content = content
+  #           end
+  #           
+  #           def to_s(scope = "")
+  #             "/* " + content.to_s + " */"
+  #           end
+  #         end
+  #         
+  #       end
+  #     end
+  #
   class Comment
     include Tree::Leaf
     
     attr_reader :header, :lines, :metadata
     
+    # Each Comment can have a header, additional lines of text content (each
+    # provided as its own argument), and key-value metadata passed in as a Ruby
+    # Hash object.
+    #
+    #     comment = Comment.new("My wonderful comment",
+    #                 "It has several lines of insightful notes,",
+    #                 "filled with wisdom and the knowledge of ages.",
+    #                 {:author => "Some Egotist"})
+    #
+    #     comment.to_s # => /**
+    #                  #     * My wonderful comment
+    #                  #     *
+    #                  #     * It has several lines of insightful notes,
+    #                  #     * filled with wisdom and the knowledge of ages.
+    #                  #     *
+    #                  #     * @author Some Egotist
+    #                  #     */
+    #
     def initialize(*args)
       @lines, @metadata = [], {}
       
@@ -99,6 +146,10 @@ module Stylish
       end
     end
     
+    # As Comment objects are the leaves of selector trees, they must implement
+    # the serialisation API of those trees, and thus the #to_s method has a
+    # scope argument, which is in practice discarded when the serialisation of
+    # the comment occurs.
     def to_s(scope = "")
       if @lines.empty? && @metadata.empty?
         sprintf("/**\n * %s\n */", @header)
