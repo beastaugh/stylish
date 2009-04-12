@@ -8,7 +8,7 @@ class StylesheetTest < Test::Unit::TestCase
     @node  = Stylish::Tree::SelectorScope.new("div")
     @onde  = Stylish::Tree::SelectorScope.new("span")
     @rule  = Stylish::Rule.new([Stylish::Selector.new("em")],
-               Stylish::Declaration.new("font-weight", "bold"))
+               [Stylish::Declaration.new("font-weight", "bold")])
   end
   
   def test_node_addition

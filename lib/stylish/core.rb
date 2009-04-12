@@ -60,7 +60,7 @@ module Stylish
     #
     # This makes Rule objects a very flexible foundation for the higher-level
     # data structures and APIs in Stylish.
-    def initialize(selectors, *declarations)
+    def initialize(selectors, declarations)
       accept_format(/^\s*%s\s*\{\s*%s\s*\}\s*$/m, "%s {%s}")
       
       @selectors = selectors.inject(Selectors.new) do |ss, s|

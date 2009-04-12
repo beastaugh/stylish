@@ -6,8 +6,8 @@ class RuleTest < Test::Unit::TestCase
   def setup
     @rule = Stylish::Rule.new([
       Stylish::Selector.new("div .alert, body .error")],
-      Stylish::Declaration.new("font-style", "italic"),
-      Stylish::Declaration.new("font-weight", "bold"))
+      [Stylish::Declaration.new("font-style", "italic"),
+      Stylish::Declaration.new("font-weight", "bold")])
   end
   
   def test_rule_serialisation

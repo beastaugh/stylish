@@ -7,7 +7,7 @@ class TreeTest < Test::Unit::TestCase
     @tree    = Stylish::Stylesheet.new
     @node    = Stylish::Tree::SelectorScope.new(".test")
     @rule    = Stylish::Rule.new([Stylish::Selector.new("p")],
-                 Stylish::Declaration.new("font-weight", "bold"))
+                 [Stylish::Declaration.new("font-weight", "bold")])
     @comment = Stylish::Comment.new("Comment header",
                  {:author => "Some Body"})
   end

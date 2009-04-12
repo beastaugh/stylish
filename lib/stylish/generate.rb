@@ -58,11 +58,11 @@ module Stylish
         declarations = DeclarationsParser.parse(declarations)
         
         unless block
-          @node << Rule.new(selectors, *declarations)
+          @node << Rule.new(selectors, declarations)
         else
           selectors.each do |selector|
             unless declarations.empty?
-              @node << Rule.new([selector], *declarations)
+              @node << Rule.new([selector], declarations)
             end
             
             new_node = Tree::SelectorScope.new(selector)
