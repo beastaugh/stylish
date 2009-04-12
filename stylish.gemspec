@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{stylish}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Benedict Eastaugh"]
-  s.date = %q{2009-04-11}
+  s.date = %q{2009-04-12}
   s.description = %q{A Ruby library for generating cascading stylesheets.}
   s.email = %q{benedict@eastaugh.net}
   s.extra_rdoc_files = [
