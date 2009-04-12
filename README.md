@@ -34,8 +34,6 @@ test suite passes under Ruby 1.9; the usual caveats about this apply.
 Future considerations
 ---------------------
 
-*   The tree data-structure and code generation DSL are only partially
-    documented; this situation could be improved.
 *   Add a native mapping construct to allow symbol lookup for alternate
     stylesheets.
 *   Change stylesheet generation to a two-step process where the tree structure
