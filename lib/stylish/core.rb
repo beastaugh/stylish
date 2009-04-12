@@ -188,6 +188,8 @@ module Stylish
     #
     #     Selector.new("p").to_s("body") # => "body p"
     #
+    # The Selector class is also used internally by the Tree::SelectorScope
+    # class, to store its scope value.
     def to_s(scope = "")
       (scope.empty? ? "" : scope + " ") + @selector.to_s
     end

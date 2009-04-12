@@ -51,7 +51,7 @@ module Stylish
       def initialize(selector)
         accept_format(/\s*/m, "\n")
         
-        @scope = selector
+        @scope = Selector.new(selector)
         @nodes = []
       end
             
@@ -92,7 +92,7 @@ module Stylish
       # Recursively serialise the selector tree.
       def to_s(scope = "")
         return "" if @nodes.empty?
-        scope = scope.empty? ? @scope : scope + " " + @scope
+        scope = scope.empty? ? @scope.to_s : scope + " " + @scope.to_s
         @nodes.map {|node| node.to_s(scope) }.join(@format)
       end
       
