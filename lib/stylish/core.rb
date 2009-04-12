@@ -223,31 +223,47 @@ module Stylish
     end
   end
   
+  # Each Rule may have one or more Declaration objects, and usually has more
+  # than one. In a sense, declarations are the business end of stylesheets:
+  # they are where the set of elements specified by a rule's selectors are
+  # given their various attributes.
   class Declaration
     include Formattable
     
     attr_accessor :value
-        
-    def initialize(prop, val = nil)
+    
+    # Each Declaration has a property name and a value.
+    def initialize(name, value)
       accept_format(/^\s*%s\s*:\s*%s;\s*$/m, "%s:%s;")
-      self.value = val
-      self.property = prop
+      self.value = value
+      self.name  = name
     end
     
-    def property
-      @property
+    # The property name of the Declaration.
+    def name
+      @property_name
     end
     
-    def property=(prop)
-      @property = prop.to_s
+    # Property names are CSS identifiers.
+    def name=(name)
+      @property_name = name.to_s
     end
     
-    def value=(val)
-      @value = val
+    # The value of the Declaration's property.
+    def value=(value)
+      @value = value
     end
     
+    # Serialising a declaration produces a name-value pair separated by a colon
+    # and terminating with a semicolon, for instance
+    #
+    #     declaration = Declaration.new("font-style", "italic")
+    #     declaration.to_s # => "font-style:italic;"
+    #
+    # Since the formatting can be adjusted via the #format= accessor, the exact
+    # spacing of the declaration can be controlled if desired.
     def to_s
-      sprintf(@format, @property, @value)
+      sprintf(@format, @property_name.to_s, @value.to_s)
     end
   end
   
@@ -369,19 +385,19 @@ module Stylish
       @compressed = val == true || nil
     end
     
-    # Override Declaration#property, since it's not compatible with the
+    # Override Declaration#name, since it's not compatible with the
     # internals of this class.
-    def property
+    def name
       PROPERTIES.reject {|n, p| p.nil? }.map {|n, p|
         value = self.send(n)
         p.to_s unless value.nil?
       }.compact
     end
     
-    # Override Declaration#property=, since it's not compatible with the
+    # Override Declaration#name=, since it's not compatible with the
     # internals of this class.
-    def property=(val)
-      raise NoMethodError, "property= is not defined for Background."
+    def name=(val)
+      raise NoMethodError, "name= is not defined for Background."
     end
     
     # Override Declaration#value, since it's not compatible with the internals

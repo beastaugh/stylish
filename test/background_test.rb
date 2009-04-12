@@ -78,14 +78,14 @@ class BackgroundTest < Test::Unit::TestCase
   
   def test_declaration_property
     assert_equal(["background-color", "background-repeat"],
-      Stylish::Background.new(:color => "red", :repeat => "no-repeat").property)
+      Stylish::Background.new(:color => "red", :repeat => "no-repeat").name)
   end
   
   def test_declaration_property_assignment
     background = Stylish::Background.new(:color => "red", :repeat => "no-repeat")
     
     assert_raise(NoMethodError) do
-      background.property = "display"
+      background.name = "display"
     end
   end
   

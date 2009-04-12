@@ -2,16 +2,20 @@ require 'test/unit'
 require './lib/stylish'
 
 class DeclarationTest < Test::Unit::TestCase
-    
-  def test_empty_value
-    hollow = Stylish::Declaration.new("cursor")
-    
-    assert_not_nil(hollow.property)
-    assert_nil(hollow.value)
+  
+  def setup
+    @declaration = Stylish::Declaration.new("color", Stylish::Color.new("000"))
+  end
+  
+  def test_naming
+    assert_equal("color", @declaration.name)
+  end
+  
+  def test_value
+    assert_equal("#000", @declaration.value.to_s)
   end
   
   def test_to_string
-    dec = Stylish::Declaration.new("color", "#000")
-    assert_equal("color:#000;", dec.to_s)
+    assert_equal("color:#000;", @declaration.to_s)
   end
 end
