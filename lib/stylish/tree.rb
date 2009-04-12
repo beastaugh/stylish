@@ -106,6 +106,11 @@ module Stylish
         leaves(Rule)
       end
       
+      # Recursively return all the comments in the selector tree.
+      def comments
+        leaves(Comment)
+      end
+      
       # Recursively return all the leaves of any, or a given type in a selector
       # tree.
       def leaves(type = nil)

@@ -34,8 +34,9 @@ class TreeTest < Test::Unit::TestCase
     @tree << @node
     @tree << @node
     
-    assert_equal(4, @tree.rules.length)
     assert_equal(6, @tree.leaves.length)
+    assert_equal(4, @tree.rules.length)
+    assert_equal(2, @tree.comments.length)
   end
   
   def test_node_reader
