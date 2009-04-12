@@ -169,12 +169,25 @@ module Stylish
     end
   end
   
+  # Selector objects are just string containers, which when serialised are
+  # passed the scope in which they are situated. The Selector class is one of
+  # Stylish's most basic units, and are generally used only by internal APIs
+  # when constructing Rule objects, rather than by end users (although nothing
+  # prevents this; it is merely inconvenient to do so).
   class Selector
     
+    # Selectors are immutable once created; the value of a given Selector must
+    # be set when the object is created.
     def initialize(str)
       @selector = str.to_s
     end
     
+    # Each Rule possesses one or more Selectors. Rules are often placed in
+    # selector trees, and thus when serialised a Selector must be made aware
+    # of the context or scope in which it is being serialised.
+    #
+    #     Selector.new("p").to_s("body") # => "body p"
+    #
     def to_s(scope = "")
       (scope.empty? ? "" : scope + " ") + @selector.to_s
     end
