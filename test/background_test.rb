@@ -110,4 +110,10 @@ class BackgroundTest < Test::Unit::TestCase
       background.value = "mondrian.jpg"
     end
   end
+  
+  def test_image_declaration_serialisation
+    background = Stylish::Background.new(:image => "test.png")
+    
+    assert_equal("background-image:url('test.png');", background.to_s)
+  end
 end
