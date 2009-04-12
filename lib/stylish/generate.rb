@@ -54,6 +54,10 @@ module Stylish
           end
         end
       end
+      
+      def comment(*args)
+        @node << Comment.new(*args)
+      end
     end
     
   end

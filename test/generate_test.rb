@@ -51,4 +51,15 @@ class GenerateTest < Test::Unit::TestCase
     
     assert_equal("body div p {line-height:1.5;}", style.to_s)
   end
+  
+  def test_comments
+    style = Stylish.generate do
+      comment "A glorious comment!"
+      comment "An inglorious comment.", "An additional note."
+    end
+    
+    assert_equal(2, style.comments.length)
+    assert_equal("A glorious comment!", style.comments[0].header)
+    assert_equal("An additional note.", style.comments[1].lines[0])
+  end
 end
