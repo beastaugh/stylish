@@ -9,17 +9,17 @@ Creating stylesheets
 --------------------
 
     style = Stylish.generate do
-      rule ".header", background(:color => :teal, :image => "header.png")
+      rule ".header", :background => {:color => "teal", :image => "header.png"}
       rule ".content" do
-        rule "h2", font_size("2em")
-        rule "p", margin("0 0 1em 0")
+        h2 :font_size => "2em"
+        p :margin => "0 0 1em 0"
       end
     end
 
 Calling the stylesheet's `to_s` method would produce the following
 <abbr title="Cascading Stylesheets">CSS</abbr> code.
 
-    .header {background-color:#008080; background-image:url('header.png');}
+    .header {background-color:teal; background-image:url('header.png');}
     .content h2 {font-size:2em;}
     .content p {margin:0 0 1em 0;}
 
