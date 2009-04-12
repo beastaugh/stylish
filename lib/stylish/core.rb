@@ -18,7 +18,8 @@ module Stylish
                    :col, :tbody, :thead, :tfoot, :tr, :td, :th, :form,
                    :fieldset, :label, :input, :button, :select, :datalist,
                    :optgroup, :option, :textarea, :output, :details, :datagrid,
-                   :command, :bb, :menu, :legend, :div]
+                   :command, :bb, :menu, :legend, :div, :h1, :h2, :h3, :h4,
+                   :h5, :h6]
   
   class Rule
     include Formattable, Tree::Leaf
@@ -39,11 +40,7 @@ module Stylish
     
     # Serialise the rule to valid CSS code.
     def to_s(scope = "")
-      selectors = @selectors.map do |selector|
-        (scope.empty? ? "" : scope + " ") + selector.to_s
-      end
-      
-      sprintf(@format, selectors.join, @declarations.join)
+      sprintf(@format, selectors.join(scope), @declarations.join)
     end
   end
   
@@ -93,25 +90,36 @@ module Stylish
       @selector = str.to_s
     end
     
-    def to_s
-      @selector
+    def to_s(scope = "")
+      (scope.empty? ? "" : scope + " ") + @selector.to_s
     end
   end
   
+  # Selectors objects are simply used to group Selector objects for more
+  # convenient storage and serialisation.
   class Selectors < Array
     include Formattable
     
+    # Since a group of Selectors is just a specialised kind of array, all that
+    # is done in its initialiser, regardless of arguments, is to set the
+    # default serialisation format.
     def initialize(*args)
       accept_format(/^\s*,\s*$/m, ", ")
       super
     end
     
-    def join
-      super(@format)
+    # The join method overrides the superclass' method in order to always use a
+    # specific separator, and so that the scope that the selectors are being
+    # used in can be passed through when Rules etc. are serialised.
+    def join(scope = "")
+      self.inject("") do |ss, s|
+        (ss.empty? ? "" : ss + self.format) + s.to_s(scope)
+      end
     end
     
-    def to_s
-      self.join
+    # The to_s method alternative way of calling the join method.
+    def to_s(scope = "")
+      self.join(scope)
     end
   end
   

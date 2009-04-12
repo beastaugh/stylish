@@ -13,6 +13,15 @@ class GenerateTest < Test::Unit::TestCase
       ".unchecked {font-style:italic;}", style.to_s)
   end
   
+  def test_compound_rules
+    style = Stylish.generate do
+      rule ["abbr", "acronym"], :margin_bottom => "2em"
+    end
+    
+    assert_equal(1, style.rules.length)
+    assert_equal("abbr, acronym {margin-bottom:2em;}", style.rules.first.to_s)
+  end
+  
   def test_nested_rules
     style = Stylish.generate do
       rule "body" do
@@ -50,6 +59,15 @@ class GenerateTest < Test::Unit::TestCase
     end
     
     assert_equal("body div p {line-height:1.5;}", style.to_s)
+  end
+  
+  def test_nested_declarations
+    style = Stylish.generate do
+      fieldset :background => {:color => [0, 0, 255], :image => "fieldset.png"}
+    end
+    
+    assert_instance_of(Stylish::Background,
+      style.rules.first.declarations.first)
   end
   
   def test_comments

@@ -8,6 +8,26 @@ module Stylish
   
   module Generate
     
+    module DeclarationsParser
+      
+      def self.parse(declarations)
+        declarations.to_a.inject(Declarations.new) do |ds, declaration|
+          key, value = declaration
+          key        = key.to_s.sub("_", "-").to_sym
+          
+          if key == :background
+            declaration = Background.new(value)
+          elsif key == :color
+            declaration = Declaration.new("color", Color.new(value))
+          else
+            declaration = Declaration.new(key, value)
+          end
+          
+          ds << declaration
+        end
+      end
+    end
+    
     module ElementMethods
       HTML_ELEMENTS.each do |element|
         next if self.respond_to?(element)
@@ -35,16 +55,14 @@ module Stylish
         selectors = [selectors] unless selectors.is_a?(Array)
         selectors.map! {|s| Selector.new(s) }
         
-        declarations = declarations.to_a.map do |p, v|
-          Declaration.new(p.to_s.sub("_", "-"), v)
-        end
+        declarations = DeclarationsParser.parse(declarations)
         
         unless block
-          @node << Rule.new(selectors, declarations)
+          @node << Rule.new(selectors, *declarations)
         else
           selectors.each do |selector|
             unless declarations.empty?
-              @node << Rule.new(selector, declarations)
+              @node << Rule.new([selector], *declarations)
             end
             
             new_node = Tree::SelectorScope.new(selector.to_s)
