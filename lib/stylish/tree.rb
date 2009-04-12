@@ -1,11 +1,5 @@
 module Stylish
   
-  def self.generate(options = {}, &block)
-    dsl = Tree::Description.new
-    dsl.instance_eval(&block)
-    dsl.node
-  end
-  
   # The objects defined in the Tree module allow for the creation of nested
   # trees of selector scopes. These intermediate data structures can be used to
   # help factor out some of the repetitiveness of CSS code, and can be easily
