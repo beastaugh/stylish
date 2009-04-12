@@ -4,10 +4,12 @@ require './lib/stylish'
 class TreeTest < Test::Unit::TestCase
   
   def setup
-    @tree = Stylish::Stylesheet.new
-    @node = Stylish::Tree::SelectorScope.new(".test")
-    @rule = Stylish::Rule.new([Stylish::Selector.new("p")],
-      Stylish::Declaration.new("font-weight", "bold"))
+    @tree    = Stylish::Stylesheet.new
+    @node    = Stylish::Tree::SelectorScope.new(".test")
+    @rule    = Stylish::Rule.new([Stylish::Selector.new("p")],
+                 Stylish::Declaration.new("font-weight", "bold"))
+    @comment = Stylish::Comment.new("Comment header",
+                 {:author => "Some Body"})
   end
   
   def test_appending
@@ -28,11 +30,12 @@ class TreeTest < Test::Unit::TestCase
   def test_rules_collation
     @node << @rule
     @node << @rule
+    @node << @comment
     @tree << @node
     @tree << @node
     
     assert_equal(4, @tree.rules.length)
-    assert_equal(4, @tree.leaves.length)
+    assert_equal(6, @tree.leaves.length)
   end
   
   def test_node_reader

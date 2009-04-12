@@ -48,6 +48,8 @@ module Stylish
   end
   
   class Comment
+    include Tree::Leaf
+    
     attr_reader :header, :lines, :metadata
     
     def initialize(*args)
@@ -61,26 +63,26 @@ module Stylish
             @header = arg
           end
         elsif arg.is_a? Hash
-          @metadata.merge!(arg)
+          @metadata.merge! arg
         end
       end
-      
-      def to_s
-        if @lines.empty? && @metadata.empty?
-          sprintf("/**\n * %s\n */", @header)
-        else
-          header = sprintf(" * %s", @header) unless @header.nil?
-          lines = @lines.map {|l| ' * ' + l }.join("\n") unless @lines.empty?
-          metadata = @metadata.to_a.map {|name, value|
-            sprintf(" * @%s %s", name.to_s, value.to_s)
-          }.join("\n") unless @metadata.empty?
-          
-          sprintf("/**\n%s\n */", [
-            header || nil,
-            lines || nil,
-            metadata || nil
-          ].compact.join("\n *\n"))
-        end
+    end
+    
+    def to_s(scope = "")
+      if @lines.empty? && @metadata.empty?
+        sprintf("/**\n * %s\n */", @header)
+      else
+        header = sprintf(" * %s", @header) unless @header.nil?
+        lines = @lines.map {|l| ' * ' + l }.join("\n") unless @lines.empty?
+        metadata = @metadata.to_a.map {|name, value|
+          sprintf(" * @%s %s", name.to_s, value.to_s)
+        }.join("\n") unless @metadata.empty?
+        
+        sprintf("/**\n%s\n */", [
+          header || nil,
+          lines || nil,
+          metadata || nil
+        ].compact.join("\n *\n"))
       end
     end
   end

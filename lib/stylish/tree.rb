@@ -109,14 +109,14 @@ module Stylish
       # Recursively return all the leaves of any, or a given type in a selector
       # tree.
       def leaves(type = nil)
-        @nodes.inject([]) do |rules, node|
+        @nodes.inject([]) do |leaves, node|
           if node.leaf?
-            rules << node if type.nil? || node.is_a?(type)
-          elsif node.is_a?(SelectorScope)
-            rules.concat(node.rules)
+            leaves << node if type.nil? || node.is_a?(type)
+          else
+            leaves.concat(node.leaves(type))
           end
           
-          rules
+          leaves
         end
       end
     end
