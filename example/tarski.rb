@@ -13,7 +13,7 @@ require 'lib/stylish'
 #
 #   ["red", "green", "blue"].each do |colour|
 #     rule "." + colour do
-#       rule "em, strong", color(colour)
+#       rule ["em", "strong"], :color => colour
 #     end
 #   end
 #
@@ -33,77 +33,65 @@ require 'lib/stylish'
 # Would become the following:
 #
 #   rule "#main .content" do
-#     rule "h3", color("red")
-#     rule "p", font_style("italic")
+#     h3 :color => "red"
+#     p :font_style => "italic"
 #   end
 #
 # This ability to group rules is demonstrated to best effect towards the end of
 # the example code.
 
-Stylish.generate("tarski", nil, nil, :indent => "") do
-  [
-    ["classic", {}],
-    ["polar", {}],
-    ["skyline", {}]
-  ].each do |name, mapping|
-    subsheet(name, "body.#{name}") {
-      comment "#{name.capitalize} style for Tarski",
-              "Designed by Benedict Eastaugh, http://extralogical.net/"
-      
-      comment "Navigation" do
-        rule "#wrapper" do
-          rule ".nav-current:link, .nav-current:visited, .nav-current:active", color("bf6030")
-          rule ".nav-current:hover", color("e59900")
-        end
-      end
-      
-      comment "Content" do
-        rule "code", color("bf8060")
-        rule "abbr, acronym", border_bottom("1px solid #bf8060")
-      end
-      
-      comment "Headers" do
-        rule "h3", color("bf6030")
-      end
-      
-  		comment "Article content" do
-    		rule ".articlenav", background(:color => "fcfeff")
-      end
-      
-      comment "Inserts" do
-        rule ".insert", background(:color => "fcfeff"),
-          margin("0 0 1em 0"), border("1px solid #cfdde5"), padding("9px") do
-          rule "h3", border_bottom("1px solid #cfdde5")
-        end
-      end
-      
-      comment "Downloads" do
-        rule ".content" do
-    		  rule "a.download:link, a.download:visited, a.download:active",
-    		    background(:color => "#fcfeff"), border("1px solid #cfdde5")
-		    end
-      end
-      
-  		comment "Images" do
-    		rule "a img", border("1px solid #0f6b99")
-    		rule "a:hover img, .comment a:hover .avatar", border("1px solid #e59900")
-      end
-      
-  		comment "Links" do
-    		rule "a:link, a:active, a:visited", color("#0f6b99")
-        rule "a:hover", color("#e59900")
-        rule ".content, .link-pages, .tagdata, .widget_tag_cloud" do
-          rule "a:link, a:active, a:visited", border_bottom("1px solid #cfdde5")
-          rule "a:hover", border_bottom("1px solid #e59900")
-        end
-      end
-      
-      comment "Calendar widget" do
-        rule ".widget_calendar tbody td" do
-          rule "a", color("#fff"), background(:color => "#8bb6cc")
-          rule "a:hover", color("#fff"), background(:color => "#cca352")
-        end
-      end
-    }.write(File.dirname(__FILE__))
+style = Stylish.generate do
+  rule "body.custom" do
+    comment "Custom style for Tarski",
+            "Designed by Benedict Eastaugh, http://extralogical.net/"
+    
+    rule "#wrapper" do
+      rule [".nav-current:link", ".nav-current:visited",
+            ".nav-current:active"], :color => "bf6030"
+      rule ".nav-current:hover", :color => "e59900"
+    end
+    
+    code :color => "bf8060"
+    rule ["abbr", "acronym"], :border_bottom => "1px solid #bf8060"
+    
+    h3 :color => "bf6030"
+    
+  	rule ".articlenav", :background => {:color => "fcfeff"}
+  	
+  	rule ".insert", :background => {:color => "fcfeff"},
+  	                :margin => "0 0 1em 0",
+  	                :border => "1px solid #cfdde5",
+                    :padding => "9px" do
+                      h3 :border_bottom => "1px solid #cfdde5"
+                    end
+    
+    rule ".content" do
+      rule ["a.download:link", "a.download:visited", "a.download:active"],
+		    :background => {:color => "#fcfeff"}, :border => "1px solid #cfdde5"
+		end
+		
+		a do
+		  img :border => "1px solid #0f6b99"
+	  end
+	  
+		rule ["a:hover img", ".comment a:hover .avatar"],
+		  :border => "1px solid #e59900"
+		
+		rule ["a:link", "a:active", "a:visited"], :color => "#0f6b99"
+    rule "a:hover", :color => "#e59900"
+    rule [".content", ".link-pages", ".tagdata", ".widget_tag_cloud"] do
+      rule ["a:link", "a:active", "a:visited"],
+        :border_bottom => "1px solid #cfdde5"
+      rule "a:hover", :border_bottom => "1px solid #e59900"
+    end
+    
+    rule ".widget_calendar tbody td" do
+      a :color => "#fff", :background => {:color => "#8bb6cc"}
+      rule "a:hover", :color => "#fff", :background => {:color => "#cca352"}
+    end
   end
+end
+
+File.open("example/tarski.css", "w+") do |f|
+  f.puts(style.to_s)
 end
