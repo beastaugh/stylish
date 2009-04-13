@@ -34,6 +34,8 @@ test suite passes under Ruby 1.9; the usual caveats about this apply.
 Future considerations
 ---------------------
 
+*   Add a Border class to complement Background.
+*   Add better support for CSS3 properties to Background.
 *   Add a native mapping construct to allow symbol lookup for alternate
     stylesheets.
 *   Change stylesheet generation to a two-step process where the tree structure
