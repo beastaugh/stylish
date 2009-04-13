@@ -39,8 +39,8 @@ Future considerations
 *   Change stylesheet generation to a two-step process where the tree structure
     is generated in the first step and symbols (for example, those employed by
     a mapping construct) are evaluated the second.
-*   Fundamental objects like percentages and URIs need their own classes rather
-    than being dealt with in an ad-hoc manner by higher-level objects.
+*   Fundamental objects like percentages need their own classes rather than
+    being dealt with in an ad-hoc manner by higher-level objects.
 *   Add a parser so CSS can be read as well as written.
 
 

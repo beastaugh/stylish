@@ -350,7 +350,7 @@ module Stylish
     
     # Set the background image.
     def image=(path)
-      @image = path if path.is_a?(String) || path.is_a?(File)
+      @image = Image.new(path) if path.is_a?(String)
     end
     
     # Set the background repeat.
