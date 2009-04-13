@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{stylish}
-  s.version = "0.1.1"
+  s.version = "0.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Benedict Eastaugh"]
-  s.date = %q{2009-04-12}
+  s.date = %q{2009-04-13}
   s.description = %q{A Ruby library for generating cascading stylesheets.}
   s.email = %q{benedict@eastaugh.net}
   s.extra_rdoc_files = [
@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
     "lib/stylish/core.rb",
     "lib/stylish/formattable.rb",
     "lib/stylish/generate.rb",
+    "lib/stylish/image.rb",
     "lib/stylish/stylesheet.rb",
     "lib/stylish/tree.rb",
     "test/background_test.rb",
@@ -30,6 +31,7 @@ Gem::Specification.new do |s|
     "test/declarations_test.rb",
     "test/formattable_test.rb",
     "test/generate_test.rb",
+    "test/image_test.rb",
     "test/rule_test.rb",
     "test/selector_test.rb",
     "test/selectors_test.rb",
@@ -50,6 +52,7 @@ Gem::Specification.new do |s|
     "test/declarations_test.rb",
     "test/formattable_test.rb",
     "test/generate_test.rb",
+    "test/image_test.rb",
     "test/rule_test.rb",
     "test/selector_test.rb",
     "test/selectors_test.rb",
