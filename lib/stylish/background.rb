@@ -51,9 +51,26 @@ module Stylish
       @color = Color.new(val)
     end
     
-    # Set the background image.
-    def image=(path)
-      @image = Image.new(path) if path.is_a?(String)
+    # Set the background image(s). As of CSS3, elements may have multiple
+    # background images, so this method attempts to provide a backwards-
+    # compatible solution.
+    #
+    #     background = Background.new :image => "sky.png", :compressed => true
+    #     background.to_s # => "background:url('sky.png');"
+    #
+    #     background.image = ["ball.png", "grass.png"]
+    #     background.to_s # => "background:url('ball.png'), url('grass.png');"
+    #
+    def image=(paths)
+      if paths.is_a?(String)
+        @image = Image.new(paths)
+      elsif !(paths.nil? || paths.empty?)
+        @image = paths.inject([]) {|images, path| images << Image.new(path) }
+        
+        def @image.to_s
+          join(", ")
+        end
+      end
     end
     
     # Set the background repeat.

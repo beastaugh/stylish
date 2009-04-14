@@ -24,6 +24,15 @@ class BackgroundTest < Test::Unit::TestCase
       Stylish::Background.new(:image => "background.jpg").image.path)
   end
   
+  def test_multiple_background_images
+    bg = Stylish::Background.new :image =>
+           ["flower.png", "ball.png", "grass.png"]
+    
+    assert_equal(3, bg.image.length)
+    assert_equal("background-image:" +
+      "url('flower.png'), url('ball.png'), url('grass.png');", bg.to_s)
+  end
+  
   def test_valid_background_repeats
     assert_equal('no-repeat', @composite.repeat)
   end
