@@ -38,7 +38,8 @@ module Stylish
       [:break,      "background-break"],
       [:compressed]]
     
-    REPEAT_VALUES        = ["repeat", "repeat-x", "repeat-y", "no-repeat"]
+    REPEAT_VALUES        = ["repeat-x", "repeat-y", "repeat",
+                            "space", "round", "no-repeat"]
     ATTACHMENT_VALUES    = ["scroll", "fixed", "inherit"]
     HORIZONTAL_POSITIONS = ["left", "center", "right"]
     VERTICAL_POSITIONS   = ["top", "center", "bottom"]
