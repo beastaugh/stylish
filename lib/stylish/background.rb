@@ -73,9 +73,24 @@ module Stylish
       end
     end
     
-    # Set the background repeat.
-    def repeat=(val)
-      @repeat = val if REPEAT_VALUES.include?(val)
+    # Set the background repeat(s). As of CSS3, the background-repeat property
+    # may have multiple values, so this method provides a backwards-compatible
+    # solution.
+    #
+    #     repeating = Background.new :repeat => ["repeat-x", "repeat-y"]
+    #     repeating.to_s # => "background-repeat:repeat-x, repeat-y;"
+    #
+    def repeat=(repeats)
+      repeats = [repeats] if repeats.is_a? String
+      @repeat = repeats.find_all {|r| REPEAT_VALUES.include? r }
+      
+      if @repeat.length < 2
+        @repeat = @repeat.first
+      else
+        def @repeat.to_s
+          join(", ")
+        end
+      end
     end
     
     # Only position keywords are currently handled, not percentages or lengths.

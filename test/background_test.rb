@@ -37,6 +37,13 @@ class BackgroundTest < Test::Unit::TestCase
     assert_equal('no-repeat', @composite.repeat)
   end
   
+  def test_multiple_background_repeats
+    bg = Stylish::Background.new :repeat => ["repeat-x", "repeat-y"]
+    
+    assert_equal(2, bg.repeat.length)
+    assert_equal("background-repeat:repeat-x, repeat-y;", bg.to_s)
+  end
+  
   def test_valid_background_positions
     assert_equal(2, @composite.position.length)
     assert_equal("left", @composite.position[0])
