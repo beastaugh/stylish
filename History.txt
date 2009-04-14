@@ -1,0 +1,23 @@
+=== Version 0.1.2 (2009-04-12)
+
+Documentation release
+* Documented the stylesheet generation DSL
+* Updated example code in the README
+* Added an Image class to handle background images
+
+
+=== Version 0.1.1 (2009-04-12)
+
+More DSL features
+* Added the ability to append comments through the stylesheet generation DSL
+* Fixed some parsing and selector serialisation problems
+* Updated the main example file to work with the new DSL
+* Completed the documentation of the core classes
+
+
+=== Version 0.1.0 (2009-04-10)
+
+First major release
+* New selector scope tree, which serialises to a valid stylesheet
+* Stylesheet generation DSL based on the tree datastructure
+* HSL(A) colour space support, complementing the existing RGB support
