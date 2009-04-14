@@ -23,6 +23,8 @@ Calling the stylesheet's `to_s` method would produce the following
     .content h2 {font-size:2em;}
     .content p {margin:0 0 1em 0;}
 
+A number of additional examples are available in the example/ directory.
+
 
 Compatibility
 -------------
