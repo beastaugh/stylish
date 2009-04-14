@@ -62,11 +62,12 @@ module Stylish
     #     background.to_s # => "background:url('ball.png'), url('grass.png');"
     #
     def image=(paths)
-      if paths.is_a?(String)
-        @image = Image.new(paths)
-      elsif !(paths.nil? || paths.empty?)
-        @image = paths.inject([]) {|images, path| images << Image.new(path) }
-        
+      paths  = [paths] if paths.is_a?(String)
+      @image = paths.inject([]) {|images, path| images << Image.new(path) }
+      
+      if @image.length < 2
+        @image = @image.first
+      else
         def @image.to_s
           join(", ")
         end
