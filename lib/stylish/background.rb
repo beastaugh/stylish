@@ -25,6 +25,7 @@ module Stylish
                 :position,
                 :attachment,
                 :origin,
+                :break,
                 :compressed
     
     PROPERTIES = [
@@ -34,6 +35,7 @@ module Stylish
       [:position,   "background-position"],
       [:attachment, "background-attachment"],
       [:origin,     "background-origin"],
+      [:break,      "background-break"],
       [:compressed]]
     
     REPEAT_VALUES        = ["repeat", "repeat-x", "repeat-y", "no-repeat"]
@@ -41,6 +43,7 @@ module Stylish
     HORIZONTAL_POSITIONS = ["left", "center", "right"]
     VERTICAL_POSITIONS   = ["top", "center", "bottom"]
     ORIGIN_VALUES        = ["border-box", "padding-box", "content-box"]
+    BREAK_VALUES         = ["bounding-box", "each-box", "continuous"]
     
     # Create a new Background object with the specified properties.
     def initialize(options)
@@ -128,6 +131,17 @@ module Stylish
           join(", ")
         end
       end
+    end
+    
+    # The background-break property, defined in CSS3, specifies how the
+    # background positioning area is derived when an element is broken into
+    # multiple boxes.
+    #
+    #     broken = Background.new :break => "bounding-box"
+    #     broken.to_s # => "background-break:bounding-box;"
+    #
+    def break=(value)
+      @break = value if BREAK_VALUES.include? value
     end
     
     # Set this to true to generate a shorthand declaration, e.g.

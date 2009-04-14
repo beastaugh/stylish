@@ -73,6 +73,12 @@ class BackgroundTest < Test::Unit::TestCase
     assert_equal("background-origin:border-box, padding-box;", original.to_s)
   end
   
+  def test_breaks
+    broken = Stylish::Background.new :break => "bounding-box"
+    
+    assert_equal("background-break:bounding-box;", broken.to_s)
+  end
+  
   def test_invalid_image_values
     assert_nil(Stylish::Background.new(:image => []).image)
     assert_nil(Stylish::Background.new(:image => {}).image)
