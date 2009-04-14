@@ -60,6 +60,13 @@ class BackgroundTest < Test::Unit::TestCase
       Stylish::Background.new(:attachment => "fixed").attachment)
   end
   
+  def test_multiple_attachments
+    glued = Stylish::Background.new :attachment => ["local", "fixed"]
+    
+    assert_equal(2, glued.attachment.length)
+    assert_equal("background-attachment:local, fixed;", glued.to_s)
+  end
+  
   def test_invalid_background_colors
     assert_raise ArgumentError do
       Stylish::Background.new(:color => "sky-blue")

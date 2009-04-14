@@ -40,7 +40,7 @@ module Stylish
     
     REPEAT_VALUES        = ["repeat-x", "repeat-y", "repeat",
                             "space", "round", "no-repeat"]
-    ATTACHMENT_VALUES    = ["scroll", "fixed", "inherit"]
+    ATTACHMENT_VALUES    = ["scroll", "fixed", "local"]
     HORIZONTAL_POSITIONS = ["left", "center", "right"]
     VERTICAL_POSITIONS   = ["top", "center", "bottom"]
     ORIGIN_VALUES        = ["border-box", "padding-box", "content-box"]
@@ -111,8 +111,17 @@ module Stylish
     
     # The background-attachment property takes a limited range of values, so
     # only a value within that range will be accepted.
-    def attachment=(val)
-      @attachment = val if ATTACHMENT_VALUES.include?(val)
+    def attachment=(attachments)
+      attachments = [attachments] if attachments.is_a? String
+      @attachment = attachments.find_all {|a| ATTACHMENT_VALUES.include? a }
+      
+      if @attachment.length < 2
+        @attachment = @attachment.first
+      else
+        def @attachment.to_s
+          join(", ")
+        end
+      end
     end
     
     # The background-origin property specifies the background positioning area.
