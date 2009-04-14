@@ -24,6 +24,7 @@ module Stylish
                 :repeat,
                 :position,
                 :attachment,
+                :origin,
                 :compressed
     
     PROPERTIES = [
@@ -32,12 +33,14 @@ module Stylish
       [:repeat,     "background-repeat"],
       [:position,   "background-position"],
       [:attachment, "background-attachment"],
+      [:origin,     "background-origin"],
       [:compressed]]
     
     REPEAT_VALUES        = ["repeat", "repeat-x", "repeat-y", "no-repeat"]
     ATTACHMENT_VALUES    = ["scroll", "fixed", "inherit"]
     HORIZONTAL_POSITIONS = ["left", "center", "right"]
     VERTICAL_POSITIONS   = ["top", "center", "bottom"]
+    ORIGIN_VALUES        = ["border-box", "padding-box", "content-box"]
     
     # Create a new Background object with the specified properties.
     def initialize(options)
@@ -106,6 +109,25 @@ module Stylish
     # only a value within that range will be accepted.
     def attachment=(val)
       @attachment = val if ATTACHMENT_VALUES.include?(val)
+    end
+    
+    # The background-origin property specifies the background positioning area.
+    # It is a CSS3 property which takes multiple values.
+    #
+    #     original = Background.new :origin => ["padding-box", "content-box"]
+    #     original.to_s # => background-origin:padding-box, content-box;
+    #
+    def origin=(origins)
+      origins = [origins] if origins.is_a? String
+      @origin = origins.find_all {|o| ORIGIN_VALUES.include? o }
+      
+      if @origin.length < 2
+        @origin = @origin.first
+      else
+        def @origin.to_s
+          join(", ")
+        end
+      end
     end
     
     # Set this to true to generate a shorthand declaration, e.g.

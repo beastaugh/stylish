@@ -66,6 +66,13 @@ class BackgroundTest < Test::Unit::TestCase
     end
   end
   
+  def test_origins
+    original = Stylish::Background.new :origin => ["border-box", "padding-box"]
+    
+    assert_equal(2, original.origin.length)
+    assert_equal("background-origin:border-box, padding-box;", original.to_s)
+  end
+  
   def test_invalid_image_values
     assert_nil(Stylish::Background.new(:image => []).image)
     assert_nil(Stylish::Background.new(:image => {}).image)
