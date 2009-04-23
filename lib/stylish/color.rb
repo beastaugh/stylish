@@ -1,6 +1,3 @@
-require 'mathn'
-require 'rational'
-
 module Stylish #:nodoc:
   
   # The Color class is intended to eventually implement the entirety of the

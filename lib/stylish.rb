@@ -1,12 +1,17 @@
-$:.unshift File.dirname(__FILE__)
-
 require 'pathname'
+require 'mathn'
+require 'rational'
 
-require 'stylish/formattable'
-require 'stylish/tree'
-require 'stylish/core'
-require 'stylish/stylesheet'
-require 'stylish/image'
-require 'stylish/background'
-require 'stylish/color'
-require 'stylish/generate'
+module Stylish
+  STYLISH_PATH = File.expand_path(File.dirname(__FILE__)) + '/stylish/'
+  
+  require STYLISH_PATH + 'formattable'
+  require STYLISH_PATH + 'tree'
+  require STYLISH_PATH + 'core'
+  require STYLISH_PATH + 'tree'
+  require STYLISH_PATH + 'stylesheet'
+  require STYLISH_PATH + 'image'
+  require STYLISH_PATH + 'background'
+  require STYLISH_PATH + 'color'
+  require STYLISH_PATH + 'generate'
+end
