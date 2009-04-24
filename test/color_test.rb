@@ -1,11 +1,10 @@
 require 'test/unit'
-require './lib/stylish'
 
 class ColorTest < Test::Unit::TestCase
   
   def setup
-    @red = Stylish::Color.new(:red)
-    @green = Stylish::Color.new(:green)
+    @red = Stylish::Color.new("red")
+    @green = Stylish::Color.new("green")
     @blue = Stylish::Color.new("#0000FF")
     @white = Stylish::Color.new("#FFF")
     @yellow = Stylish::Color.new([255, 255, 0])
@@ -68,8 +67,6 @@ class ColorTest < Test::Unit::TestCase
   end
   
   def test_case_insensitivity_of_keywords
-    assert_equal([0, 128, 0, nil], Stylish::Color.new(:Green).value)
-    assert_equal([0, 128, 0, nil], Stylish::Color.new(:GrEeN).value)
     assert_equal([0, 128, 0, nil], Stylish::Color.new("Green").value)
     assert_equal([0, 128, 0, nil], Stylish::Color.new("GrEeN").value)
   end
@@ -117,7 +114,7 @@ class ColorTest < Test::Unit::TestCase
   
   def test_keyword_to_string
     assert_equal("green", @green.to_s)
-    assert_equal("yellow", Stylish::Color.new(:yellow).to_s)
+    assert_equal("yellow", Stylish::Color.new("yellow").to_s)
   end
   
   def test_rgb_to_string
@@ -148,8 +145,8 @@ class ColorTest < Test::Unit::TestCase
   end
   
   def test_inherit_and_transparent_to_hex
-    assert_nil(Stylish::Color.new(:inherit).to_hex)
-    assert_nil(Stylish::Color.new(:transparent).to_hex)
+    assert_nil(Stylish::Color.new("inherit").to_hex)
+    assert_nil(Stylish::Color.new("transparent").to_hex)
   end
   
   def test_hex_to_hex
@@ -160,8 +157,8 @@ class ColorTest < Test::Unit::TestCase
   end
   
   def test_keywords_to_hex
-    assert_equal("#808080", Stylish::Color.new(:gray).to_hex)
-    assert_equal("#800000", Stylish::Color.new(:maroon).to_hex)
+    assert_equal("#808080", Stylish::Color.new("gray").to_hex)
+    assert_equal("#800000", Stylish::Color.new("maroon").to_hex)
   end
   
   def test_rgb_to_hex
@@ -174,7 +171,7 @@ class ColorTest < Test::Unit::TestCase
     assert_equal("#fff", Stylish::Color.new([255, 255, 255]).to_hex)
     assert_equal("#fff", Stylish::Color.new("#ffffff").to_hex)
     assert_equal("#fb0", Stylish::Color.new("#ffbb00").to_hex)
-    assert_equal("#0ff", Stylish::Color.new(:aqua).to_hex)
+    assert_equal("#0ff", Stylish::Color.new("aqua").to_hex)
   end
   
   def test_rgb_to_hsl

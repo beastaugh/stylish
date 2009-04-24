@@ -211,7 +211,7 @@ module Stylish #:nodoc:
     [:red, :green, :blue].each do |color|
       reader = color
       writer = :"#{color}="
-      color = :"@#{color.to_s}"
+      color  = :"@#{color.to_s}"
       
       unless self.respond_to?(reader)
         self.send(:define_method, reader) do
@@ -243,11 +243,11 @@ module Stylish #:nodoc:
     # Attribute writer for the color's value. Uses the ColorStringParser inner
     # class to parse string values, and contains other logic to handle arrays.
     def value=(value)
-      if value.is_a?(String) || value.is_a?(Symbol)
+      if value.is_a?(String)
         parser = ColorStringParser.new
         @type, @red, @green, @blue, @opacity = parser.parse(value)
         return unless @type.nil?
-      elsif value.is_a?(Array) && (3..4).include?(value.length)
+      else
         rgb = value[0..2].inject([]) do |rgb, v|
           if v.is_a?(Integer) || v.is_a?(Float)
             rgb << v
@@ -260,14 +260,12 @@ module Stylish #:nodoc:
           rgb
         end
         
-        if rgb.length == 3
-          if value.length == 3
-            @red, @green, @blue, @opacity = rgb << nil
-            @type = :rgb and return
-          elsif value.length == 4 and value[3].kind_of?(Numeric)
-            @red, @green, @blue, @opacity = rgb << value[3].to_f
-            @type = :rgba and return
-          end
+        if value.length < 4
+          @red, @green, @blue, @opacity = rgb << nil
+          @type = :rgb and return
+        else
+          @red, @green, @blue, @opacity = rgb << value[3].to_f
+          @type = :rgba and return
         end
       end
       
@@ -286,10 +284,7 @@ module Stylish #:nodoc:
     #   color.opacity # => 0.5
     #
     def opacity=(value)
-      return unless value.is_a?(Integer) || value.is_a?(Float)
-      return if value < 0 || value > 1
-      
-      @opacity = value
+      @opacity = value unless value < 0 || value > 1
     end
     
     # Returns a color keyword string if the RGB value of the color is equal to
@@ -378,7 +373,7 @@ module Stylish #:nodoc:
     #   color.type = :rgb
     #   color.to_s # => "rgb(0, 0, 0)"
     #
-    def to_s
+    def to_s(symbols = {})
       return "inherit" if @type == :inherit
       
       self.send(:"to_#{self.type.to_s}")
@@ -412,7 +407,9 @@ module Stylish #:nodoc:
         huer.call(red - green, 240)
       end
       
-      [hue].concat([saturation, lightness].map {|r| (r * 100).to_f.round.to_s + "%" })
+      [hue].concat([saturation, lightness].map {|r|
+        (r * 100).to_f.round.to_s + "%"
+      })
     end
     
     def hsla
