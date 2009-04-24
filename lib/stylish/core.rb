@@ -73,8 +73,9 @@ module Stylish
     end
     
     # Serialise the rule to valid CSS code.
-    def to_s(scope = "")
-      sprintf(@format, selectors.join(scope), @declarations.join)
+    def to_s(symbols = {}, scope = "")
+      sprintf(@format, selectors.join(symbols, scope),
+        @declarations.to_s(symbols))
     end
   end
   
@@ -150,7 +151,7 @@ module Stylish
     # the serialisation API of those trees, and thus the #to_s method has a
     # scope argument, which is in practice discarded when the serialisation of
     # the comment occurs.
-    def to_s(scope = "")
+    def to_s(symbols = {}, scope = "")
       if @lines.empty? && @metadata.empty?
         sprintf("/**\n * %s\n */", @header)
       else
@@ -190,7 +191,7 @@ module Stylish
     #
     # The Selector class is also used internally by the Tree::SelectorScope
     # class, to store its scope value.
-    def to_s(scope = "")
+    def to_s(symbols ={}, scope = "")
       (scope.empty? ? "" : scope + " ") + @selector.to_s
     end
   end
@@ -211,15 +212,15 @@ module Stylish
     # The join method overrides the superclass' method in order to always use a
     # specific separator, and so that the scope that the selectors are being
     # used in can be passed through when Rules etc. are serialised.
-    def join(scope = "")
+    def join(symbols = {}, scope = "")
       self.inject("") do |ss, s|
-        (ss.empty? ? "" : ss + self.format) + s.to_s(scope)
+        (ss.empty? ? "" : ss + self.format) + s.to_s(symbols, scope)
       end
     end
     
     # The to_s method alternative way of calling the join method.
-    def to_s(scope = "")
-      self.join(scope)
+    def to_s(symbols = {}, scope = "")
+      self.join(symbols, scope)
     end
   end
   
@@ -262,11 +263,11 @@ module Stylish
     #
     # Since the formatting can be adjusted via the #format= accessor, the exact
     # spacing of the declaration can be controlled if desired.
-    def to_s
-      sprintf(@format, @property_name.to_s, @value.to_s)
+    def to_s(symbols = {})
+      sprintf(@format, @property_name.to_s,
+        @value.is_a?(String) ? @value : @value.to_s)
     end
   end
-  
   
   # Declarations subclasses Array so that whenever #join is called, the
   # instance's format attribute will be used as the join string, rather than
@@ -292,9 +293,11 @@ module Stylish
     # format attribute. Assuming that its contents are indeed Declaration
     # objects, this will invoke their own #to_s method and generating correct
     # CSS code.
-    def to_s
-      self.join
+    def to_s(symbols = {})
+      self.inject("") do |a, o|
+        a << (a.empty? ? "" : @format) << o.to_s(symbols)
+      end
     end
   end
-    
+  
 end

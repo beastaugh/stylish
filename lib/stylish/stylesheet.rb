@@ -16,9 +16,9 @@ module Stylish
     end
     
     # Recursively serialise the tree to a stylesheet.
-    def to_s
+    def to_s(symbols = {})
       return "" if @nodes.empty?
-      @nodes.map {|node| node.to_s }.join(@format)
+      @nodes.map {|node| node.to_s(symbols) }.join(@format)
     end
   end
   

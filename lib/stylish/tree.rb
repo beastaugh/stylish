@@ -84,10 +84,10 @@ module Stylish
       end
       
       # Recursively serialise the selector tree.
-      def to_s(scope = "")
+      def to_s(symbols = {}, scope = "")
         return "" if @nodes.empty?
         scope = scope.empty? ? @scope.to_s : scope + " " + @scope.to_s
-        @nodes.map {|node| node.to_s(scope) }.join(@format)
+        @nodes.map {|node| node.to_s(symbols, scope) }.join(@format)
       end
       
       # Return the node's child nodes.
