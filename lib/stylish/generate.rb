@@ -82,9 +82,23 @@ module Stylish
     # must be passed a symbol table so that the variables may be given values.
     class Variable
       
-      # Symbols are used as Variable names, to differentiate them from the
-      # string and numeric values used as literals and the compound objects
-      # used to construct more complex rules.
+      # When Variable objects are initialised they may be given either a simple
+      # symbol, or a compound object (such as a hash) which contains symbols.
+      # When a compound object is given, a constructor must also be given.
+      #
+      #     varbg = Variable.new({:image => :button, :color => :bright})
+      #     varbg.to_s({:button => "button.png", :bright => "0f0"})
+      #
+      # Which would give the following:
+      #
+      #     background-image:url('button.png'); background-color:#0f0;
+      #
+      # Constructors can also be given for simple values, e.g. when creating a
+      # Color.
+      #
+      #     varc = Variable.new(:bright, Color)
+      #     varc.to_s({:bright => "f00"}) # => "#f00"
+      #
       def initialize(name_or_hash, constructor = nil)
         @name        = name_or_hash
         @constructor = constructor
