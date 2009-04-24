@@ -1,5 +1,3 @@
-require 'test/unit'
-
 class DeclarationTest < Test::Unit::TestCase
   
   def setup

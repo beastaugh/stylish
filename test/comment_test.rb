@@ -1,5 +1,3 @@
-require 'test/unit'
-
 class CommentTest < Test::Unit::TestCase
   
   def setup

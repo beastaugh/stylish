@@ -1,5 +1,3 @@
-require 'test/unit'
-
 class SelectorsTest < Test::Unit::TestCase
   
   def setup

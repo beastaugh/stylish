@@ -1,5 +1,3 @@
-require 'test/unit'
-
 class StylesheetTest < Test::Unit::TestCase
   
   def setup

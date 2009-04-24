@@ -19,6 +19,8 @@ task :default => :test
 
 desc "Run the Stylish test suite"
 task :test do
+  require 'test/unit'
+  
   testdir = "test"
   Dir.foreach(testdir) do |f|
     path = "#{testdir}/#{f}"

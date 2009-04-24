@@ -1,5 +1,3 @@
-require 'test/unit'
-
 class ColorTest < Test::Unit::TestCase
   
   def setup

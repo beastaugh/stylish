@@ -1,5 +1,3 @@
-require 'test/unit'
-
 class SelectorTest < Test::Unit::TestCase
 
   def test_to_string

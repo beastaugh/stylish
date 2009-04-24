@@ -1,5 +1,3 @@
-require 'test/unit'
-
 class RuleTest < Test::Unit::TestCase
   
   def setup

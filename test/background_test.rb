@@ -1,5 +1,3 @@
-require 'test/unit'
-
 class BackgroundTest < Test::Unit::TestCase
   
   def setup

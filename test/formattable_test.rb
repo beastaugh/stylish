@@ -1,5 +1,3 @@
-require 'test/unit'
-
 class FormattableTest < Test::Unit::TestCase
   
   def setup

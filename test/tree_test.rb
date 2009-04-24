@@ -1,5 +1,3 @@
-require 'test/unit'
-
 class TreeTest < Test::Unit::TestCase
   
   def setup

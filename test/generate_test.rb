@@ -1,5 +1,3 @@
-require 'test/unit'
-
 class GenerateTest < Test::Unit::TestCase
   
   def test_simple_rules
