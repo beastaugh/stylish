@@ -1,5 +1,3 @@
-require './lib/stylish'
-
 scoped = Stylish.generate do
   body do
     div :margin => "1em" do

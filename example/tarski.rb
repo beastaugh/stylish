@@ -1,5 +1,3 @@
-require 'lib/stylish'
-
 # One of the most compelling use cases for Stylish is generating alternate or
 # custom stylesheets, where a number of pieces of code share the same basic
 # structure but differ in details, such as colours.

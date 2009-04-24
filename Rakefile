@@ -30,7 +30,16 @@ task :test do
   end
 end
 
-desc "Run a Stylish example"
-task :example do
-  require 'example/tarski'
+namespace :example do
+  
+  desc "An extended generator DSL example."
+  task :tarski do
+    require 'example/tarski'
+  end
+  
+  desc "Extract base rules from a selector tree."
+  task :descope do
+    require 'example/descope'
+  end
 end
+
