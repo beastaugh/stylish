@@ -24,4 +24,13 @@ class VariableTest < Test::Unit::TestCase
     assert_equal("body p {line-height:1.5;}",
       style.to_s({:some_selector => "body p"}))
   end
+  
+  def test_color_variables
+    style = Stylish.generate do
+      body :color => :bright_as_a_button
+    end
+    
+    assert_equal("body {color:#57b5cc;}",
+      style.to_s({:bright_as_a_button => "57b5cc"}))
+  end
 end
