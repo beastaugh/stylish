@@ -176,7 +176,9 @@ module Stylish
         return unless declarations || block
         
         selectors = [selectors] unless selectors.is_a?(Array)
-        selectors.map! {|s| Selector.new(s) }
+        selectors.map! do |s|
+          Selector.new(s.is_a?(Symbol) ? Variable.new(s) : s)
+        end
         
         declarations = Generate.parse_declarations(declarations)
         

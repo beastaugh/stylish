@@ -179,8 +179,8 @@ module Stylish
     
     # Selectors are immutable once created; the value of a given Selector must
     # be set when the object is created.
-    def initialize(str)
-      @selector = str.to_s
+    def initialize(selector)
+      @selector = selector
     end
     
     # Each Rule possesses one or more Selectors. Rules are often placed in
@@ -191,8 +191,9 @@ module Stylish
     #
     # The Selector class is also used internally by the Tree::SelectorScope
     # class, to store its scope value.
-    def to_s(symbols ={}, scope = "")
-      (scope.empty? ? "" : scope + " ") + @selector.to_s
+    def to_s(symbols = {}, scope = "")
+      (scope.empty? ? "" : scope + " ") +
+        (@selector.is_a?(String) ? @selector.to_s : @selector.to_s(symbols))
     end
   end
   

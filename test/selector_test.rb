@@ -4,7 +4,7 @@ class SelectorTest < Test::Unit::TestCase
     s = Stylish::Selector.new(".test")
     assert_equal(".test", s.to_s)
     
-    s = Stylish::Selector.new(:div)
+    s = Stylish::Selector.new("div")
     assert_equal("div", s.to_s)
   end
 end
