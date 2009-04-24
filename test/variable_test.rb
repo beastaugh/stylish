@@ -33,4 +33,14 @@ class VariableTest < Test::Unit::TestCase
     assert_equal("body {color:#57b5cc;}",
       style.to_s({:bright_as_a_button => "57b5cc"}))
   end
+  
+  def test_background_variables
+    style = Stylish.generate do
+      body :background => {:color => :dark, :image => :buttonish}
+    end
+    
+    assert_equal(
+      "body {background-color:#000; background-image:url('button.png');}",
+      style.to_s({:dark => "000", :buttonish => "button.png"}))
+  end
 end

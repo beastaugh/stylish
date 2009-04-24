@@ -55,7 +55,11 @@ module Stylish
         key        = key.to_s.sub("_", "-").to_sym
         
         if key == :background
-          declaration = Background.new(value)
+          if value.any? {|k,v| v.is_a? Symbol }
+            declaration = Variable.new(value, Background)
+          else
+            declaration = Background.new(value)
+          end
         elsif key == :color
           if value.is_a? Symbol
             value = Variable.new(value, Color)
@@ -81,8 +85,8 @@ module Stylish
       # Symbols are used as Variable names, to differentiate them from the
       # string and numeric values used as literals and the compound objects
       # used to construct more complex rules.
-      def initialize(name, constructor = nil)
-        @name        = name
+      def initialize(name_or_hash, constructor = nil)
+        @name        = name_or_hash
         @constructor = constructor
       end
       
@@ -94,8 +98,13 @@ module Stylish
       def to_s(symbols)
         if @constructor.nil?
           symbols[@name]
-        else
+        elsif @name.is_a? Symbol
           @constructor.new(symbols[@name]).to_s
+        else
+          @constructor.new(@name.to_a.inject({}) {|a, e|
+            a[e.first] = symbols[e.last]
+            a
+          }).to_s
         end
       end
     end
