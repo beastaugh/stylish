@@ -70,12 +70,23 @@ module Stylish
       end
     end
     
+    # Variables are elements of a selector tree that haven't been assigned
+    # values yet. When a tree that includes Variable objects is serialised, it
+    # must be passed a symbol table so that the variables may be given values.
     class Variable
       
+      # Symbols are used as Variable names, to differentiate them from the
+      # string and numeric values used as literals and the compound objects
+      # used to construct more complex rules.
       def initialize(name)
         @name = name
       end
       
+      # The symbol table is given as an argument to the root element of a
+      # selector tree when it is serialised, and passed down to each node as
+      # the tree is traversed. Nodes must then serialise themselves, and if
+      # they contain Variables they must pass them the symbol table so that
+      # they can be resolved to a given value.
       def to_s(symbols)
         symbols[@name]
       end
