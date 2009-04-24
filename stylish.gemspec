@@ -2,21 +2,23 @@
 
 Gem::Specification.new do |s|
   s.name = %q{stylish}
-  s.version = "0.1.2"
+  s.version = "0.1.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Benedict Eastaugh"]
-  s.date = %q{2009-04-13}
+  s.date = %q{2009-04-24}
   s.description = %q{A Ruby library for generating cascading stylesheets.}
   s.email = %q{benedict@eastaugh.net}
   s.extra_rdoc_files = [
     "README.md"
   ]
   s.files = [
+    "History.txt",
     "README.md",
     "Rakefile",
     "VERSION.yml",
     "lib/stylish.rb",
+    "lib/stylish/background.rb",
     "lib/stylish/color.rb",
     "lib/stylish/core.rb",
     "lib/stylish/formattable.rb",
@@ -36,7 +38,8 @@ Gem::Specification.new do |s|
     "test/selector_test.rb",
     "test/selectors_test.rb",
     "test/stylesheet_test.rb",
-    "test/tree_test.rb"
+    "test/tree_test.rb",
+    "test/variable_test.rb"
   ]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/ionfish/stylish}
@@ -57,7 +60,8 @@ Gem::Specification.new do |s|
     "test/selector_test.rb",
     "test/selectors_test.rb",
     "test/stylesheet_test.rb",
-    "test/tree_test.rb"
+    "test/tree_test.rb",
+    "test/variable_test.rb"
   ]
 
   if s.respond_to? :specification_version then
