@@ -109,16 +109,16 @@ module Stylish
       # the tree is traversed. Nodes must then serialise themselves, and if
       # they contain Variables they must pass them the symbol table so that
       # they can be resolved to a given value.
-      def to_s(symbols)
+      def to_s(symbols, scope = "")
         if @constructor.nil?
           symbols[@name]
         elsif @name.is_a? Symbol
-          @constructor.new(symbols[@name]).to_s
+          @constructor.new(symbols[@name]).to_s(symbols, scope)
         else
           @constructor.new(@name.to_a.inject({}) {|a, e|
             a[e.first] = symbols[e.last]
             a
-          }).to_s
+          }).to_s(symbols, scope)
         end
       end
     end
@@ -219,7 +219,7 @@ module Stylish
         
         selectors = [selectors] unless selectors.is_a?(Array)
         selectors.map! do |s|
-          Selector.new(s.is_a?(Symbol) ? Variable.new(s) : s)
+          s.is_a?(Symbol) ? Variable.new(s, Selector) : Selector.new(s)
         end
         
         declarations = Generate.parse_declarations(declarations)

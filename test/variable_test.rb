@@ -19,10 +19,22 @@ class VariableTest < Test::Unit::TestCase
   def test_selector_variables
     style = Stylish.generate do
       rule :some_selector, :line_height => 1.5
+      
+      rule :some_other_selector do
+        em :font_weight => "bold"
+      end
+      
+      form do
+        rule :third_selector, :text_transform => "uppercase"
+      end
     end
     
-    assert_equal("body p {line-height:1.5;}",
-      style.to_s({:some_selector => "body p"}))
+    assert_equal("body p {line-height:1.5;}\n" +
+      "div em {font-weight:bold;}\n" +
+      "form legend {text-transform:uppercase;}",
+      style.to_s({:some_selector => "body p",
+                  :some_other_selector => "div",
+                  :third_selector => "legend"}))
   end
   
   def test_color_variables

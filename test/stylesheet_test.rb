@@ -2,8 +2,8 @@ class StylesheetTest < Test::Unit::TestCase
   
   def setup
     @style = Stylish::Stylesheet.new
-    @node  = Stylish::Tree::SelectorScope.new("div")
-    @onde  = Stylish::Tree::SelectorScope.new("span")
+    @node  = Stylish::Tree::SelectorScope.new(Stylish::Selector.new("div"))
+    @onde  = Stylish::Tree::SelectorScope.new(Stylish::Selector.new("span"))
     @rule  = Stylish::Rule.new([Stylish::Selector.new("em")],
                [Stylish::Declaration.new("font-weight", "bold")])
   end

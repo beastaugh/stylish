@@ -373,7 +373,7 @@ module Stylish #:nodoc:
     #   color.type = :rgb
     #   color.to_s # => "rgb(0, 0, 0)"
     #
-    def to_s(symbols = {})
+    def to_s(symbols = {}, scope = "")
       return "inherit" if @type == :inherit
       
       self.send(:"to_#{self.type.to_s}")

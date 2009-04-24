@@ -214,7 +214,7 @@ module Stylish
     #
     # Otherwise it will produce an unordered list of individual background
     # declarations.
-    def to_s(symbols = {})
+    def to_s(symbols = {}, scope = "")
       if @compressed
         "background:#{self.value(true).map {|p, v| v }.compact.join(" ")};"
       else

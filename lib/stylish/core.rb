@@ -192,8 +192,7 @@ module Stylish
     # The Selector class is also used internally by the Tree::SelectorScope
     # class, to store its scope value.
     def to_s(symbols = {}, scope = "")
-      (scope.empty? ? "" : scope + " ") +
-        (@selector.is_a?(String) ? @selector.to_s : @selector.to_s(symbols))
+      (scope.empty? ? "" : scope + " ") + @selector
     end
   end
   

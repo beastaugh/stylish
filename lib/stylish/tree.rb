@@ -45,8 +45,8 @@ module Stylish
       def initialize(selector)
         accept_format(/\s*/m, "\n")
         
-        @scope = Selector.new(selector)
         @nodes = []
+        @scope = selector
       end
             
       # Return the child node at the given index.
@@ -86,8 +86,10 @@ module Stylish
       # Recursively serialise the selector tree.
       def to_s(symbols = {}, scope = "")
         return "" if @nodes.empty?
-        scope = scope.empty? ? @scope.to_s : scope + " " + @scope.to_s
-        @nodes.map {|node| node.to_s(symbols, scope) }.join(@format)
+        
+        @nodes.map {|node|
+          node.to_s(symbols, @scope.to_s(symbols, scope))
+        }.join(@format)
       end
       
       # Return the node's child nodes.
