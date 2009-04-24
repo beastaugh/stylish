@@ -264,8 +264,13 @@ module Stylish
     # Since the formatting can be adjusted via the #format= accessor, the exact
     # spacing of the declaration can be controlled if desired.
     def to_s(symbols = {})
-      sprintf(@format, @property_name.to_s,
-        @value.is_a?(Color) ? @value.to_s(symbols) : @value.to_s)
+      if @value.is_a?(Generate::Variable) || @value.is_a?(Color)
+        value = @value.to_s(symbols)
+      else
+        value = @value.to_s
+      end
+      
+      sprintf(@format, @property_name.to_s, value)
     end
   end
   

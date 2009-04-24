@@ -54,6 +54,10 @@ module Stylish
         key, value = declaration
         key        = key.to_s.sub("_", "-").to_sym
         
+        if value.is_a? Symbol
+          value = Variable.new(value)
+        end
+        
         if key == :background
           declaration = Background.new(value)
         elsif key == :color
@@ -63,6 +67,17 @@ module Stylish
         end
         
         ds << declaration
+      end
+    end
+    
+    class Variable
+      
+      def initialize(name)
+        @name = name
+      end
+      
+      def to_s(symbols)
+        symbols[@name]
       end
     end
     
