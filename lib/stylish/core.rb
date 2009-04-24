@@ -265,7 +265,7 @@ module Stylish
     # spacing of the declaration can be controlled if desired.
     def to_s(symbols = {})
       sprintf(@format, @property_name.to_s,
-        @value.is_a?(String) ? @value : @value.to_s)
+        @value.is_a?(Color) ? @value.to_s(symbols) : @value.to_s)
     end
   end
   
