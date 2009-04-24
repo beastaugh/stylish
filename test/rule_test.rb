@@ -1,5 +1,4 @@
 require 'test/unit'
-require './lib/stylish'
 
 class RuleTest < Test::Unit::TestCase
   
