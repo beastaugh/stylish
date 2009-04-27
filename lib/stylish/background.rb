@@ -41,8 +41,6 @@ module Stylish
     REPEAT_VALUES        = ["repeat-x", "repeat-y", "repeat",
                             "space", "round", "no-repeat"]
     ATTACHMENT_VALUES    = ["scroll", "fixed", "local"]
-    HORIZONTAL_POSITIONS = ["left", "center", "right"]
-    VERTICAL_POSITIONS   = ["top", "center", "bottom"]
     ORIGIN_VALUES        = ["border-box", "padding-box", "content-box"]
     BREAK_VALUES         = ["bounding-box", "each-box", "continuous"]
     
@@ -102,11 +100,8 @@ module Stylish
     end
     
     # Only position keywords are currently handled, not percentages or lengths.
-    def position=(val)
-      xpos, ypos = val.split(/\s+/) << "center"
-      if HORIZONTAL_POSITIONS.include?(xpos) && VERTICAL_POSITIONS.include?(ypos)
-        @position = [xpos, ypos]
-      end
+    def position=(positions)
+      @position = Position.new(*positions)
     end
     
     # The background-attachment property takes a limited range of values, so

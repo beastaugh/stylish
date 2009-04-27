@@ -8,7 +8,7 @@ module Stylish
   require STYLISH_PATH + 'formattable'
   require STYLISH_PATH + 'tree'
   require STYLISH_PATH + 'core'
-  require STYLISH_PATH + 'tree'
+  require STYLISH_PATH + 'position'
   require STYLISH_PATH + 'stylesheet'
   require STYLISH_PATH + 'image'
   require STYLISH_PATH + 'background'

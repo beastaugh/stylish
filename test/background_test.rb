@@ -3,7 +3,7 @@ class BackgroundTest < Test::Unit::TestCase
   def setup
     @composite = Stylish::Background.new(:color => "#CCC",
       :image => "images/test.png", :repeat => "no-repeat",
-      :position => "left", :attachment => "scroll")
+      :position => ["left", "top"], :attachment => "scroll")
   end
   
   def test_valid_background_colors
@@ -42,9 +42,13 @@ class BackgroundTest < Test::Unit::TestCase
   end
   
   def test_valid_background_positions
-    assert_equal(2, @composite.position.length)
-    assert_equal("left", @composite.position[0])
-    assert_equal("center", @composite.position[1])
+    assert_equal("left", @composite.position.x)
+    assert_equal("top", @composite.position.y)
+  end
+  
+  def test_position_serialisation
+    positioned = Stylish::Background.new({:position => [0, 0]})
+    assert_equal("background-position:0 0;", positioned.to_s)
   end
   
   def test_valid_compression
@@ -90,11 +94,6 @@ class BackgroundTest < Test::Unit::TestCase
   
   def test_invalid_background_repeats
     assert_nil(Stylish::Background.new(:repeat => 'maxim-gun').repeat)
-  end
-  
-  def test_invalid_background_positions
-    assert_nil(Stylish::Background.new(:position => "green ideas").position)
-    assert_nil(Stylish::Background.new(:position => "top").position)
   end
   
   def test_invalid_background_attachments
