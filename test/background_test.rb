@@ -47,8 +47,8 @@ class BackgroundTest < Test::Unit::TestCase
   end
   
   def test_position_serialisation
-    positioned = Stylish::Background.new({:position => [0, 0]})
-    assert_equal("background-position:0 0;", positioned.to_s)
+    positioned = Stylish::Background.new({:position => ["100%", 0]})
+    assert_equal("background-position:100% 0;", positioned.to_s)
   end
   
   def test_valid_compression

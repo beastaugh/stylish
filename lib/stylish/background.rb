@@ -99,9 +99,16 @@ module Stylish
       end
     end
     
-    # Only position keywords are currently handled, not percentages or lengths.
+    # Positions have an x and a y value, and are handled by a specialised
+    # Position class. They should be passed an array of two values, e.g.
+    #
+    #     positioned = Background.new :position => ["100%", 0]
+    #     positioned.to_s # => "background-position:100% 0;"
+    #
+    # See the documentation for the Position class for further details on
+    # permitted position types.
     def position=(positions)
-      @position = Position.new(*positions)
+      @position = Position.new(positions[0], positions[1])
     end
     
     # The background-attachment property takes a limited range of values, so
