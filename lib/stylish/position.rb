@@ -28,7 +28,7 @@ module Stylish
       @unit = unit if UNITS.include? unit
     end
     
-    def to_s
+    def to_s(symbols = {}, scope = "")
       self.value.to_s + self.unit
     end
   end
