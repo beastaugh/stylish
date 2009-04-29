@@ -1,0 +1,49 @@
+/**
+ * Layout.
+ */
+body {margin:0; padding:0; font-family:Helvetica, Arial, sans-serif; font-size:81%; line-height:1.5; color:#404040; background:#fff;}
+#wrapper {margin:0 auto; max-width:50em;}
+.clear:after {content:"."; display:block; height:0; clear:both; visibility:hidden;}
+
+/**
+ * Navigation.
+ */
+#nav ul {margin:1em 0; padding:0;}
+#nav li {list-style:none; float:left; margin:0 1em 0 0;}
+#nav a {text-decoration:none;}
+#nav a:hover {text-decoration:underline;}
+
+/**
+ * Header.
+ */
+#header {}
+h1 {font-family:Georgia, serif; font-style:italic; font-weight:normal;}
+h1 {margin:0 0 0.5em 0; font-size:2em;}
+
+/**
+ * Footer.
+ */
+#footer {margin:1em 0 5em 0;}
+
+/**
+ * Content.
+ */
+.section {margin-bottom:1em; border-bottom:1px solid #e5e5e5;}
+.section h1 {font-size:1.5em;}
+p {margin:0 0 1em 0;}
+
+/**
+ * Links.
+ */
+a {text-decoration:underline;}
+a:link {color:#618e12;}
+a:visited, a:active {color:#6d922d;}
+a:hover {color:#c95a01;}
+
+/**
+ * Code.
+ */
+pre, code {font-family:Courier, 'Courier New', monospace; font-size:12px;}
+pre {display:block; margin:0 0 1em 0; white-space:pre-wrap;}
+pre.code {display:block; border:1px solid #e5e5e5; padding:0.5em 1em; background:#fafafa;}
+pre.terminal code:before {content:'$ ';}

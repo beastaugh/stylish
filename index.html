@@ -1,0 +1,99 @@
+---
+layout: default
+title: Stylish, a CSS generator in Ruby
+---
+
+<p>
+  Stylish is a tool that lets you generate
+  <abbr title="Cascading Stylesheets">CSS</abbr> code with a minimum of fuss.
+  Its aim is to make writing certain kinds of stylesheet much simpler. Common
+  examples include those with a lot of duplication, or which are just
+  variations on the same basic structure.
+</p>
+
+<p>
+  The following tutorial assumes you have Ruby and RubyGems installed. Ruby
+  programming knowledge helps, but should not be essential.
+</p>
+
+<div class="section">
+  <h1>Why would you want to write CSS in Ruby?</h1>
+  
+  <p>
+    Because CSS doesn&#8217;t have loops or variables, and can be very
+    repetitive. Stylish allows you to eliminate a lot of redundancy in your
+    code. There are other reasons too, as we will see throughout this tutorial.
+  </p>
+</div>
+
+<div class="section">
+  <h1>Installing Stylish</h1>
+  
+  <p>The simplest way to install Stylish is via RubyGems:</p>
+  
+  <pre class="code terminal"><code>sudo gem install ionfish-stylish -s http://gems.github.com/</code></pre>
+  
+  <p>Stylish has no other gem dependencies.</p>
+</div>
+
+<div class="section">
+  <h1>Creating simple stylesheets</h1>
+  
+  <p>
+    The foundation of the stylesheet generation <abbr title="Domain-Specific
+    Language">DSL</abbr> is the <code>Stylish.generate</code> method. This
+    takes a block, and returns a <code>Stylesheet</code> object.
+  </p>
+  
+  <pre class="code"><code>style = Stylish.generate do
+  # Your rules here
+end</code></pre>
+
+  <p>
+    Now to construct some rules. This is done with the <code>rule</code>
+    method, which must be passed one or more selectors, a hash of
+    declarations and/or a block.
+  </p>
+  
+  <pre class="code"><code>style = Stylish.generate do
+  rule "div.section", :margin_bottom => "1em"
+end</code></pre>
+
+  <p>
+    Note that selectors are strings, and declarations are hashes where the keys
+    are symbols and the values are strings. The rule method can be a bit
+    verbose, so selectors which consist of a single <abbr title="Hypertext
+    Markup Language">HTML</abbr> element can be used directly as methods.
+  </p>
+  
+  <pre class="code"><code>style = Stylish.generate do
+  p :line_height => 1.5
+  a :text_transform => "uppercase"
+end</code></pre>
+
+  <p>
+    Rules can also take a block, which creates a new selector scope. This means
+    that rules with repetitive CSS namespacing using descendant and child
+    selectors can be refactored into simple tree structures.
+  </p>
+  
+  <pre class="code"><code>style = Stylish.generate do
+  rule "div.section" do
+    p :line_height => 1.5
+    a :text_transform => "uppercase"
+  end
+end
+
+style.to_s # => div.section p {line-height:1.5;}
+           #    div.section a {text-transform:uppercase;}</code></pre>
+  
+  <p>
+    Once you&#8217;ve created your stylesheet object, you&#8217;ll probably
+    want to serialise it to a file. A nicer way of doing this will eventually
+    be built into the library, but for now let&#8217;s just write some Ruby.
+  </p>
+  
+  <pre class="code"><code>File.open('my_style.css', 'w+') do |f|
+  f.puts(style.to_s)
+end</code></pre>
+</div>
