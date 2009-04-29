@@ -97,3 +97,42 @@ style.to_s # => div.section p {line-height:1.5;}
   f.puts(style.to_s)
 end</code></pre>
 </div>
+
+<div class="section">
+  <h1>Using variables</h1>
+  
+  <p>
+    Variables allow property values to be determined when the stylesheet is
+    serialised, rather than when it&#8217;s declared. A hash (in other words, a
+    symbol table) containing the variables&#8217; names and values should be
+    passed to the stylesheet&#8217;s <code>to_s</code> method.
+  </p>
+  
+  <pre class="code"><code>style = Stylish.generate do
+  a :color => :bright
+end
+
+style.to_s :bright => "f00" # => a {color:#f00;}
+style.to_s :bright => "0f0" # => a {color:#0f0;}
+style.to_s :bright => "00f" # => a {color:#00f;}</code></pre>
+  
+  <p>
+    Variables are represented by Ruby symbols, and can be used in place of
+    selectors as well as properties.
+  </p>
+  
+  <pre class="code"><code>style = Stylish.generate do
+  rule :wrapper do
+    a :color => :bright
+  end
+end
+
+style.to_s :wrapper => "#wrapper", :bright => "f00"
+  # => #wrapper a {color:#f00;}</code></pre>
+  
+  <p>
+    Variables allow the same simple template to be used multiple times.
+    Creating different colour schemes is the classic use case, but there are
+    plenty of others.
+  </p>
+</div>
