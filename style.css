@@ -44,6 +44,6 @@ a:hover {color:#c95a01;}
  * Code.
  */
 pre, code {font-family:Courier, 'Courier New', monospace; font-size:12px;}
-pre {display:block; margin:0 0 1em 0; white-space:pre-wrap;}
-pre.code {display:block; border:1px solid #e5e5e5; padding:0.5em 1em; background:#fafafa;}
-pre.terminal code:before {content:'$ ';}
+pre {display:block; margin:0; white-space:pre-wrap;}
+.highlight {display:block; margin-bottom:1em; border:1px solid #e5e5e5; padding:0.5em 1em; background:#fafafa;}
+.terminal code:before {content:'$ ';}

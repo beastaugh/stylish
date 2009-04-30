@@ -45,19 +45,19 @@ title: Stylish, a CSS generator in Ruby
     takes a block, and returns a <code>Stylesheet</code> object.
   </p>
   
-  <pre class="code"><code>style = Stylish.generate do
+{% highlight ruby %}style = Stylish.generate do
   # Your rules here
-end</code></pre>
-
+end{% endhighlight %}
+  
   <p>
     Now to construct some rules. This is done with the <code>rule</code>
     method, which must be passed one or more selectors, a hash of
     declarations and/or a block.
   </p>
   
-  <pre class="code"><code>style = Stylish.generate do
+{% highlight ruby %}style = Stylish.generate do
   rule "div.section", :margin_bottom => "1em"
-end</code></pre>
+end{% endhighlight %}
 
   <p>
     Note that selectors are strings, and declarations are hashes where the keys
@@ -66,10 +66,10 @@ end</code></pre>
     Markup Language">HTML</abbr> element can be used directly as methods.
   </p>
   
-  <pre class="code"><code>style = Stylish.generate do
+{% highlight ruby %}style = Stylish.generate do
   p :line_height => 1.5
   a :text_transform => "uppercase"
-end</code></pre>
+end{% endhighlight %}
 
   <p>
     Rules can also take a block, which creates a new selector scope. This means
@@ -77,7 +77,7 @@ end</code></pre>
     selectors can be refactored into simple tree structures.
   </p>
   
-  <pre class="code"><code>style = Stylish.generate do
+{% highlight ruby %}style = Stylish.generate do
   rule "div.section" do
     p :line_height => 1.5
     a :text_transform => "uppercase"
@@ -85,7 +85,7 @@ end</code></pre>
 end
 
 style.to_s # => div.section p {line-height:1.5;}
-           #    div.section a {text-transform:uppercase;}</code></pre>
+           #    div.section a {text-transform:uppercase;}{% endhighlight %}
   
   <p>
     Once you&#8217;ve created your stylesheet object, you&#8217;ll probably
@@ -93,9 +93,9 @@ style.to_s # => div.section p {line-height:1.5;}
     be built into the library, but for now let&#8217;s just write some Ruby.
   </p>
   
-  <pre class="code"><code>File.open('my_style.css', 'w+') do |f|
+{% highlight ruby %}File.open('my_style.css', 'w+') do |f|
   f.puts(style.to_s)
-end</code></pre>
+end{% endhighlight %}
 </div>
 
 <div class="section">
@@ -108,27 +108,27 @@ end</code></pre>
     passed to the stylesheet&#8217;s <code>to_s</code> method.
   </p>
   
-  <pre class="code"><code>style = Stylish.generate do
+{% highlight ruby %}style = Stylish.generate do
   a :color => :bright
 end
 
 style.to_s :bright => "f00" # => a {color:#f00;}
 style.to_s :bright => "0f0" # => a {color:#0f0;}
-style.to_s :bright => "00f" # => a {color:#00f;}</code></pre>
+style.to_s :bright => "00f" # => a {color:#00f;}{% endhighlight %}
   
   <p>
     Variables are represented by Ruby symbols, and can be used in place of
     selectors as well as properties.
   </p>
   
-  <pre class="code"><code>style = Stylish.generate do
+{% highlight ruby %}style = Stylish.generate do
   rule :wrapper do
     a :color => :bright
   end
 end
 
 style.to_s :wrapper => "#wrapper", :bright => "f00"
-  # => #wrapper a {color:#f00;}</code></pre>
+  # => #wrapper a {color:#f00;}{% endhighlight %}
   
   <p>
     Variables allow the same simple template to be used multiple times.
