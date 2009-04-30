@@ -19,15 +19,6 @@ module Stylish
   # weighting to only override specific parts of other rules' background
   # declarations.
   class Background < Declaration
-    attr_reader :color,
-                :image,
-                :repeat,
-                :position,
-                :attachment,
-                :origin,
-                :break,
-                :compressed
-    
     PROPERTIES = [
       [:color,      "background-color"],
       [:image,      "background-image"],
@@ -43,6 +34,10 @@ module Stylish
     ATTACHMENT_VALUES    = ["scroll", "fixed", "local"]
     ORIGIN_VALUES        = ["border-box", "padding-box", "content-box"]
     BREAK_VALUES         = ["bounding-box", "each-box", "continuous"]
+    
+    PROPERTIES.each do |name, value|
+      attr_reader name
+    end
     
     # Create a new Background object with the specified properties.
     def initialize(options)
