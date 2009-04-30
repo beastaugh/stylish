@@ -45,5 +45,7 @@ a:hover {color:#c95a01;}
  */
 pre, code {font-family:Courier, 'Courier New', monospace; font-size:12px;}
 pre {display:block; margin:0; white-space:pre-wrap;}
+code {background:#e5e5e5; color:#333;}
+pre code {background:none;}
 .terminal, .highlight {display:block; margin-bottom:1em; border:1px solid #e5e5e5; padding:0.5em 1em; background:#fafafa;}
 .terminal code:before {content:'$ ';}
