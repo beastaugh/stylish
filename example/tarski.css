@@ -1,0 +1,28 @@
+/**
+ * Custom style for Tarski
+ *
+ * Designed by Benedict Eastaugh, http://extralogical.net/
+ */
+body.custom #wrapper .nav-current:link, body.custom #wrapper .nav-current:visited, body.custom #wrapper .nav-current:active {color:#bf6030;}
+body.custom #wrapper .nav-current:hover {color:#e59900;}
+body.custom code {color:#bf8060;}
+body.custom abbr, body.custom acronym {border-bottom:1px solid #bf8060;}
+body.custom h3 {color:#bf6030;}
+body.custom .articlenav {background-color:#fcfeff;}
+body.custom .insert {border:1px solid #cfdde5; background-color:#fcfeff; padding:9px; margin:0 0 1em 0;}
+body.custom .insert h3 {border-bottom:1px solid #cfdde5;}
+body.custom .content a.download:link, body.custom .content a.download:visited, body.custom .content a.download:active {border:1px solid #cfdde5; background-color:#fcfeff;}
+body.custom a img {border:1px solid #0f6b99;}
+body.custom a:hover img, body.custom .comment a:hover .avatar {border:1px solid #e59900;}
+body.custom a:link, body.custom a:active, body.custom a:visited {color:#0f6b99;}
+body.custom a:hover {color:#e59900;}
+body.custom .content a:link, body.custom .content a:active, body.custom .content a:visited {border-bottom:1px solid #cfdde5;}
+body.custom .content a:hover {border-bottom:1px solid #e59900;}
+body.custom .link-pages a:link, body.custom .link-pages a:active, body.custom .link-pages a:visited {border-bottom:1px solid #cfdde5;}
+body.custom .link-pages a:hover {border-bottom:1px solid #e59900;}
+body.custom .tagdata a:link, body.custom .tagdata a:active, body.custom .tagdata a:visited {border-bottom:1px solid #cfdde5;}
+body.custom .tagdata a:hover {border-bottom:1px solid #e59900;}
+body.custom .widget_tag_cloud a:link, body.custom .widget_tag_cloud a:active, body.custom .widget_tag_cloud a:visited {border-bottom:1px solid #cfdde5;}
+body.custom .widget_tag_cloud a:hover {border-bottom:1px solid #e59900;}
+body.custom .widget_calendar tbody td a {background-color:#8bb6cc; color:#fff;}
+body.custom .widget_calendar tbody td a:hover {background-color:#cca352; color:#fff;}
