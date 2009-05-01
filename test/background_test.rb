@@ -22,7 +22,7 @@ class BackgroundTest < Test::Unit::TestCase
   end
   
   def test_multiple_background_images
-    bg = Stylish::Background.new :image =>
+    bg = Stylish::Background.new :images =>
            ["flower.png", "ball.png", "grass.png"]
     
     assert_equal(3, bg.image.length)
@@ -35,7 +35,7 @@ class BackgroundTest < Test::Unit::TestCase
   end
   
   def test_multiple_background_repeats
-    bg = Stylish::Background.new :repeat => ["repeat-x", "repeat-y"]
+    bg = Stylish::Background.new :repeats => ["repeat-x", "repeat-y"]
     
     assert_equal(2, bg.repeat.length)
     assert_equal("background-repeat:repeat-x, repeat-y;", bg.to_s)
@@ -51,8 +51,11 @@ class BackgroundTest < Test::Unit::TestCase
     assert_equal("background-position:100% 0;", positioned.to_s)
   end
   
-  def test_valid_compression
+  def test_compression
     assert(Stylish::Background.new(:compressed => true))
+    assert_equal(false, Stylish::Background.new(:compressed => "true").compressed)
+    assert_equal(false, Stylish::Background.new(:compressed => "false").compressed)
+    assert_nil(Stylish::Background.new(:compressed => nil).compressed)
   end
   
   def test_valid_background_attachments
@@ -62,7 +65,7 @@ class BackgroundTest < Test::Unit::TestCase
   end
   
   def test_multiple_attachments
-    glued = Stylish::Background.new :attachment => ["local", "fixed"]
+    glued = Stylish::Background.new :attachments => ["local", "fixed"]
     
     assert_equal(2, glued.attachment.length)
     assert_equal("background-attachment:local, fixed;", glued.to_s)
@@ -75,7 +78,7 @@ class BackgroundTest < Test::Unit::TestCase
   end
   
   def test_origins
-    original = Stylish::Background.new :origin => ["border-box", "padding-box"]
+    original = Stylish::Background.new :origins => ["border-box", "padding-box"]
     
     assert_equal(2, original.origin.length)
     assert_equal("background-origin:border-box, padding-box;", original.to_s)
@@ -87,11 +90,6 @@ class BackgroundTest < Test::Unit::TestCase
     assert_equal("background-break:bounding-box;", broken.to_s)
   end
   
-  def test_invalid_image_values
-    assert_nil(Stylish::Background.new(:image => []).image)
-    assert_nil(Stylish::Background.new(:image => {}).image)
-  end
-  
   def test_invalid_background_repeats
     assert_nil(Stylish::Background.new(:repeat => 'maxim-gun').repeat)
   end
@@ -99,12 +97,6 @@ class BackgroundTest < Test::Unit::TestCase
   def test_invalid_background_attachments
     assert_nil(Stylish::Background.new(:attachment => "static").attachment)
     assert_nil(Stylish::Background.new(:attachment => "unhooked").attachment)
-  end
-  
-  def test_invalid_compression
-    assert_nil(Stylish::Background.new(:compressed => "true").compressed)
-    assert_nil(Stylish::Background.new(:compressed => "false").compressed)
-    assert_nil(Stylish::Background.new(:compressed => nil).compressed)
   end
   
   def test_declaration_property

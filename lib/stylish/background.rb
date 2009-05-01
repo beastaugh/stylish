@@ -46,50 +46,52 @@ module Stylish
     
     # Input validation for colours is handled by the Color class, which will
     # raise an ArgumentError if the argument is an invalid colour value.
+    #
+    #     coloured = Background.new :color => "545454"
+    #     coloured.to_s # => "background-color:#545454;"
+    #
     def color=(val)
       @color = Color.new(val)
     end
     
-    # Set the background image(s). As of CSS3, elements may have multiple
-    # background images, so this method attempts to provide a backwards-
-    # compatible solution.
+    # Set the background image.
     #
     #     background = Background.new :image => "sky.png", :compressed => true
     #     background.to_s # => "background:url('sky.png');"
     #
-    #     background.image = ["ball.png", "grass.png"]
+    def image=(path)
+      @image = Image.new(path)
+    end
+    
+    # As of CSS3, elements may have multiple background images.
+    #
+    #     background.images = ["ball.png", "grass.png"]
     #     background.to_s # => "background:url('ball.png'), url('grass.png');"
     #
-    def image=(paths)
-      paths  = [paths] if paths.is_a?(String)
-      @image = paths.inject([]) {|images, path| images << Image.new(path) }
-      
-      if @image.length < 2
-        @image = @image.first
-      else
-        def @image.to_s
-          join(", ")
-        end
+    def images=(paths)
+      @image = paths.inject(PropertyBundle.new) do |is, i|
+        is << Image.new(i)
       end
     end
     
-    # Set the background repeat(s). As of CSS3, the background-repeat property
-    # may have multiple values, so this method provides a backwards-compatible
-    # solution.
+    # Set the background repeat.
     #
-    #     repeating = Background.new :repeat => ["repeat-x", "repeat-y"]
+    #     nonrepeating = Background.new :repeat => "no-repeat"
+    #     nonrepeating.to_s # => "background-repeat:no-repeat;"
+    #
+    def repeat=(repeat)
+      @repeat = repeat if REPEAT_VALUES.include? repeat
+    end
+    
+    # As of CSS3, the background-repeat property may have multiple values.
+    #
+    #     repeating = Background.new :repeats => ["repeat-x", "repeat-y"]
     #     repeating.to_s # => "background-repeat:repeat-x, repeat-y;"
     #
-    def repeat=(repeats)
-      repeats = [repeats] if repeats.is_a? String
-      @repeat = repeats.find_all {|r| REPEAT_VALUES.include? r }
-      
-      if @repeat.length < 2
-        @repeat = @repeat.first
-      else
-        def @repeat.to_s
-          join(", ")
-        end
+    def repeats=(repeats)
+      @repeat = repeats.inject(PropertyBundle.new) do |rs, r|
+        rs << r if REPEAT_VALUES.include? r
+        rs
       end
     end
     
@@ -101,41 +103,63 @@ module Stylish
     #
     # See the documentation for the Position class for further details on
     # permitted position types.
-    def position=(positions)
-      @position = Position.new(positions[0], positions[1])
+    def position=(position)
+      @position = Position.new(position[0], position[1])
+    end
+    
+    # As of CSS3, elements may have multiple background images, and
+    # consequently they will need to be separately positioned as well.
+    #
+    #     p = Background.new :positions => [["left", "top"], ["right", "top"]]
+    #     p.to_s # => "background-position:left top, right top;"
+    #
+    def positions=(positions)
+      @position = positions.inject(PropertyBundle.new) do |ps, p|
+        ps << Position.new(p[0], p[1])
+      end
     end
     
     # The background-attachment property takes a limited range of values, so
     # only a value within that range will be accepted.
-    def attachment=(attachments)
-      attachments = [attachments] if attachments.is_a? String
-      @attachment = attachments.find_all {|a| ATTACHMENT_VALUES.include? a }
-      
-      if @attachment.length < 2
-        @attachment = @attachment.first
-      else
-        def @attachment.to_s
-          join(", ")
-        end
+    #
+    #     attached = Background.new :attachment => "fixed"
+    #     attached.to_s # => "background-attachment:fixed;"
+    #
+    def attachment=(attachment)
+      @attachment = attachment if ATTACHMENT_VALUES.include? attachment
+    end
+    
+    # As of CSS3 elements may have multiple background-attachment values.
+    #
+    #     atts = Background.new :attachments => ["fixed", "scroll"]
+    #     atts.to_s # => "background-attachment:fixed, scroll;"
+    #
+    def attachments=(attachments)
+      @attachment = attachments.inject(PropertyBundle.new) do |as, a|
+        as << a if ATTACHMENT_VALUES.include? a
+        as
       end
     end
     
     # The background-origin property specifies the background positioning area.
-    # It is a CSS3 property which takes multiple values.
     #
-    #     original = Background.new :origin => ["padding-box", "content-box"]
-    #     original.to_s # => background-origin:padding-box, content-box;
+    #     original = Background.new :origin => "content-box"
+    #     original.to_s # => background-origin:content-box;
     #
-    def origin=(origins)
-      origins = [origins] if origins.is_a? String
-      @origin = origins.find_all {|o| ORIGIN_VALUES.include? o }
-      
-      if @origin.length < 2
-        @origin = @origin.first
-      else
-        def @origin.to_s
-          join(", ")
-        end
+    def origin=(origin)
+      @origin = origin if ORIGIN_VALUES.include? origin
+    end
+    
+    # The background-origin property is a CSS3 property and can take multiple
+    # values.
+    #
+    #     origs = Background.new :origin => ["padding-box", "content-box"]
+    #     origs.to_s # => background-origin:padding-box, content-box;
+    #
+    def origins=(origins)
+      @origin = origins.inject(PropertyBundle.new) do |os, o|
+        os << o if ORIGIN_VALUES.include? o
+        os
       end
     end
     
@@ -160,11 +184,11 @@ module Stylish
     #     background-repeat:no-repeat; background-position:0 0;
     #
     def compressed=(val)
-      @compressed = val == true || nil
+      @compressed = val == true
     end
     
-    # Override Declaration#name, since it's not compatible with the
-    # internals of this class.
+    # Override Declaration#name, since it's not compatible with the internals
+    # of this class.
     def name
       PROPERTIES.reject {|n, p| p.nil? }.map {|n, p|
         value = self.send(n)
@@ -172,8 +196,8 @@ module Stylish
       }.compact
     end
     
-    # Override Declaration#name=, since it's not compatible with the
-    # internals of this class.
+    # Override Declaration#name=, since it's not compatible with the internals
+    # of this class.
     def name=(val)
       raise NoMethodError, "name= is not defined for Background."
     end
@@ -195,8 +219,10 @@ module Stylish
         raise ArgumentError, "Argument must be a hash of background properties"
       end
       
-      PROPERTIES.each do |name, property|
+      PROPERTIES.each do |name, value|
+        plural = (name.to_s + "s").to_sym
         self.send(:"#{name.to_s}=", options[name]) if options[name]
+        self.send(:"#{name.to_s}s=", options[plural]) if options[plural]
       end
     end
     

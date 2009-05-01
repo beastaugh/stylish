@@ -77,4 +77,21 @@ class GenerateTest < Test::Unit::TestCase
     assert_equal("A glorious comment!", style.comments[0].header)
     assert_equal("An additional note.", style.comments[1].lines[0])
   end
+  
+  def test_complex_background
+    style = Stylish.generate do
+      div :background => {
+        :images => ["tl.png", "tr.png", "br.png", "bl.png"],
+        :positions => [
+          ["left", "top"],
+          ["right", "top"],
+          ["right", "bottom"],
+          ["left", "bottom"]]}
+    end
+    
+    assert_equal("div {background-image:url('tl.png'), url('tr.png'), " +
+     "url('br.png'), url('bl.png'); " +
+     "background-position:left top, right top, right bottom, left bottom;}",
+     style.to_s)
+  end
 end
