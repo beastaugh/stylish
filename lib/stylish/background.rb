@@ -41,7 +41,6 @@ module Stylish
     
     # Create a new Background object with the specified properties.
     def initialize(options)
-      accept_format(/^\s*%s\s*:\s*%s;\s*$/m, "%s:%s;")
       self.value = options
     end
     
@@ -215,7 +214,9 @@ module Stylish
       if @compressed
         "background:#{self.value(true).map {|p, v| v }.compact.join(" ")};"
       else
-        self.value(true).map {|p, v| sprintf(@format, p, v.to_s) }.join(" ")
+        self.value(true).map {|p, v|
+          sprintf(self.class.format, p, v.to_s)
+        }.join(" ")
       end
     end
   end

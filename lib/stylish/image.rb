@@ -6,12 +6,12 @@ module Stylish
     include Formattable
     
     attr_accessor :path
+    accept_format(/^url\(\s*('|")?%s\1\s*\)$/, "url('%s')")
     
     # Image instances are serialised to URI values. The path to the image file
     # can be surrounded by either single quotes, double quotes or neither;
     # single quotes are the default in Stylish.
     def initialize(path)
-      accept_format(/^url\(\s*('|")?%s\1\s*\)$/, "url('%s')")
       @path = path
     end
     
@@ -25,7 +25,7 @@ module Stylish
     #     background.to_s # => "background-image:url('test.png');"
     #
     def to_s
-      sprintf(@format, path.to_s)
+      sprintf(self.class.format, path.to_s)
     end
   end
   

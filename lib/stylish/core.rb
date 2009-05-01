@@ -45,6 +45,7 @@ module Stylish
     include Formattable, Tree::Leaf
     
     attr_reader :selectors, :declarations
+    accept_format(/^\s*%s\s*\{\s*%s\s*\}\s*$/m, "%s {%s}")
     
     # Every Rule must have at least one selector, but may have any number of
     # declarations. Empty rules are often used in stylesheets to indicate
@@ -61,8 +62,6 @@ module Stylish
     # This makes Rule objects a very flexible foundation for the higher-level
     # data structures and APIs in Stylish.
     def initialize(selectors, declarations)
-      accept_format(/^\s*%s\s*\{\s*%s\s*\}\s*$/m, "%s {%s}")
-      
       @selectors = selectors.inject(Selectors.new) do |ss, s|
         ss << s
       end
@@ -74,7 +73,7 @@ module Stylish
     
     # Serialise the rule to valid CSS code.
     def to_s(symbols = {}, scope = "")
-      sprintf(@format, selectors.join(symbols, scope),
+      sprintf(self.class.format, selectors.join(symbols, scope),
         @declarations.to_s(symbols))
     end
   end
@@ -201,20 +200,14 @@ module Stylish
   class Selectors < Array
     include Formattable
     
-    # Since a group of Selectors is just a specialised kind of array, all that
-    # is done in its initialiser, regardless of arguments, is to set the
-    # default serialisation format.
-    def initialize(*args)
-      accept_format(/^\s*,\s*$/m, ", ")
-      super
-    end
+    accept_format(/^\s*,\s*$/m, ", ")
     
     # The join method overrides the superclass' method in order to always use a
     # specific separator, and so that the scope that the selectors are being
     # used in can be passed through when Rules etc. are serialised.
     def join(symbols = {}, scope = "")
       self.inject("") do |ss, s|
-        (ss.empty? ? "" : ss + self.format) + s.to_s(symbols, scope)
+        (ss.empty? ? "" : ss + self.class.format) + s.to_s(symbols, scope)
       end
     end
     
@@ -232,10 +225,10 @@ module Stylish
     include Formattable
     
     attr_accessor :value
+    accept_format(/^\s*%s\s*:\s*%s;\s*$/m, "%s:%s;")
     
     # Each Declaration has a property name and a value.
     def initialize(name, value)
-      accept_format(/^\s*%s\s*:\s*%s;\s*$/m, "%s:%s;")
       self.value = value
       self.name  = name
     end
@@ -270,7 +263,7 @@ module Stylish
         value = @value.to_s
       end
       
-      sprintf(@format, @property_name.to_s, value)
+      sprintf(self.class.format, @property_name.to_s, value)
     end
   end
   
@@ -280,18 +273,12 @@ module Stylish
   class Declarations < Array
     include Formattable
     
-    # The allowed format is any string consisting only of whitespace
-    # characters, including newline. The default format string is a single
-    # space, which is probably the most common choice in hand-written CSS.
-    def initialize(*args)
-      accept_format(/^\s*$/m, " ")
-      super
-    end
+    accept_format(/^\s*$/m, " ")
     
     # The format attribute is always used as the separator when joining the
     # elements of a Declarations object.
     def join
-      super(@format)
+      super(self.class.format)
     end
     
     # Returns a string by converting each element to a string, separated by the
@@ -300,8 +287,20 @@ module Stylish
     # CSS code.
     def to_s(symbols = {})
       self.inject("") do |a, o|
-        a << (a.empty? ? "" : @format) << o.to_s(symbols)
+        a << (a.empty? ? "" : self.class.format) << o.to_s(symbols)
       end
+    end
+  end
+  
+  # PropertyBundle objects are simple wrappers around property values with
+  # multiple values.
+  class PropertyBundle < Array
+    include Formattable
+    
+    accept_format(/^\s*,\s*$/m, ", ")
+    
+    def to_s
+      self.join(self.class.format)
     end
   end
   

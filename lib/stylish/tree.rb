@@ -41,14 +41,13 @@ module Stylish
       include Formattable, Node
       
       attr_reader :nodes
+      accept_format(/\s*/m, "\n")
       
       def initialize(selector)
-        accept_format(/\s*/m, "\n")
-        
         @nodes = []
         @scope = selector
       end
-            
+      
       # Return the child node at the given index.
       def [](index)
         @nodes[index]
@@ -89,7 +88,7 @@ module Stylish
         
         @nodes.map {|node|
           node.to_s(symbols, @scope.to_s(symbols, scope))
-        }.join(@format)
+        }.join(self.class.format)
       end
       
       # Return the node's child nodes.
