@@ -23,7 +23,7 @@ Calling the stylesheet's `to_s` method would produce the following
     .content h2 {font-size:2em;}
     .content p {margin:0 0 1em 0;}
 
-A number of additional examples are available in the example/ directory.
+A number of additional examples are available in the `example/` directory.
 
 
 Compatibility
@@ -37,7 +37,6 @@ Future considerations
 ---------------------
 
 *   Add a Border class to complement Background.
-*   Add better support for CSS3 properties to Background.
 *   Fundamental objects like percentages need their own classes rather than
     being dealt with in an ad-hoc manner by higher-level objects.
 *   Add a parser so CSS can be read as well as written.
@@ -59,9 +58,7 @@ Stylish treats CSS as object code--but it treats it nicely.
 Licence
 -------
 
-Copyright (c) 2008-2009, Benedict Eastaugh
-
-All rights reserved.
+Copyright (c) 2008-2009, Benedict Eastaugh. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
