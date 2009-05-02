@@ -55,13 +55,13 @@ module Stylish
         key        = key.to_s.sub("_", "-").to_sym
         
         if key == :background
-          if value.any? {|k,v| v.is_a? Symbol }
+          if includes_symbols? value
             declaration = Variable.new(value, Background)
           else
             declaration = Background.new(value)
           end
         elsif key == :color
-          if value.is_a? Symbol
+          if includes_symbols? value
             value = Variable.new(value, Color)
           else
             value = Color.new(value)
@@ -69,12 +69,24 @@ module Stylish
           
           declaration = Declaration.new("color", value)
         else
-          value = Variable.new(value) if value.is_a? Symbol
+          value = Variable.new(value) if includes_symbols? value
           declaration = Declaration.new(key, value)
         end
         
         ds << declaration
       end
+    end
+    
+    def self.includes_symbols?(value)
+      return true if value.is_a? Symbol
+      
+      if value.is_a? Array
+        return value.any? {|v| includes_symbols?(v) }
+      elsif value.is_a? Hash
+        return value.values.any? {|v| includes_symbols?(v) }
+      end
+      
+      false
     end
     
     # Variables are elements of a selector tree that haven't been assigned
@@ -109,16 +121,36 @@ module Stylish
       # the tree is traversed. Nodes must then serialise themselves, and if
       # they contain Variables they must pass them the symbol table so that
       # they can be resolved to a given value.
-      def to_s(symbols, scope = "")
-        if @constructor.nil?
-          symbols[@name]
-        elsif @name.is_a? Symbol
-          @constructor.new(symbols[@name]).to_s(symbols, scope)
+      def to_s(symbol_table, scope = "")
+        evald = eval(nil, symbol_table)
+        
+        unless @constructor.nil?
+          @constructor.new(evald).to_s(symbol_table, scope)
         else
-          @constructor.new(@name.to_a.inject({}) {|a, e|
-            a[e.first] = symbols[e.last]
-            a
-          }).to_s(symbols, scope)
+          evald
+        end
+      end
+      
+      # Recursively replace symbols with values. This allows for symbol lookup
+      # within more complex nested structures of arrays and hashes, created by
+      # e.g. background declarations.
+      def eval(name_or_hash, symbol_table)
+        replaceable = name_or_hash || @name
+        
+        if replaceable.is_a? Symbol
+          symbol_table[replaceable]
+        elsif replaceable.is_a?(Hash) || replaceable.is_a?(Array)
+          replaceable.to_a.inject(replaceable.class.new) do |acc, el|
+            if acc.is_a? Hash
+              acc[el[0]] = eval(el[1], symbol_table)
+            else
+              acc << eval(el, symbol_table)
+            end
+            
+            acc
+          end
+        else
+          replaceable
         end
       end
     end

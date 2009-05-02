@@ -86,12 +86,12 @@ class GenerateTest < Test::Unit::TestCase
           ["left", "top"],
           ["right", "top"],
           ["right", "bottom"],
-          ["left", "bottom"]]}
+          ["left", :pos]]}
     end
     
     assert_equal("div {background-image:url('tl.png'), url('tr.png'), " +
      "url('br.png'), url('bl.png'); " +
      "background-position:left top, right top, right bottom, left bottom;}",
-     style.to_s)
+     style.to_s({:pos => "bottom"}))
   end
 end
