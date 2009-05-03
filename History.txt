@@ -1,4 +1,4 @@
-=== Version 0.1.5 (TODO)
+=== Version 0.1.5 (2009-05-03)
 
 Improved background support
 * Length, Position and Percentage classes
