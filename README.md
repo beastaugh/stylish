@@ -37,8 +37,6 @@ Future considerations
 ---------------------
 
 *   Add a Border class to complement Background.
-*   Fundamental objects like percentages need their own classes rather than
-    being dealt with in an ad-hoc manner by higher-level objects.
 *   Add a parser so CSS can be read as well as written.
 
 

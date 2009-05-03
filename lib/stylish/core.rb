@@ -1,9 +1,5 @@
 module Stylish
   
-  # Regular expressions matching a percentage, and matching only a percentage.
-  PCT        = /-?(0\.)?\d+%/
-  PERCENTAGE = /^#{PCT}$/
-  
   # A list of all valid HTML5 elements. Used primarily in the stylesheet
   # generation DSL as method names.
   HTML_ELEMENTS = [:html, :head, :title, :base, :link, :meta, :style, :script,

@@ -6,8 +6,8 @@ class PositionTest < Test::Unit::TestCase
   
   def test_percentage_positions
     percentage = Stylish::Position.new("5%", "10%")
-    assert_equal("5%", percentage.x)
-    assert_equal("10%", percentage.y)
+    assert_equal("5%", percentage.x.to_s)
+    assert_equal("10%", percentage.y.to_s)
   end
   
   def test_keyword_positions

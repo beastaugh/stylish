@@ -1,5 +1,27 @@
 module Stylish
   
+  class Percentage
+    PCTSTR = /-?(0\.)?\d+%/
+    
+    def initialize(value)
+      value = value[0..-2]
+      
+      if value =~ /^\d+$/
+        @number = value.to_i
+      else
+        @number = value.to_f
+      end
+    end
+    
+    def to_s(symbols = {}, scope = "")
+      @number.to_s + "%"
+    end
+    
+    def self.match?(value)
+      value =~ /^#{PCTSTR}$/
+    end
+  end
+  
   class Length
     UNITS = [
       # Relative length units
@@ -45,16 +67,20 @@ module Stylish
     end
     
     def x=(xpos)
-      if HORIZONTAL.include?(xpos) || xpos.to_i == 0 || xpos =~ PERCENTAGE
+      if HORIZONTAL.include?(xpos) || xpos.to_i == 0
         @x = xpos
+      elsif Percentage.match? xpos
+        @x = Percentage.new(xpos)
       else
         @x = Length.new(xpos)
       end
     end
     
     def y=(ypos)
-      if VERTICAL.include?(ypos) || ypos.to_i == 0 || ypos =~ PERCENTAGE
+      if VERTICAL.include?(ypos) || ypos.to_i == 0
         @y = ypos
+      elsif Percentage.match? ypos
+        @y = Percentage.new(ypos)
       else
         @y = Length.new(ypos)
       end

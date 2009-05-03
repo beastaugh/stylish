@@ -1,7 +1,7 @@
 === Version 0.1.5 (TODO)
 
 Improved background support
-* Length and Position classes
+* Length, Position and Percentage classes
 * accept_format now a class method
 * Improved API and internals for multiple background properties
 

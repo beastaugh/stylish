@@ -22,14 +22,15 @@ module Stylish #:nodoc:
     # RGB integer; a hexadecimal representation of an RGB color; a rgb()
     # representation of an RGB color; and an rgba() representation of an RGBA
     # color.
+    pct = Percentage::PCTSTR
     OPACITY    = /([0-1]|0\.\d+)/
     RGB_INT    = /(\d{1,2}|[1-2][0-5]{2})/
     HSL_INT    = /(\d{1,2}|[1-2]\d{2}|3([0-5]\d|60))/
     HEX_COLOR  = /^#?([\da-fA-F]{3}){1,2}$/
-    RGB_COLOR  = /rgb\(\s*((#{RGB_INT}|#{PCT}),\s*){2}(#{RGB_INT}|#{PCT})\s*\)/
-    RGBA_COLOR = /rgba\(\s*((#{RGB_INT}|#{PCT}),\s*){3}#{OPACITY}\s*\)/
-    HSL_COLOR  = /hsl\(\s*((#{HSL_INT}|#{PCT}),\s*){2}(#{HSL_INT}|#{PCT})\s*\)/
-    HSLA_COLOR = /hsla\(\s*((#{HSL_INT}|#{PCT}),\s*){3}(#{OPACITY})\s*\)/
+    RGB_COLOR  = /rgb\(\s*((#{RGB_INT}|#{pct}),\s*){2}(#{RGB_INT}|#{pct})\s*\)/
+    RGBA_COLOR = /rgba\(\s*((#{RGB_INT}|#{pct}),\s*){3}#{OPACITY}\s*\)/
+    HSL_COLOR  = /hsl\(\s*((#{HSL_INT}|#{pct}),\s*){2}(#{HSL_INT}|#{pct})\s*\)/
+    HSLA_COLOR = /hsla\(\s*((#{HSL_INT}|#{pct}),\s*){3}(#{OPACITY})\s*\)/
     
     # Colors can be of several types: keywords, hexadecimal strings, RGB and
     # RGBA formats. The type of the color is set on initialisation, so that
@@ -253,7 +254,7 @@ module Stylish #:nodoc:
             rgb << v
           elsif v =~ /^#{RGB_INT}$/
             rgb << v.to_i
-          elsif v =~ PERCENTAGE
+          elsif Percentage.match? v
             rgb << (v.chop.to_f * 256 / 100).round
           end
           
@@ -503,7 +504,7 @@ module Stylish #:nodoc:
         map do |value|
           if value =~ /^#{RGB_INT}$/
             value.to_i
-          elsif value =~ PERCENTAGE
+          elsif Percentage.match? value
             (value.chop.to_f * 255 / 100).round
           else
             value.to_f
