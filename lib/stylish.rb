@@ -8,10 +8,8 @@ module Stylish
   require STYLISH_PATH + 'formattable'
   require STYLISH_PATH + 'tree'
   require STYLISH_PATH + 'core'
-  require STYLISH_PATH + 'position'
-  require STYLISH_PATH + 'stylesheet'
-  require STYLISH_PATH + 'image'
-  require STYLISH_PATH + 'background'
+  require STYLISH_PATH + 'numeric'
+  require STYLISH_PATH + 'extended'
   require STYLISH_PATH + 'color'
   require STYLISH_PATH + 'generate'
 end

@@ -1,5 +1,34 @@
 module Stylish
   
+  # Instances of the Image class are used to represent paths to images,
+  # generally background images.
+  class Image
+    include Formattable
+    
+    attr_accessor :path
+    accept_format(/^url\(\s*('|")?%s\1\s*\)$/, "url('%s')")
+    
+    # Image instances are serialised to URI values. The path to the image file
+    # can be surrounded by either single quotes, double quotes or neither;
+    # single quotes are the default in Stylish.
+    def initialize(path)
+      @path = path
+    end
+    
+    # Serialising Image objects to a string produces the URI values seen in
+    # background-image declarations, e.g.
+    #
+    #     image = Image.new("test.png")
+    #     image.to_s # => "url('test.png')"
+    #
+    #     background = Stylish::Background.new(:image => "test.png")
+    #     background.to_s # => "background-image:url('test.png');"
+    #
+    def to_s
+      sprintf(self.class.format, path.to_s)
+    end
+  end
+  
   # The Background class is a specialised kind of Declaration, geared towards
   # dealing with the oddities of the background family of declarations, which
   # can exist in both long- and shorthand forms.

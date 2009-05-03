@@ -17,6 +17,28 @@ module Stylish
                    :command, :bb, :menu, :legend, :div, :h1, :h2, :h3, :h4,
                    :h5, :h6]
   
+  class Stylesheet < Tree::SelectorScope
+    accept_format(/\s*/m, "\n")
+    
+    # Stylesheets are pure aggregate objects; they can contain child nodes,
+    # but have no data of their own. Their initializer therefore accepts no
+    # arguments.
+    def initialize
+      @nodes = []
+    end
+    
+    # Stylesheets are the roots of selector trees.
+    def root?
+      true
+    end
+    
+    # Recursively serialise the tree to a stylesheet.
+    def to_s(symbols = {})
+      return "" if @nodes.empty?
+      @nodes.map {|node| node.to_s(symbols) }.join(self.class.format)
+    end
+  end
+  
   # Rule objects represent CSS rules, and serialise to them. They possess one
   # or more selectors, and zero or more declarations. In addition to their
   # importance as the major building-blocks of stylesheets, they act as the
