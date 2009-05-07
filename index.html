@@ -136,3 +136,69 @@ style.to_s :wrapper => "#wrapper", :bright => "f00"
     plenty of others.
   </p>
 </div>
+
+<div class="section">
+	<h1>Compound values</h1>
+  
+	<p>
+	  Most declaration values are simple strings or numbers. Some, however, have
+	  a more complex internal structure. The most common example is
+	  <code>background</code> declarations.
+	</p>
+  
+{% highlight ruby %}style = Stylish.generate do
+  body :background => {:color => "fafafa", :image => "bg.png",
+                       :repeat => "no-repeat", :position => ["50%", "10px"],
+                       :compressed => true}
+end
+
+style.to_s
+  # => body {background:#fafafa url('bg.png') no-repeat 50% 10px;}
+{% endhighlight %}
+  
+  <p>
+    The <code>compressed</code> flag tells Stylish to use the shorthand form of
+    the various <code>background-</code> properties; omitting it will generate
+    the more specific longhand declarations.
+  </p>
+{% highlight css %}body {
+  background-color:#fafafa;
+  background-image:url('bg.png');
+  background-repeat:no-repeat;
+  background-position:50% 10px;
+}{% endhighlight %}
+  
+  <p>
+    Variables will work both as a replacement for compound values, substituting
+    the entire hash or array when serialising the stylesheet.
+  </p>
+  
+{% highlight ruby %}style = Stylish.generate do
+  body :background => :bodybg
+end
+
+style.to_s(:bodybg => {:url => "/images/eyewatering.gif"})
+  # => body {background-image:url('/images/eyewatering.gif');}
+{% endhighlight %}
+  
+  <p>
+    However, they can also be used within the body of the compound value,
+    nested as deeply within the data structure as necessary.
+  </p>
+  
+{% highlight ruby %}style = Stylish.generate do
+  body :background => {:color => "000", :image => :fruit}
+end
+
+style.to_s({:fruit => "apple.jpg"})
+  # => body {background-color:#000; background-image:url('apple.jpg');}
+{% endhighlight %}
+  
+  <p>
+    Combining compound values and variables in this way can be very powerful,
+    as often one will only want to make minor changes between different
+    stylesheets, and picking out a particular value with a variable simplifies
+    the mappings between variables and values considerably.
+  </p>
+</div>
+
