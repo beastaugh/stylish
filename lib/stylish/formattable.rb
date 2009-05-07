@@ -36,6 +36,8 @@ module Stylish
         end
       end
       
+      private
+      
       def accept_format(pattern, default)
         @format_pattern = pattern if pattern.is_a? Regexp
         self.format = default
