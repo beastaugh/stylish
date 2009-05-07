@@ -202,3 +202,56 @@ style.to_s({:fruit => "apple.jpg"})
   </p>
 </div>
 
+<div class="section">
+  <h1>Multiple background images</h1>
+  
+  <p>
+    Stylish attempts to build in forward-compatibility with powerful features
+    of CSS3 such as
+    <a href="http://www.w3.org/TR/css3-background/#layering">multiple
+    background images</a>. When using these features in Stylish, two simple
+    rules of thumb should be followed:
+  </p>
+  
+  <ul>
+    <li>Singular declarations have singular names and take singular values</li>
+    <li>Multiple declarations have plural names and take arrays of values</li>
+  </ul>
+  
+  <p>
+    To illustrate this, let&#8217;s look at two different background
+    declarations.
+  </p>
+  
+{% highlight ruby %}style = Stylish.generate do
+  body :background => {:image => "single.png"}
+  rule ".wrap", :background => {:images => ["first.png", "second.png"]}
+end
+
+style.to_s # => body {background-image:url('single.png');}
+           #    .wrap {background-image:url('first.png'), url('second.png');}
+{% endhighlight %}
+  
+  <p>
+    In other words, to give a rule one background image, use
+    <code>:image</code>; to give it several, use <code>:images</code> (and an
+    array of values). This applies to all background properties which may take
+    multiple values:
+  </p>
+  
+  <ul>
+    <li><code>background-image</code>, use <code>:images</code></li>
+    <li><code>background-origin</code>, use <code>:origins</code></li>
+    <li><code>background-clip</code>, use <code>:clips</code></li>
+    <li><code>background-repeat</code>, use <code>:repeats</code></li>
+    <li><code>background-size</code>, use <code>:sizes</code></li>
+    <li><code>background-position</code>, use <code>:positions</code></li>
+  </ul>
+  
+  <p>
+    Note that the singular and plural versions are incompatible with one
+    another; if you use <code>:image</code> in a background declaration you
+    can&#8217;t use <code>:images</code> in the same declaration, and vice
+    versa.
+  </p>
+</div>
