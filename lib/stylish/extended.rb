@@ -54,6 +54,7 @@ module Stylish
       [:repeat,     "background-repeat"],
       [:position,   "background-position"],
       [:attachment, "background-attachment"],
+      [:clip,       "background-clip"],
       [:origin,     "background-origin"],
       [:break,      "background-break"],
       [:compressed]]
@@ -63,6 +64,7 @@ module Stylish
     ATTACHMENT_VALUES    = ["scroll", "fixed", "local"]
     ORIGIN_VALUES        = ["border-box", "padding-box", "content-box"]
     BREAK_VALUES         = ["bounding-box", "each-box", "continuous"]
+    CLIP_VALUES          = ORIGIN_VALUES | ["no-clip"]
     
     PROPERTIES.each do |name, value|
       attr_reader name
@@ -170,10 +172,32 @@ module Stylish
       end
     end
     
+    # The background-clip property specifies the background painting area.
+    #
+    #     clipped = Background.new :clip => "no-clip"
+    #     clipped.to_s # => "background-clip:no-clip;"
+    #
+    def clip=(clip)
+      @clip = clip if CLIP_VALUES.include? clip
+    end
+    
+    # The background-clip property is a CSS3 property and can take multiple
+    # values.
+    #
+    #     clipper = Background.new :clips => ["border-box", "padding-box"]
+    #     clipper.to_s # => "background-clip:border-box, padding-box;"
+    #
+    def clips=(clips)
+      @clip = clips.inject(PropertyBundle.new) do |cs, c|
+        cs << c if CLIP_VALUES.include? c
+        cs
+      end
+    end
+    
     # The background-origin property specifies the background positioning area.
     #
     #     original = Background.new :origin => "content-box"
-    #     original.to_s # => background-origin:content-box;
+    #     original.to_s # => "background-origin:content-box;"
     #
     def origin=(origin)
       @origin = origin if ORIGIN_VALUES.include? origin
@@ -183,7 +207,7 @@ module Stylish
     # values.
     #
     #     origs = Background.new :origin => ["padding-box", "content-box"]
-    #     origs.to_s # => background-origin:padding-box, content-box;
+    #     origs.to_s # => "background-origin:padding-box, content-box;"
     #
     def origins=(origins)
       @origin = origins.inject(PropertyBundle.new) do |os, o|

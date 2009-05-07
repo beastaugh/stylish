@@ -77,6 +77,13 @@ class BackgroundTest < Test::Unit::TestCase
     end
   end
   
+  def test_clips
+    clipper = Stylish::Background.new :clips => ["no-clip", "content-box"]
+    
+    assert_equal(2, clipper.clip.length)
+    assert_equal("background-clip:no-clip, content-box;", clipper.to_s)
+  end
+  
   def test_origins
     original = Stylish::Background.new :origins => ["border-box", "padding-box"]
     
