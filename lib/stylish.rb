@@ -12,4 +12,6 @@ module Stylish
   require STYLISH_PATH + 'extended'
   require STYLISH_PATH + 'color'
   require STYLISH_PATH + 'generate'
+  
+  class UndefinedVariable < ArgumentError; end
 end

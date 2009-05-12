@@ -138,7 +138,12 @@ module Stylish
         replaceable = name_or_hash || @name
         
         if replaceable.is_a? Symbol
-          symbol_table[replaceable]
+          if symbol_table[replaceable]
+            symbol_table[replaceable]
+          else
+            raise UndefinedVariable,
+              ":#{replaceable.to_s} could not be located in the symbol table."
+          end
         elsif replaceable.is_a?(Hash) || replaceable.is_a?(Array)
           replaceable.to_a.inject(replaceable.class.new) do |acc, el|
             if acc.is_a? Hash

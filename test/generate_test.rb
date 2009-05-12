@@ -94,4 +94,14 @@ class GenerateTest < Test::Unit::TestCase
      "background-position:left top, right top, right bottom, left bottom;}",
      style.to_s({:pos => "bottom"}))
   end
+  
+  def test_undefined_variables
+    style = Stylish.generate do
+      body :color => :super_colour
+    end
+    
+    assert_raise Stylish::UndefinedVariable do
+      style.to_s({})
+    end
+  end
 end
