@@ -37,6 +37,17 @@ module Stylish
       return "" if @nodes.empty?
       @nodes.map {|node| node.to_s(symbols) }.join(self.class.format)
     end
+    
+    # A convenience method to print the stylesheet to a file.
+    def print(filename, symbols = {})
+      serialised = self.to_s(symbols)
+      
+      File.open(filename, "w+") do |f|
+        f.puts(serialised)
+      end
+      
+      serialised
+    end
   end
   
   # Rule objects represent CSS rules, and serialise to them. They possess one
