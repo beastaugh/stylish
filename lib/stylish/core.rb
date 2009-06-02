@@ -72,9 +72,9 @@ module Stylish
   #
   class Rule
     include Formattable, Tree::Leaf
+    accept_format(/^\s*%s\s*\{\s*%s\s*\}\s*$/m, "%s {%s}")
     
     attr_reader :selectors, :declarations
-    accept_format(/^\s*%s\s*\{\s*%s\s*\}\s*$/m, "%s {%s}")
     
     # Every Rule must have at least one selector, but may have any number of
     # declarations. Empty rules are often used in stylesheets to indicate
@@ -228,7 +228,6 @@ module Stylish
   # convenient storage and serialisation.
   class Selectors < Array
     include Formattable
-    
     accept_format(/^\s*,\s*$/m, ", ")
     
     # The join method overrides the superclass' method in order to always use a
@@ -250,9 +249,9 @@ module Stylish
   # given their various attributes.
   class Declaration
     include Formattable
+    accept_format(/^\s*%s\s*:\s*%s;\s*$/m, "%s:%s;")
     
     attr_accessor :value
-    accept_format(/^\s*%s\s*:\s*%s;\s*$/m, "%s:%s;")
     
     # Each Declaration has a property name and a value.
     def initialize(name, value)
@@ -299,7 +298,6 @@ module Stylish
   # the empty string.
   class Declarations < Array
     include Formattable
-    
     accept_format(/^\s*$/m, " ")
     
     # The format attribute is always used as the separator when joining the
@@ -323,7 +321,6 @@ module Stylish
   # multiple values.
   class PropertyBundle < Array
     include Formattable
-    
     accept_format(/^\s*,\s*$/m, ", ")
     
     def to_s

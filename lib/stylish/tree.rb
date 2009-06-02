@@ -39,11 +39,10 @@ module Stylish
     # Rules are namespaced by their place in a selector tree.
     class SelectorScope
       include Formattable, Node
+      accept_format(/\s*/m, "\n")
       
       attr_reader  :nodes
       alias_method :to_a, :nodes
-      
-      accept_format(/\s*/m, "\n")
       
       def initialize(selector)
         @nodes = []

@@ -4,9 +4,9 @@ module Stylish
   # generally background images.
   class Image
     include Formattable
+    accept_format(/^url\(\s*('|")?%s\1\s*\)$/, "url('%s')")
     
     attr_accessor :path
-    accept_format(/^url\(\s*('|")?%s\1\s*\)$/, "url('%s')")
     
     # Image instances are serialised to URI values. The path to the image file
     # can be surrounded by either single quotes, double quotes or neither;
