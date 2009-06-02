@@ -1,0 +1,23 @@
+---
+layout: default
+title: Using Ruby 1.9 with Stylish
+---
+
+<div class="section">
+  <p>
+    Stylish is fully compatible with Ruby 1.9, although it doesn&#8217;t
+    require it. Amongst other things, this means that if you&#8217;re running
+    Ruby 1.9, you can take advantage of its new shorthand hash literal syntax.
+    As the following example demonstrates, this makes code written in Stylish
+    look even cleaner and more like CSS.
+  </p>
+
+{% highlight ruby %}style = Stylish.generate do
+  body color: "333" do
+    em font_style: "italic"
+    strong font_weight: "bold", color: "f00"
+    p margin_bottom: "1em"
+    rule "#header", background: {image: "header.png", repeat: "no-repeat"}
+  end
+end{% endhighlight %}
+</div>
