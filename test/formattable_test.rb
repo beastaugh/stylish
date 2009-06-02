@@ -18,4 +18,15 @@ class FormattableTest < Test::Unit::TestCase
       Stylish::Selectors.format = "//"
     end
   end
+  
+  def test_changing_formats
+    Stylish::Declarations.format = "\n"
+    assert_equal("\n", Stylish::Declarations.format)
+    
+    Stylish::Declarations.format = ""
+    assert_equal("", Stylish::Declarations.format)
+    
+    Stylish::Declarations.format = " "
+    assert_equal(" ", Stylish::Declarations.format)
+  end
 end

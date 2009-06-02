@@ -295,7 +295,7 @@ module Stylish
       else
         self.value(true).map {|p, v|
           sprintf(self.class.format, p, v.to_s)
-        }.join(" ")
+        }.join(Declarations.format)
       end
     end
   end

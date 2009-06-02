@@ -6,6 +6,10 @@ class BackgroundTest < Test::Unit::TestCase
       :position => ["left", "top"], :attachment => "scroll")
   end
   
+  def teardown
+    Stylish::Declarations.format = " "
+  end
+  
   def test_valid_background_colors
     assert_equal("#ccc", @composite.color.to_hex)
     assert_equal("black", Stylish::Background.new(:color => "black").color.to_s)
@@ -147,5 +151,15 @@ class BackgroundTest < Test::Unit::TestCase
     background = Stylish::Background.new(:image => "test.png")
     
     assert_equal("background-image:url('test.png');", background.to_s)
+  end
+  
+  def test_declaration_formatting_changes
+    Stylish::Declarations.format = "\n"
+    
+    assert_equal("background-color:#ccc;\n" +
+                 "background-image:url('images/test.png');\n" +
+                 "background-repeat:no-repeat;\n" +
+                 "background-position:left top;\n" +
+                 "background-attachment:scroll;", @composite.to_s)
   end
 end
