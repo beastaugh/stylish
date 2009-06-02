@@ -104,4 +104,25 @@ class GenerateTest < Test::Unit::TestCase
       style.to_s({})
     end
   end
+  
+  module TestRuby19
+    def test_ruby19_hashes
+      style = eval <<-SHORTHAND
+        Stylish.generate do
+          body color: [64, 64, 64] do
+            em font_style: "italic"
+            strong font_weight: "bold", color: "f00"
+            p margin_bottom: "1em"
+          end
+        end
+      SHORTHAND
+      
+      assert_equal("body {color:rgb(64, 64, 64);}\n" +
+                   "body em {font-style:italic;}\n" +
+                   "body strong {font-weight:bold; color:#f00;}\n" +
+                   "body p {margin-bottom:1em;}", style.to_s)
+    end
+  end
+  
+  include TestRuby19 if RUBY_VERSION >= "1.9.0"
 end
