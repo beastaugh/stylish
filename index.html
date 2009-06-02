@@ -92,13 +92,11 @@ style.to_s # => div.section p {line-height:1.5;}
   
   <p>
     Once you&#8217;ve created your stylesheet object, you&#8217;ll probably
-    want to serialise it to a file. A nicer way of doing this will eventually
-    be built into the library, but for now let&#8217;s just write some Ruby.
+    want to serialise it to a file. The <code>Stylesheet</code> class includes
+	a <code>print</code> method for just this eventuality.
   </p>
   
-{% highlight ruby %}File.open('my_style.css', 'w+') do |f|
-  f.puts(style.to_s)
-end{% endhighlight %}
+{% highlight ruby %}style.print('my_style.css'){% endhighlight %}
 </div>
 
 <div class="section">
