@@ -1,0 +1,108 @@
+---
+layout: default
+title: Formatting Stylish&#8217;s output
+---
+
+<div class="section">
+  <p>
+    Stylish&#8217;s default formatting of its output might not be your liking, or
+    fit in with the house style used in your hand-written stylesheets.
+    Fortunately, its output is easily configurable by setting the
+    <code>format</code> attribute on the relevant classes, as can be seen in the
+    following example.
+  </p>
+
+{% highlight ruby %}style = Stylish.generate do
+  div :color => "000", :letter_spacing => "0.1em"
+  em :font_style => "italic"
+  strong :font_weight => "bold"
+  p :margin_bottom => "10px"
+end
+
+           # With Stylish's default formatting...
+           #
+style.to_s # => div {color:#000; letter-spacing:0.1em;}
+           #    em {font-style:italic}
+           #    strong {font-weight:bold;}
+           #    p {margin-bottom:10px;}
+
+Stylish::Rule.format = "%s {\n  %s\n}\n"
+Stylish::Declarations.format = "\n  "
+Stylish::Declaration.format = "%s: %s;"
+
+           # ...and using our new formatting choices:
+           #
+style.to_s # => div {
+           #      color: #000;
+           #      letter-spacing: 0.1em;
+           #    }
+           #
+           #    em {
+           #      font-style: italic;
+           #    }
+           #
+           #    strong {
+           #      font-weight: bold;
+           #    }
+           #
+           #    p {
+           #      margin-bottom: 10px;
+           #    }{% endhighlight %}
+
+  <p>
+    The following classes in the <code>Stylish</code> namespace all have a
+    <code>format</code> attribute which can be changed to adjust way their output
+    is serialised:
+  </p>
+
+  <ul>
+    <li>
+      <code>Stylesheet</code>:
+      controls how rules are joined together. Defaults to a single line break.
+    </li>
+    
+    <li>
+      <code>Tree::SelectorScope</code>:
+      controls how rules within a particular selector scope are joined, just
+      like <code>Stylesheet</code> does at the top level. Defaults to a single
+      line break.
+    </li>
+    
+    <li>
+      <code>Rule</code>:
+      controls the joining of selectors and declarations. Defaults to a single
+      space between the selectors and the opening brace of the declarations, and
+      no whitespace between the braces and the declarations themselves.
+    </li>
+    
+    <li>
+      <code>Selectors</code>:
+      controls how selectors are joined together. Defaults to a single space
+      after the required comma.
+    </li>
+    
+    <li>
+      <code>Declarations</code>:
+      controls how selectors are joined together; defaults to a single space.
+    </li>
+    
+    <li>
+      <code>Declaration</code>:
+      controls how individual declarations are formatted; defaults to include
+      no whitespace.
+    </li>
+    
+    <li>
+      <code>PropertyBundle</code>:
+      controls how property values with multiple values are formatted. Defaults
+      to a single space after the required comma.
+    </li>
+    
+    <li>
+      <code>Image</code>:
+      controls how <abbr title="Uniform Resource Identifier">URI</abbr> values
+      are formatted. Defaults to wrapping values in single quotes with no
+      whitespace (double quotes and no quotation marks are valid alternatives).
+    </li>
+  </ul>
+</div>
