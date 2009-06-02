@@ -26,7 +26,7 @@ module Stylish
     end
     
     module FormattableMethods
-      attr_reader :format
+      attr_reader :format, :default_format
       
       def format=(format)
         if format_validates?(format)
@@ -36,11 +36,17 @@ module Stylish
         end
       end
       
+      # Reset the class's format string to its default value.
+      def reset_format!
+        self.format = @default_format
+      end
+      
       private
       
       def accept_format(pattern, default)
         @format_pattern = pattern if pattern.is_a? Regexp
-        self.format = default
+        self.format     = default
+        @default_format = default
       end
       
       def format_validates?(format_string)

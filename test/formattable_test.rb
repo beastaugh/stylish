@@ -29,4 +29,12 @@ class FormattableTest < Test::Unit::TestCase
     Stylish::Declarations.format = " "
     assert_equal(" ", Stylish::Declarations.format)
   end
+  
+  def test_resetting_formats
+    Stylish::Declarations.format = "\n"
+    assert_equal("\n", Stylish::Declarations.format)
+    
+    Stylish::Declarations.reset_format!
+    assert_equal(" ", Stylish::Declarations.format)
+  end
 end
