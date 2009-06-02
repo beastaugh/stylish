@@ -6,7 +6,7 @@ begin
     s.name = "stylish"
     s.summary = "Write CSS with Ruby"
     s.email = "benedict@eastaugh.net"
-    s.homepage = "http://github.com/ionfish/stylish"
+    s.homepage = "http://ionfish.github.com/stylish/"
     s.description = "A Ruby library for generating cascading stylesheets."
     s.authors = ["Benedict Eastaugh"]
   end

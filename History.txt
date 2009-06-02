@@ -1,3 +1,12 @@
+=== Version 0.1.6 (2009-06-02)
+
+API polish
+* New Stylesheet#print method to serialise a tree to a file.
+* Avoid incomprehensible stack traces by raising an explicit error if a user
+  fails to define a variable when serialising a stylesheet.
+* Add support for the background-clip property to the Background class.
+
+
 === Version 0.1.5 (2009-05-03)
 
 Improved background support
