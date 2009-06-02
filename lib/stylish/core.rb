@@ -240,10 +240,8 @@ module Stylish
       end
     end
     
-    # The to_s method alternative way of calling the join method.
-    def to_s(symbols = {}, scope = "")
-      self.join(symbols, scope)
-    end
+    # The to_s method is an alternate way of calling the join method.
+    alias_method :to_s, :join
   end
   
   # Each Rule may have one or more Declaration objects, and usually has more

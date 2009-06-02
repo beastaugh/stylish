@@ -40,7 +40,9 @@ module Stylish
     class SelectorScope
       include Formattable, Node
       
-      attr_reader :nodes
+      attr_reader  :nodes
+      alias_method :to_a, :nodes
+      
       accept_format(/\s*/m, "\n")
       
       def initialize(selector)
@@ -89,11 +91,6 @@ module Stylish
         @nodes.map {|node|
           node.to_s(symbols, @scope.to_s(symbols, scope))
         }.join(self.class.format)
-      end
-      
-      # Return the node's child nodes.
-      def to_a
-        nodes
       end
       
       # Recursively return all the rules in the selector tree.
