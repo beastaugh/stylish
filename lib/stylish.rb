@@ -12,6 +12,10 @@ module Stylish
   require STYLISH_PATH + 'extended'
   require STYLISH_PATH + 'color'
   require STYLISH_PATH + 'generate'
+  require STYLISH_PATH + 'extensions/declarations_parser'
+  require STYLISH_PATH + 'extensions/background_parser'
+  require STYLISH_PATH + 'extensions/color_parser'
   
   class UndefinedVariable < ArgumentError; end
+  class AbstractMethod    < NameError;     end
 end

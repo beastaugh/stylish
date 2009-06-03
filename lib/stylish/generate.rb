@@ -50,25 +50,16 @@ module Stylish
     # classes the declarations passed to the stylesheet generation DSL need to
     # be parsed with this in mind.
     def self.parse_declarations(declarations)
-      declarations.to_a.inject(Declarations.new) do |ds, declaration|
-        key, value = declaration
-        key        = key.to_s.sub("_", "-").to_sym
+      declarations.to_a.inject(Declarations.new) do |ds, dec|
+        key, value  = dec
+        key         = key.to_s.sub("_", "-").to_sym
+        exts        = Extensions::DeclarationsParser.extensions
         
-        if key == :background
-          if includes_symbols? value
-            declaration = Variable.new(value, Background)
-          else
-            declaration = Background.new(value)
-          end
-        elsif key == :color
-          if includes_symbols? value
-            value = Variable.new(value, Color)
-          else
-            value = Color.new(value)
-          end
-          
-          declaration = Declaration.new("color", value)
-        else
+        declaration = exts.inject(nil) do |d, ext|
+          ext.applicable?(key, value) ? ext.new(key, value).parse(d) : d
+        end
+        
+        if declaration.nil?
           value = Variable.new(value) if includes_symbols? value
           declaration = Declaration.new(key, value)
         end
