@@ -21,6 +21,8 @@ desc "Run the Stylish test suite"
 task :test do
   require 'test/unit'
   
+  puts "Stylish version #{Stylish::VERSION}"
+  
   testdir = "test"
   Dir.foreach(testdir) do |f|
     path = "#{testdir}/#{f}"

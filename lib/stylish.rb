@@ -3,6 +3,8 @@ require 'mathn'
 require 'rational'
 
 module Stylish
+  VERSION = '0.1.6'
+  
   STYLISH_PATH = File.expand_path(File.dirname(__FILE__)) + '/stylish/'
   
   require STYLISH_PATH + 'formattable'
