@@ -56,14 +56,14 @@ module Stylish
   end
   
   class Position
-    HORIZONTAL = ["left", "center", "right"]
-    VERTICAL   = ["top", "center", "bottom"]
+    HORIZONTAL = %w{left center right}
+    VERTICAL   = %w{top middle bottom}
     
     attr_reader :x, :y
     
     def initialize(xpos, ypos)
       self.x = xpos || "center"
-      self.y = ypos || "center"
+      self.y = ypos || "middle"
     end
     
     def x=(xpos)
