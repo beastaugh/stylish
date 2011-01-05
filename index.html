@@ -24,8 +24,8 @@ article_link: http://extralogical.net/2009/05/generating-css-with-stylish/
     Because CSS doesn&#8217;t have loops or variables, and can be very
     repetitive. Stylish allows you to eliminate a lot of redundancy in your
     code. There are other reasons too, as we will see throughout this tutorial.
-	  For a more comprehensive explication,
-	  read <a href="{{ page.article_link }}">Generating CSS with Stylish</a>.
+    For a more comprehensive explication,
+    read <a href="{{ page.article_link }}">Generating CSS with Stylish</a>.
   </p>
 </div>
 
@@ -99,7 +99,7 @@ style.to_s # => div.section p {line-height:1.5;}
   <p>
     Once you&#8217;ve created your stylesheet object, you&#8217;ll probably
     want to serialise it to a file. The <code>Stylesheet</code> class includes
-	a <code>print</code> method for just this eventuality.
+    a <code>print</code> method for just this eventuality.
   </p>
   
 {% highlight ruby %}style.print('my_style.css'){% endhighlight %}
@@ -145,13 +145,13 @@ style.to_s :wrapper => "#wrapper", :bright => "f00"
 </div>
 
 <div class="section">
-	<h1>Compound values</h1>
-  
-	<p>
-	  Most declaration values are simple strings or numbers. Some, however, have
-	  a more complex internal structure. The most common example is
-	  <code>background</code> declarations.
-	</p>
+    <h1>Compound values</h1>
+    
+    <p>
+      Most declaration values are simple strings or numbers. Some, however, have
+      a more complex internal structure. The most common example is
+      <code>background</code> declarations.
+    </p>
   
 {% highlight ruby %}style = Stylish.generate do
   body :background => {:color => "fafafa", :image => "bg.png",
